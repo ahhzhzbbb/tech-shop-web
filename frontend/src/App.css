@@ -182,23 +182,3 @@
     border-right-color: var(--border);
   }
 }
-.header {
-  background: #c02135;
-  padding: 16px 24px;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-}
-
-.brand-logo {
-  width: 60px;
-  height: auto;
-}
-
-.brand-text {
-  height: 40px;
-  width: auto;
-}

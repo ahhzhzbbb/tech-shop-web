@@ -1,7 +1,19 @@
-function Header() {
+import { useState } from "react";
+import RegisterModal from "../../features/auth/components/RegisterModal";
+
+const Header = () => {
+    const [open, setOpen] = useState(false);
+
     return (
-        <h1>Header</h1>
-    )
-}
+        <>
+            <button onClick={() => setOpen(true)}>Đăng ký</button>
+
+            <RegisterModal
+                open={open}
+                onCancel={() => setOpen(false)}
+            />
+        </>
+    );
+};
 
 export default Header;

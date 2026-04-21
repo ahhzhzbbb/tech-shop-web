@@ -8,6 +8,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+/*
+ * Model Product được sử dụng để lưu trữ thông tin về vai trò của sản phẩm trong hệ thống.
+ */
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

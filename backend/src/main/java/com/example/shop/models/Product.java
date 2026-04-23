@@ -1,4 +1,4 @@
-package com.example.shop.backend.models;
+package com.example.shop.models;
 import jakarta.persistence.*;
 import lombok.*;
 @Entity

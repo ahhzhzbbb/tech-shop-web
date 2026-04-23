@@ -1,4 +1,4 @@
-package com.shop.backend.models;
+package com.example.shop.models;
 import jakarta.persistence.*;
 import lombok.*;
 @Entity
@@ -15,9 +15,11 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private String name;
-    @Column(length = 1000)
+    @Column(columnDefinition = "TEXT")
     private String description;
+    @Column(nullable = false)
     private Double price;
     private Integer quantity;
     private String imageUrl;

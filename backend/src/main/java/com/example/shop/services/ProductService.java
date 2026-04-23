@@ -3,9 +3,9 @@ import com.example.shop.models.Product;
 import java.util.List;
 
 public interface ProductService {
-    Product create(Product product);
-    List<Product> getAll();
-    Product getById(Long id);
-    Product update(Long id, Product product);
-    void delete(Long id);
+    List<Product> getAllProducts();
+    Product getProductById(Long id);
+    Product createProduct(Product product);
+    Product updateProduct(Long id, Product product);
+    void deleteProduct(Long id);
 }

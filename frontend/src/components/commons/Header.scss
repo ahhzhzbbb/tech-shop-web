@@ -1,0 +1,39 @@
+.header {
+  width: 100%;
+  height: 80px;
+
+  background-color: #ff4d4f; // cùng màu với HeaderButton
+
+  display: flex;
+  align-items: center; // căn giữa theo chiều dọc
+  justify-content: space-between;
+
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+/* LEFT */
+.header_left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header_logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.header_title {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* RIGHT */
+.header_right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}

@@ -1,0 +1,52 @@
+.header-button {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+
+  background-color: #ff4d4f !important;
+  border: none !important;
+  border-radius: 8px !important;
+
+  padding: 8px 12px !important;
+  height: 45px !important;
+
+  cursor: pointer;
+
+  &:hover {
+    background-color: #d9363e !important;
+  }
+
+  .hb-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 32px;
+    height: 32px;
+
+    border: 2px solid;
+    border-radius: 50%;
+
+    color: #fff;
+    font-size: 16px;
+  }
+
+  .hb-content {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    color: #fff;
+
+    .hb-title {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    .hb-subtitle {
+      font-size: 14px;
+      opacity: 0.8;
+      line-height: 1.2;
+    }
+  }
+}

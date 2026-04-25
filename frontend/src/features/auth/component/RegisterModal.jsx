@@ -6,7 +6,7 @@ const RegisterModal = ({ open, onCancel }) => {
             title="Đăng ký tài khoản"
             open={open}
             onCancel={onCancel}
-            footer={null} // bỏ nút default
+            footer={null}
             centered
         >
             <Form layout="vertical">

@@ -1,4 +1,4 @@
-package com.example.shop.services.impl;
+package com.example.shop.services.impls;
 import com.example.shop.models.Product;
 import com.example.shop.repositories.ProductRepository;
 import com.example.shop.services.ProductService;
@@ -13,24 +13,24 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product create(Product product) {
+    public Product createProduct(Product product) {
         return productRepository.save(product);
     }
 
     @Override
-    public List<Product> getAll() {
+    public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
 
     @Override
-    public Product getById(Long id) {
+    public Product getProductById(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm" + id));
     }
 
     @Override
-    public Product update(Long id, Product newProduct) {
-        Product product = getById(id);
+    public Product updateProduct(Long id, Product newProduct) {
+        Product product = getProductById(id);
 
         product.setName(newProduct.getName());
         product.setDescription(newProduct.getDescription());
@@ -42,7 +42,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void delete(Long id) {
+    public void deleteProduct(Long id) {
         if (!productRepository.existsById(id)) {
             throw new RuntimeException("Không tìm thấy sản phẩm " + id);
         }

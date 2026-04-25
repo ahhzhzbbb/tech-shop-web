@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
-  Optional<Product> findByProductName(Product product);
+  Optional<Product> findByName(String name);
 }

@@ -1,17 +1,31 @@
-import { Modal, Form, Input, Button } from "antd";
+import { Modal, Form, Input, Button, message } from "antd";
+import { useLogin } from "../hooks/useAuth";
 
 const LoginModal = ({ open, onCancel }) => {
+  const { login, loading } = useLogin();
+  const form = Form.useForm();
+
+  const handleLogin = async (values) => {
+    try {
+      await login(values);
+      message.success("Đăng nhập thành công");
+      form.resetFields();
+      onclose();
+    } catch {
+      message.error(err?.message || "Đăng nhập thất bại");
+    }
+  };
+
   return (
-    <Modal
-      title="Đăng nhập tài khoản"
-      open={open}
-      onCancel={onCancel}
-      footer={null}
-      centered
-    >
-      <Form layout="vertical">
+    <Modal title="Đăng nhập tài khoản" open={open} onCancel={onCancel} footer={null} centered >
+      <Form layout="vertical" form={form} onFinish={handleLogin}>
         {/* USERNAME */}
-        <Form.Item>
+        <Form.Item
+          name="username"
+          rules={[
+            { required: true, message: "Vui lòng nhập tên đăng kí" },
+            { min: 3, max: 20, message: "Tên đăng kí có 3-20 kí tự" },
+          ]}>
           <Input placeholder="Tên đăng nhập" />
         </Form.Item>
 

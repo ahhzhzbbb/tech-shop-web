@@ -1,53 +1,70 @@
 import { Modal, Form, Input, Button, message } from "antd";
 import { useLogin } from "../hooks/useAuth";
+import { useAuthContext } from "../../../context/AuthContext";
 
 const LoginModal = ({ open, onCancel }) => {
   const { login, loading } = useLogin();
-  const form = Form.useForm();
+  const [form] = Form.useForm();
+  const { user, setUser } = useAuthContext();
+
+  export const getLoginErrorMessage = (err) => {
+    const status = err?.status;
+    const message = err?.message;
+
+    if (status === 401) {
+      return "Thông tin đăng nhập không đúng, vui lòng thử lại";
+    }
+
+    if (status === 400) {
+      return "Vui lòng nhập đầy đủ thông tin";
+    }
+
+    if (status === 403) {
+      return "Tài khoản của bạn đã bị khóa";
+    }
+
+    if (status === 500) {
+      return "Hệ thống đang gặp sự cố, vui lòng thử lại sau";
+    }
+
+    if (!status) {
+      return "Lỗi đường truyền, không thể kết nối tới máy chủ";
+    }
+
+    return message || "Đăng nhập thất bại";
+  };
 
   const handleLogin = async (values) => {
     try {
-      await login(values);
+      const res = await login(values);
+      setUser({
+        username: res?.username,
+        phoneNumber: res?.phoneNumber,
+      })
       message.success("Đăng nhập thành công");
       form.resetFields();
-      onclose();
-    } catch {
-      message.error(err?.message || "Đăng nhập thất bại");
+      onCancel();
+    } catch (err) {
+      message.error(getLoginErrorMessage(err));
     }
   };
 
   return (
     <Modal title="Đăng nhập tài khoản" open={open} onCancel={onCancel} footer={null} centered >
       <Form layout="vertical" form={form} onFinish={handleLogin}>
-        {/* USERNAME */}
         <Form.Item
           name="username"
-          rules={[
-            { required: true, message: "Vui lòng nhập tên đăng kí" },
-            { min: 3, max: 20, message: "Tên đăng kí có 3-20 kí tự" },
-          ]}>
+          rules={[{ required: true, message: "Vui lòng nhập tên đăng nhập" }]}>
           <Input placeholder="Tên đăng nhập" />
         </Form.Item>
 
-        {/* PASSWORD */}
-        <Form.Item>
+        <Form.Item
+          name="password"
+          rules={[{ required: true, message: "Vui lòng nhập mật khẩu" }]}>
           <Input.Password placeholder="Mật khẩu" />
         </Form.Item>
 
-        {/* FORGOT */}
-        <div style={{ textAlign: "right", marginBottom: 16 }}>
-          <a
-            href="/"
-            style={{ color: "#666", textDecoration: "underline", fontSize: 14 }}
-          >
-            Quên mật khẩu?
-          </a>
-        </div>
-
-        {/* BUTTON */}
-        <Button
-          type="primary"
-          block
+        <Button type="primary" block htmlType="submit" loading={loading}
           style={{
             background: "#ff002b",
             borderColor: "#ff002b",
@@ -59,7 +76,6 @@ const LoginModal = ({ open, onCancel }) => {
           Đăng nhập
         </Button>
 
-        {/* REGISTER */}
         <div
           style={{
             textAlign: "center",

@@ -2,17 +2,17 @@ import { Modal, Form, Input, Button, message } from "antd";
 import { useLogin } from "../hooks/useAuth";
 import { useAuthContext } from "../../../context/AuthContext";
 
-const LoginModal = ({ open, onCancel }) => {
+const LoginModal = ({ open, onCancel, onOpenRegister }) => {
   const { login, loading } = useLogin();
   const [form] = Form.useForm();
   const { user, setUser } = useAuthContext();
 
-  export const getLoginErrorMessage = (err) => {
+  const getErrorMessage = (err) => {
     const status = err?.status;
-    const message = err?.message;
+    const errorMessage = err?.message;
 
     if (status === 401) {
-      return "Thông tin đăng nhập không đúng, vui lòng thử lại";
+      return "Thông tin không đúng, vui lòng thử lại";
     }
 
     if (status === 400) {
@@ -31,7 +31,7 @@ const LoginModal = ({ open, onCancel }) => {
       return "Lỗi đường truyền, không thể kết nối tới máy chủ";
     }
 
-    return message || "Đăng nhập thất bại";
+    return errorMessage || "Đăng nhập thất bại";
   };
 
   const handleLogin = async (values) => {
@@ -45,7 +45,15 @@ const LoginModal = ({ open, onCancel }) => {
       form.resetFields();
       onCancel();
     } catch (err) {
-      message.error(getLoginErrorMessage(err));
+      message.error(getErrorMessage(err));
+    }
+  };
+
+  const handleSwitchToRegister = () => {
+    form.resetFields();
+    onCancel();
+    if (onOpenRegister) {
+      onOpenRegister();
     }
   };
 
@@ -85,7 +93,10 @@ const LoginModal = ({ open, onCancel }) => {
           }}
         >
           Bạn chưa có tài khoản?{" "}
-          <a href="/" style={{ color: "#1677ff" }}>
+          <a
+            onClick={handleSwitchToRegister}
+            style={{ color: "#1677ff", cursor: "pointer" }}
+          >
             Đăng ký ngay!
           </a>
         </div>

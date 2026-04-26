@@ -3,10 +3,20 @@ import { Button } from "antd";
 import "./HeaderButton.scss";
 import { useNavigate } from 'react-router-dom';
 
-const HeaderButton = ({ icon, title, subtitle, to }) => {
+const HeaderButton = ({ icon, title, subtitle, to, onClick }) => {
     const navigate = useNavigate();
+    const handleClick = () => {
+        if (onClick) {
+            onClick();
+            return;
+        }
+        if (to) {
+            navigate(to);
+        }
+    };
+
     return (
-        <Button className="header-button" onClick={() => navigate(to)}>
+        <Button className="header-button" onClick={handleClick}>
             <div className="hb-icon">
                 {icon}
             </div>

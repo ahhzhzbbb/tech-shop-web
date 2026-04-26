@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { registerApi, loginApi } from "../services/authservice";
+import { registerApi, loginApi, logoutApi } from "../services/auth.service";
+import { useAuthContext } from "../../../context/AuthContext.jsx";
 
 export const useRegister = () => {
     const [loading, setLoading] = useState(false);
@@ -35,4 +36,26 @@ export const useLogin = () => {
     }
 
     return { login, loading };
+}
+
+export const useLogout = () => {
+    const [loading, setLoading] = useState(false);
+    const { setUser } = useAuthContext();
+
+    const logout = async () => {
+        try {
+            setLoading(true);
+            await logoutApi();
+            setUser(null);
+            // Xóa token từ localStorage nếu có
+            localStorage.removeItem('token');
+            return true;
+        } catch (err) {
+            throw err?.response?.data || err;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return { logout, loading };
 }

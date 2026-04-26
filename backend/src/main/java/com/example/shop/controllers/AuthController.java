@@ -6,6 +6,7 @@ import com.example.shop.security.request.UpdateProfileRequest;
 import com.example.shop.security.response.AuthenticationResult;
 import com.example.shop.security.response.MessageResponse;
 import com.example.shop.services.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -23,6 +24,7 @@ public class AuthController {
 
     private final AuthService authService;
 
+    @Operation(summary = "Đăng nhập người dùng", description = "API dùng để đăng nhập và trả về JWT cookie")
     /* API dùng để đăng nhập người dùng */
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
@@ -32,12 +34,14 @@ public class AuthController {
                 .body(result.getResponse());
     }
 
+    @Operation(summary = "đăng ký người dùng mới", description = "API dùng để đăng ký một tài khoản mới")
     /* API dùng để đăng ký người dùng mới */
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignupRequest signUpRequest) {
         return authService.register(signUpRequest);
     }
 
+    @Operation(summary = "Lấy tên người dùng hiện tại", description = "API dùng để lấy tên người dùng hiện tại")
     /* API dùng để lấy tên người dùng hiện tại */
     @GetMapping("/username")
     public String currentUserName(Authentication authentication) {
@@ -47,12 +51,14 @@ public class AuthController {
             return "";
     }
 
+    @Operation(summary = "lấy thông tin chi tiết người dùng", description = "API dùng để lấy thông tin chi tiết người dùng hiện tại")
     /* API dùng để lấy thông tin chi tiết người dùng hiện tại */
     @GetMapping("/user")
     public ResponseEntity<?> getUserDetails(Authentication authentication) {
         return ResponseEntity.ok().body(authService.getCurrentUserDetails(authentication));
     }
 
+    @Operation(summary = "cập nhật thông tin người dùng", description = "API dùng để cập nhật thông tin người dùng")
     /* API dùng để cập nhật thông tin người dùng */
     @PutMapping("/user")
     public ResponseEntity<?> updateProfile(
@@ -61,6 +67,7 @@ public class AuthController {
         return ResponseEntity.ok().body(authService.updateProfile(authentication, request.getPhoneNumber()));
     }
 
+    @Operation(summary = "đăng xuất", description = "API dùng để đăng xuất người dùng")
     /* API dùng để đăng xuất người dùng */
     @PostMapping("/signout")
     public ResponseEntity<?> signoutUser() {

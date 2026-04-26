@@ -20,16 +20,21 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) {
 
-        Role role = new Role();
-        role.setRoleName(AppRole.ROLE_ADMIN);
+        Role role1 = new Role();
+        role1.setRoleName(AppRole.ROLE_USER);
 
-        roleRepository.save(role);
+        roleRepository.save(role1);
+
+        Role role2 = new Role();
+        role2.setRoleName(AppRole.ROLE_ADMIN);
+
+        roleRepository.save(role2);
 
         User newUser = new User();
         newUser.setUsername("admin");
         newUser.setPassword(passwordEncoder.encode("admin"));
         newUser.setPhoneNumber("0585424988");
-        newUser.setRole(role);
+        newUser.setRole(role2);
         userRepository.save(newUser);
     }
 }

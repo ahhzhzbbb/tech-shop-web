@@ -29,10 +29,10 @@ const Dropdown = ({ icon, title, subtitle, menu, to, onClick, placement = "botto
         </Button>
     );
 
-    if (menu && menu.length > 0) {
+    if (menu && menu.items && menu.items.length > 0) {
         return (
             <AntDropdown
-                menu={{ items: menu }}
+                menu={menu}
                 placement={placement}
                 trigger={['click']}
             >

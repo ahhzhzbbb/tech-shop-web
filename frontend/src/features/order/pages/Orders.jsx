@@ -1,6 +1,6 @@
 function Order() {
     return (
-        <h1>Order</h1>
+        <h1>Đơn hàng của bạn</h1>
     )
 }
 

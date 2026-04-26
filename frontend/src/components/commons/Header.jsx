@@ -34,10 +34,10 @@ const Header = () => {
         {
             key: 'userInfo',
             label: (
-                <Button 
-                    type="text" 
+                <Button
+                    type="text"
                     style={{ width: '100%', textAlign: 'left' }}
-                    onClick={() => navigate('/user/profile')}
+                    onClick={() => navigate('/user')}
                 >
                     Thông tin tài khoản
                 </Button>
@@ -54,8 +54,8 @@ const Header = () => {
                     onConfirm={handleLogout}
                     okButtonProps={{ loading: logoutLoading }}
                 >
-                    <Button 
-                        type="text" 
+                    <Button
+                        type="text"
                         danger
                         style={{ width: '100%', textAlign: 'left' }}
                         icon={<LogoutOutlined />}
@@ -81,8 +81,8 @@ const Header = () => {
 
                 <div className="header_right">
                     <HeaderButton icon={<EnvironmentOutlined />} title="Hệ thống" subtitle="cửa hàng" />
-                    <HeaderButton icon={<ContainerOutlined />} title="Tìm" subtitle="đơn hàng" />
-                    <HeaderButton icon={<ShoppingCartOutlined />} title="Giỏ hàng" subtitle="của bạn" />
+                    <HeaderButton icon={<ContainerOutlined />} title="Tìm" subtitle="đơn hàng" to="/orders" />
+                    <HeaderButton icon={<ShoppingCartOutlined />} title="Giỏ hàng" subtitle="của bạn" to="/cart" />
                     {user ? (
                         <>
                             <Dropdown icon={<UserOutlined />} title="Xin chào," subtitle={user.username} menu={{ items }} />

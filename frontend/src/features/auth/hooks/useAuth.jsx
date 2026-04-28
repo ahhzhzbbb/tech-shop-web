@@ -1,40 +1,45 @@
 import { useState } from "react";
+<<<<<<< HEAD
 import { registerApi, loginApi, logoutApi } from "../services/auth.service";
 import { useAuthContext } from "../../../context/AuthContext.jsx";
+=======
+import { registerApi, loginApi } from "../services/auth.service";
+>>>>>>> 087dbf7 (sua UI header)
 
 export const useRegister = () => {
-    const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-    const register = async (data) => {
-        try {
-            setLoading(true);
-            const res = await registerApi(data);
-            return res;
-        } catch (err) {
-            throw err?.response?.data || err;
-        } finally {
-            setLoading(false);
-        }
-    };
+  const register = async (data) => {
+    try {
+      setLoading(true);
+      const res = await registerApi(data);
+      return res;
+    } catch (err) {
+      throw err?.response?.data || err;
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    return { register, loading };
-}
+  return { register, loading };
+};
 
 export const useLogin = () => {
-    const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-    const login = async (data) => {
-        try {
-            setLoading(true);
-            const res = await loginApi(data);
-            return res;
-        } catch (err) {
-            throw err?.response?.data || err;
-        } finally {
-            setLoading(false);
-        }
+  const login = async (data) => {
+    try {
+      setLoading(true);
+      const res = await loginApi(data);
+      return res;
+    } catch (err) {
+      throw err?.response?.data || err;
+    } finally {
+      setLoading(false);
     }
+  };
 
+<<<<<<< HEAD
     return { login, loading };
 }
 
@@ -59,3 +64,7 @@ export const useLogout = () => {
 
     return { logout, loading };
 }
+=======
+  return { login, loading };
+};
+>>>>>>> 087dbf7 (sua UI header)

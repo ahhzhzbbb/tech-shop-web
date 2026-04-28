@@ -1,7 +1,11 @@
 import { useState } from "react";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { registerApi, loginApi, logoutApi } from "../services/auth.service";
 import { useAuthContext } from "../../../context/AuthContext.jsx";
+=======
+import { registerApi, loginApi } from "../services/auth.service";
+>>>>>>> 087dbf7 (sua UI header)
 =======
 import { registerApi, loginApi } from "../services/auth.service";
 >>>>>>> 087dbf7 (sua UI header)
@@ -20,6 +24,7 @@ export const useRegister = () => {
       setLoading(false);
     }
   };
+<<<<<<< HEAD
 
   return { register, loading };
 };
@@ -65,6 +70,29 @@ export const useLogout = () => {
     return { logout, loading };
 }
 =======
+  return { login, loading };
+};
+>>>>>>> 087dbf7 (sua UI header)
+=======
+
+  return { register, loading };
+};
+
+export const useLogin = () => {
+  const [loading, setLoading] = useState(false);
+
+  const login = async (data) => {
+    try {
+      setLoading(true);
+      const res = await loginApi(data);
+      return res;
+    } catch (err) {
+      throw err?.response?.data || err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return { login, loading };
 };
 >>>>>>> 087dbf7 (sua UI header)

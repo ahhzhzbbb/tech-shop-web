@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { Dropdown, Input, Button } from "antd";
+import { Input } from "antd";
 import {
   MenuOutlined,
   SearchOutlined,
   PhoneOutlined,
   EnvironmentOutlined,
   ShoppingCartOutlined,
-  UserAddOutlined,
   LoginOutlined,
   BarcodeOutlined,
 } from "@ant-design/icons";
@@ -14,6 +13,8 @@ import RegisterModal from "../../features/auth/component/RegisterModal.jsx";
 import logo from "../../assets/logo_shop.png";
 import shopName from "../../assets/shop_name.png";
 import HeaderButton from "../ui/HeaderButton.jsx";
+import Dropdown from "../ui/Dropdown.jsx";
+import SearchInput from "../../features/search/components/SearchInput";
 import "./Header.scss";
 
 const categoryItems = [
@@ -38,22 +39,15 @@ const Header = () => {
             </div>
 
             <Dropdown
+              icon={<MenuOutlined />}
+              title="Danh mục"
               menu={{ items: categoryItems }}
               placement="bottomLeft"
-              trigger={["click"]}
-            >
-              <Button className="header-category-btn" icon={<MenuOutlined />}>
-                Danh mục
-              </Button>
-            </Dropdown>
+            />
           </div>
 
           <div className="header_search">
-            <Input.Search
-              placeholder="Bạn cần tìm gì?"
-              enterButton={<SearchOutlined />}
-              size="large"
-            />
+            <SearchInput />
           </div>
 
           <div className="header_right">

@@ -2,7 +2,7 @@ import { Modal, Form, Input, Button, message } from "antd";
 import { useState } from "react";
 import { useRegister } from "../hooks/useAuth";
 
-const RegisterModal = ({ open, onCancel }) => {
+const RegisterModal = ({ open, onCancel, onOpenLogin }) => {
     const { register, loading } = useRegister();
     const [form] = Form.useForm();
 
@@ -11,9 +11,44 @@ const RegisterModal = ({ open, onCancel }) => {
             await register(values);
             message.success("Đăng kí thành công");
             form.resetFields();
-            onclose();
+            onCancel();
         } catch (err) {
-            message.error(err?.message || "Đăng kí thất bại");
+            message.error(getErrorMessage(err));
+        }
+    };
+
+    const getErrorMessage = (err) => {
+        const status = err?.status;
+        const errorMessage = err?.message;
+
+        if (status === 401) {
+            return "Thông tin không đúng, vui lòng thử lại";
+        }
+
+        if (status === 400) {
+            return "Vui lòng nhập đầy đủ thông tin";
+        }
+
+        if (status === 403) {
+            return "Tài khoản của bạn đã bị khóa";
+        }
+
+        if (status === 500) {
+            return "Hệ thống đang gặp sự cố, vui lòng thử lại sau";
+        }
+
+        if (!status) {
+            return "Lỗi đường truyền, không thể kết nối tới máy chủ";
+        }
+
+        return errorMessage || "Đăng kí thất bại";
+    };
+
+    const handleSwitchToLogin = () => {
+        form.resetFields();
+        onCancel();
+        if (onOpenLogin) {
+            onOpenLogin();
         }
     };
 
@@ -86,7 +121,10 @@ const RegisterModal = ({ open, onCancel }) => {
                     }}
                 >
                     Bạn đã có tài khoản?{" "}
-                    <a href="/" style={{ color: "#1677ff" }}>
+                    <a
+                        onClick={handleSwitchToLogin}
+                        style={{ color: "#1677ff", cursor: "pointer" }}
+                    >
                         Đăng nhập ngay!
                     </a>
                 </div>

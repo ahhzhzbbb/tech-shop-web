@@ -10,7 +10,7 @@ const SearchInput = () => {
         size="large"
         style={{
           borderRadius: 4,
-          height: 42,
+          height: 45,
         }}
       />
     </div>

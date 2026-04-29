@@ -23,4 +23,10 @@ public class Product {
     private Double price;
     private Integer quantity;
     private String imageUrl;
+    private String status;
+    private Double averageScore;
+
+//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+//    @JoinColumn(name = "category_id", nullable = false)
+//    private Category category;
 }

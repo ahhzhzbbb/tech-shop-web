@@ -27,11 +27,11 @@ public class Category {
     @Column(nullable = false)
     private String name;
 
-//    @OneToMany(
-//            mappedBy = "category",
-//            cascade = CascadeType.ALL,
-//            orphanRemoval = true
-//    )
-//    @JsonIgnore
-//    private Set<Product> products = new HashSet<>();
+    @OneToMany(
+            mappedBy = "category",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+   )
+    @JsonIgnore
+    private Set<Product> products = new HashSet<>();
 }

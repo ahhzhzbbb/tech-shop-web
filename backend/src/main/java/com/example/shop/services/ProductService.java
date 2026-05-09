@@ -1,11 +1,16 @@
 package com.example.shop.services;
-import com.example.shop.models.Product;
+import com.example.shop.payloads.dto.ProductDTO;
+import com.example.shop.payloads.request.ProductRequest;
+import com.example.shop.payloads.response.ProductsResponse;
+
 import java.util.List;
 
 public interface ProductService {
-    List<Product> getAllProducts();
-    Product getProductById(Long id);
-    Product createProduct(Product product);
-    Product updateProduct(Long id, Product product);
-    void deleteProduct(Long id);
+    ProductDTO createProduct(ProductRequest productRequest);
+
+    ProductsResponse getAllProducts();
+
+    ProductDTO updateProduct(Long productId, ProductRequest productRequest);
+
+    ProductDTO deleteProduct(Long productId);
 }

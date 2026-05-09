@@ -1,11 +1,14 @@
 package com.example.shop.services;
-import com.example.shop.models.Category;
-import java.util.List;
+
+import com.example.shop.payloads.dto.CategoryDTO;
+import com.example.shop.payloads.request.CategoryRequest;
+import com.example.shop.payloads.response.CategoryResponse;
 
 public interface CategoryService {
-    List<Category> getAllCategory();
-    Category getCategoryAndProduct(Long id);
-    Category createCategory(Category category);
-    Category updateCategory(Long id, Category category);
-    void deleteCategory(Long id);
+
+    CategoryResponse getAllCategories();
+    CategoryDTO getCategoryById(Long id);
+    CategoryDTO createCategory(CategoryRequest categoryRequest);
+    CategoryDTO updateCategory(Long id, CategoryRequest categoryRequest);
+    CategoryDTO deleteCategory(Long id);
 }

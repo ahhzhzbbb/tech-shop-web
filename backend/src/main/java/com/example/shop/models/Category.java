@@ -27,6 +27,9 @@ public class Category {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private Boolean active = true;
+
     @OneToMany(
             mappedBy = "category",
             cascade = CascadeType.ALL,

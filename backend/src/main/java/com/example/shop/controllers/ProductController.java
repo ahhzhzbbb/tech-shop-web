@@ -30,6 +30,27 @@ public class ProductController {
         return ResponseEntity.ok().body(response);
     }
 
+    @PermitAll
+    @GetMapping("/product/{productId}")
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable Long productId) {
+        ProductDTO response = productService.getProductById(productId);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @PermitAll
+    @GetMapping("/products/category/{categoryId}")
+    public ResponseEntity<ProductsResponse> getProductsByCategory(@PathVariable Long categoryId) {
+        ProductsResponse response = productService.getProductsByCategory(categoryId);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @PermitAll
+    @GetMapping("/products/search")
+    public ResponseEntity<ProductsResponse> searchProducts(@RequestParam String keyword) {
+        ProductsResponse response = productService.searchProducts(keyword);
+        return ResponseEntity.ok().body(response);
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/product/{productId}")
     public ResponseEntity<ProductDTO> updateProduct(

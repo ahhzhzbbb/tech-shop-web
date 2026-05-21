@@ -3,6 +3,8 @@ package com.example.shop.payloads.request;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class ProductRequest {
@@ -12,4 +14,7 @@ public class ProductRequest {
     private Integer quantity;
     private String imageUrl;
     private String status;
+    private Double averageScore;
+    private Long categoryId;
+    private List<ProductAttributeValueRequest> attributes;
 }

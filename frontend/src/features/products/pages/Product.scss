@@ -1,0 +1,10 @@
+.productLayout {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 24px;
+}
+
+.productLayout > div:last-child {
+    flex: 1;
+}

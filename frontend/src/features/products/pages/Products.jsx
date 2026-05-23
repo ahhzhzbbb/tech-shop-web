@@ -1,6 +1,17 @@
+import { useParams } from "react-router-dom";
+import ProductSideBar from "../../products/components/ProductSidebar";
+import "./Product.scss";
+
 function Products() {
+    const { category } = useParams();
+
     return (
-        <h1>Trang hiển thị danh sách sản phẩm</h1>
+        <div className="productLayout">
+            <ProductSideBar />
+            <div>
+                <h1>Trang hiển thị danh sách sản phẩm: {category}</h1>
+            </div>
+        </div>
     )
 }
 

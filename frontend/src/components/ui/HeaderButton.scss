@@ -1,34 +1,52 @@
+// ===== GearVN Style Button =====
+
 .header-button {
   display: flex !important;
   align-items: center;
   gap: 8px;
-
-  background-color: #ff4d4f !important;
   border: none !important;
-  border-radius: 8px !important;
-
-  padding: 8px 12px !important;
-  height: 45px !important;
-
+  padding: 6px 8px !important;
+  height: 42px !important;
   cursor: pointer;
+  transition: all 0.2s ease;
 
-  &:hover {
-    background-color: #d9363e !important;
+  &.variant-transparent {
+    background: transparent !important;
+    
+    &:hover {
+      background: rgba(0, 0, 0, 0.08) !important;
+      border-radius: 6px !important;
+    }
+    
+    .hb-icon {
+      border: none;
+      background: transparent;
+      font-size: 24px;
+    }
+  }
+
+  &.variant-dark {
+    background: rgba(0, 0, 0, 0.15) !important;
+    border-radius: 6px !important;
+    padding: 6px 12px !important;
+    
+    &:hover {
+      background: rgba(0, 0, 0, 0.25) !important;
+    }
+    
+    .hb-icon {
+      border: none;
+      background: transparent;
+      font-size: 20px;
+    }
   }
 
   .hb-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-
-    width: 32px;
-    height: 32px;
-
-    border: 2px solid;
-    border-radius: 50%;
-
     color: #fff;
-    font-size: 16px;
+    flex-shrink: 0;
   }
 
   .hb-content {
@@ -38,14 +56,14 @@
     color: #fff;
 
     .hb-title {
-      font-size: 14px;
-      font-weight: 500;
+      font-size: 13px;
+      font-weight: 600;
       line-height: 1.2;
     }
 
     .hb-subtitle {
-      font-size: 14px;
-      opacity: 0.8;
+      font-size: 12px;
+      font-weight: 400;
       line-height: 1.2;
     }
   }

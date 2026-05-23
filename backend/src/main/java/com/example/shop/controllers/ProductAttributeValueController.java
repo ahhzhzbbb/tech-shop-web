@@ -25,6 +25,7 @@ import java.util.List;
 public class ProductAttributeValueController {
     private final ProductAttributeValueService productAttributeValueService;
 
+    @Operation(summary = "Lấy giá trị thuộc tính sản phẩm", description = "API dùng để lấy tất cả giá trị thuộc tính của một sản phẩm")
     @PermitAll
     @GetMapping("/product/{productId}/attribute-values")
     public ResponseEntity<ProductAttributeValuesResponse> getProductAttributeValues(
@@ -35,6 +36,7 @@ public class ProductAttributeValueController {
         return ResponseEntity.ok().body(response);
     }
 
+    @Operation(summary = "Tạo giá trị thuộc tính sản phẩm", description = "API dùng để tạo một giá trị thuộc tính cho một sản phẩm")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/product/{productId}/attribute-value")
     public ResponseEntity<ProductAttributeValueDTO> saveProductAttributeValue(
@@ -46,6 +48,7 @@ public class ProductAttributeValueController {
         return ResponseEntity.ok().body(response);
     }
 
+    @Operation(summary = "Cập nhật giá trị thuộc tính sản phẩm", description = "API dùng để cập nhật thông tin một giá trị thuộc tính của một sản phẩm")
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/product/{productId}/attribute-values")
     public ResponseEntity<ProductAttributeValuesResponse> replaceProductAttributeValues(
@@ -57,6 +60,7 @@ public class ProductAttributeValueController {
         return ResponseEntity.ok().body(response);
     }
 
+    @Operation(summary = "Xóa giá trị thuộc tính sản phẩm", description = "API dùng để xóa một giá trị thuộc tính của một sản phẩm")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/product/{productId}/attribute/{attributeId}")
     public ResponseEntity<String> deleteProductAttributeValue(

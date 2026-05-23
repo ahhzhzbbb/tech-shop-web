@@ -18,6 +18,7 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
 
+    @Operation(summary = "Tạo đơn hàng mới", description = "API dùng để tạo một đơn hàng mới")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PostMapping("/order")
     public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderRequest orderRequest) {
@@ -25,6 +26,7 @@ public class OrderController {
         return ResponseEntity.ok().body(response);
     }
 
+    @Operation(summary = "Lấy tất cả đơn hàng", description = "API dùng để lấy tất cả đơn hàng")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/orders")
     public ResponseEntity<OrdersResponse> getAllOrders() {
@@ -32,6 +34,7 @@ public class OrderController {
         return ResponseEntity.ok().body(response);
     }
 
+    @Operation(summary = "Lấy đơn hàng theo ID", description = "API dùng để lấy thông tin một đơn hàng theo ID")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/order/{orderId}")
     public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long orderId) {
@@ -39,6 +42,7 @@ public class OrderController {
         return ResponseEntity.ok().body(response);
     }
 
+    @Operation(summary = "Lấy đơn hàng theo ID người dùng", description = "API dùng để lấy tất cả đơn hàng của một người dùng theo ID người dùng")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/user/{userId}/orders")
     public ResponseEntity<List<OrderDTO>> getOrdersByUserId(@PathVariable Long userId) {
@@ -46,6 +50,7 @@ public class OrderController {
         return ResponseEntity.ok().body(response);
     }
 
+    @Operation(summary = "Cập nhật đơn hàng", description = "API dùng để cập nhật thông tin một đơn hàng")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PutMapping("/order/{orderId}")
     public ResponseEntity<OrderDTO> updateOrder(
@@ -56,6 +61,7 @@ public class OrderController {
         return ResponseEntity.ok().body(response);
     }
 
+    @Operation(summary = "Xóa đơn hàng", description = "API dùng để xóa một đơn hàng")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/order/{orderId}")
     public ResponseEntity<OrderDTO> deleteOrder(@PathVariable Long orderId) {

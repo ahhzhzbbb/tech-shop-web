@@ -20,6 +20,7 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
+    @Operation(summary = "Lấy tất cả danh mục", description = "API dùng để lấy tất cả danh mục sản phẩm")
     @PermitAll
     @GetMapping("/categories")
     public ResponseEntity<List<Category>> getAllCategory() {
@@ -30,6 +31,7 @@ public class CategoryController {
         return ResponseEntity.ok().body(response);
     }
 
+    @Operation(summary = "Lấy danh mục theo ID", description = "API dùng để lấy thông tin một danh mục sản phẩm theo ID")
     @PermitAll
     @GetMapping("/category/{id}")
     public ResponseEntity<Category> getCategoryAndProduct(
@@ -42,6 +44,7 @@ public class CategoryController {
         return ResponseEntity.ok().body(response);
     }
 
+    @Operation(summary = "Tạo danh mục mới", description = "API dùng để tạo một danh mục sản phẩm mới")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/category")
     public ResponseEntity<Category> createCategory(
@@ -54,6 +57,8 @@ public class CategoryController {
         return ResponseEntity.ok().body(response);
     }
 
+
+    @Operation(summary = "Cập nhật danh mục", description = "API dùng để cập nhật thông tin một danh mục sản phẩm")
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/category/{id}")
     public ResponseEntity<Category> updateCategory(
@@ -67,6 +72,8 @@ public class CategoryController {
         return ResponseEntity.ok().body(response);
     }
 
+
+    @Operation(summary = "Xóa danh mục", description = "API dùng để xóa một danh mục sản phẩm")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/category/{id}")
     public ResponseEntity<String> deleteCategory(

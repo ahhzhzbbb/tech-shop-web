@@ -1,0 +1,210 @@
+// --- Tokens ---
+$primary:         #1D9E75;
+$primary-light:   #E1F5EE;
+$primary-dark:    #0F6E56;
+$primary-deep:    #085041;
+$primary-border:  #9FE1CB;
+$hot-bg:          #FAECE7;
+$hot-text:        #993C1D;
+
+$sidebar-width:   240px;
+$radius-lg:       12px;
+$radius-md:       8px;
+$radius-badge:    10px;
+$transition:      0.2s ease;
+
+// =========================================
+// Wrapper — controls open/close
+// =========================================
+.psb-wrapper {
+  width: $sidebar-width;
+  overflow: hidden;
+  transition: width $transition, opacity $transition;
+}
+
+.sidebar {
+  width: $sidebar-width;
+  max-width: $sidebar-width;
+  background-color: #fff;
+  border: 0.5px solid #e5e7eb;
+  border-radius: $radius-lg;
+  padding: 16px 0 8px;
+  font-family: system-ui, sans-serif;
+  user-select: none;
+  position: fixed;
+  top: 64px;
+  left: 0;
+  height: calc(100vh - 64px);
+  overflow-y: auto;
+  z-index: 200;
+}
+
+.sidebar--closed {
+  display: none;
+}
+
+// =========================================
+// Inner card
+// =========================================
+.psb-inner {
+  width: $sidebar-width;
+  background-color: #fff;
+  border: 0.5px solid #e5e7eb;
+  border-radius: $radius-lg;
+  padding: 16px 0 8px;
+  font-family: system-ui, sans-serif;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+}
+
+// =========================================
+// Header
+// =========================================
+.psb-header {
+  padding: 0 16px 12px;
+  border-bottom: 0.5px solid #e5e7eb;
+  margin-bottom: 4px;
+
+  &__title {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #6b7280;
+  }
+}
+
+// =========================================
+// Ant Design Menu overrides
+// =========================================
+.psb-menu.ant-menu {
+  background: transparent;
+  border-inline-end: none !important;
+  font-size: 14px;
+  width: 240px;
+
+  // Group label
+  .ant-menu-item-group-title {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #9ca3af;
+    padding: 10px 16px 4px;
+  }
+
+  // Divider
+  .ant-menu-item-divider {
+    margin: 6px 0;
+    border-color: #e5e7eb;
+  }
+
+  // Item
+  .ant-menu-item {
+    margin: 0;
+    border-radius: 0;
+    height: 38px;
+    line-height: 38px;
+    padding-left: 16px !important;
+    padding-right: 12px;
+    border-left: 2px solid transparent;
+    transition: background $transition, border-color $transition;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #6b7280;
+
+    &:hover {
+      background-color: #f9fafb !important;
+      color: #374151;
+    }
+
+    // Icon slot
+    .ant-menu-item-icon {
+      color: #9ca3af;
+      transition: color $transition;
+      flex-shrink: 0;
+    }
+
+    // Active/selected
+    &.ant-menu-item-selected {
+      background-color: #f9fafb;
+      border-left: 2px solid $primary;
+      color: #111827;
+      font-weight: 500;
+
+      .ant-menu-item-icon {
+        color: $primary;
+      }
+    }
+  }
+}
+
+// =========================================
+// Item label + badge
+// =========================================
+.psb-item-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.psb-badge {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 1px 7px;
+  border-radius: $radius-badge;
+  line-height: 1.6;
+
+  &--new {
+    background-color: $primary-light;
+    color: $primary-dark;
+  }
+
+  &--hot {
+    background-color: $hot-bg;
+    color: $hot-text;
+  }
+}
+
+// =========================================
+// Promo box
+// =========================================
+.psb-promo {
+  margin: 10px 12px 4px;
+  padding: 10px 12px;
+  border-radius: $radius-md;
+  background-color: $primary-light;
+  border: 0.5px solid $primary-border;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+
+  &:hover {
+    opacity: 0.85;
+  }
+
+  &__icon {
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  &__title {
+    font-size: 12px;
+    color: $primary-deep;
+    font-weight: 500;
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  &__sub {
+    font-size: 11px;
+    color: $primary-dark;
+    font-weight: 400;
+    display: block;
+    margin-top: 1px;
+  }
+}

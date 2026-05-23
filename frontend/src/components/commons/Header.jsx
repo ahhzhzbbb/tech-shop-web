@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useState } from "react";
 <<<<<<< HEAD
 import { useAuthContext } from "../../context/AuthContext.jsx";
@@ -24,9 +25,25 @@ import "./Header.scss";
 import SearchInput from "../../features/search/components/SearchInput.js"
 import { ShoppingCartOutlined, ContainerOutlined, EnvironmentOutlined, UserOutlined, MenuOutlined, PhoneOutlined, LogoutOutlined } from '@ant-design/icons';
 import LoginModal from "../../features/auth/component/LoginModal.jsx";
-import Dropdown from "../ui/Dropdown.jsx";
-import { Button, Popconfirm, message } from "antd";
+=======
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Button, Popconfirm, message } from "antd";
+import { ShoppingCartOutlined, ContainerOutlined, EnvironmentOutlined, UserOutlined, MenuOutlined, PhoneOutlined, LogoutOutlined } from '@ant-design/icons';
+
+import logo from "../../assets/logo_shop.png"
+import shopName from "../../assets/shop_name.png"
+
+>>>>>>> 92dfd95 (add sidebar and navigate)
+import Dropdown from "../ui/Dropdown.jsx";
+import HeaderButton from "../ui/HeaderButton.jsx";
+import { useAuthContext } from "../../context/AuthContext.jsx";
+import { useLogout } from "../../features/auth/hooks/useAuth.jsx";
+
+import RegisterModal from "../../features/auth/component/RegisterModal.jsx";
+import LoginModal from "../../features/auth/component/LoginModal.jsx";
+import SearchInput from "../../features/search/components/SearchInput.jsx";
+import "./Header.scss";
 
 const Header = () => {
     const { user } = useAuthContext();
@@ -91,7 +108,6 @@ const Header = () => {
                             <img src={logo} className="header_logo" alt="Logo" />
                             <img src={shopName} className="header_logo" alt="Shop Name" />
                         </div>
-                        <HeaderButton icon={<MenuOutlined />} title="Danh mục" subtitle="" variant="dark" />
                     </div>
 
                     <div className="header_center">

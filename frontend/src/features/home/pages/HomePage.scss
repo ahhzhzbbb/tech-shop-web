@@ -1,0 +1,10 @@
+.homepageLayout {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 24px;
+}
+
+.homepageLayout > div:last-child {
+    flex: 1;
+}

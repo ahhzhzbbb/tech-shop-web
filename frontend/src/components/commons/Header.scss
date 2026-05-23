@@ -1,30 +1,40 @@
+// ===== GearVN Style Header =====
 .header {
+<<<<<<< HEAD
 <<<<<<< HEAD
   height: 80px;
   background: rgb(227, 0, 25);
+=======
+  height: 64px;
+  background: #E30019;
+>>>>>>> 5ea5351 (Sua header lan 2)
   display: flex;
-  flex-direction: row;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 40px;
+  justify-content: center;
   color: #fff;
   width: 100%;
   box-sizing: border-box;
   position: sticky;
   top: 0;
   z-index: 100;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+
+  .header_container {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 16px;
+  }
 
   &_left {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 16px;
 
     .header_logo {
-      height: 45px;
-    }
-
-    .header_logo_text {
-      height: 24px;
+      height: 48px;
     }
   }
 
@@ -32,52 +42,32 @@
     flex: 1;
     display: flex;
     justify-content: center;
-
-    .header_search {
-      width: 500px;
-      height: 40px;
-      border-radius: 6px;
-      border: none;
-      padding: 0 15px;
-      outline: none;
-      font-size: 14px;
-    }
+    padding: 0 8px;
   }
 
   &_right {
     display: flex;
     align-items: center;
-    gap: 25px;
-  }
-
-  &_item {
-    display: flex;
-    align-items: center;
     gap: 8px;
-    cursor: pointer;
-    transition: 0.2s;
+    margin-left: auto;
+  }
+}
 
-    svg {
-      font-size: 20px;
+// ===== Responsive =====
+@media (max-width: 1024px) {
+  .header {
+    height: auto;
+    padding: 10px 0;
+    
+    .header_container {
+      flex-wrap: wrap;
     }
-
-    div {
-      display: flex;
-      flex-direction: column;
-      font-size: 13px;
-
-      span {
-        font-size: 12px;
-        opacity: 0.8;
-      }
-    }
-
-    &:hover {
-      opacity: 0.8;
-    }
-
-    &.user {
-      font-weight: 500;
+    
+    &_center {
+      order: 3;
+      width: 100%;
+      flex: 100%;
+      margin-top: 10px;
     }
   }
 }

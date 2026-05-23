@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 const HeaderButton = ({ icon, title, subtitle, to, onClick, variant = "transparent", ...rest }) => {
   const navigate = useNavigate();
   const handleClick = () => {
@@ -49,6 +50,9 @@ const HeaderButton = ({ icon, title, subtitle, to, onClick }) => {
   );
 =======
 const HeaderButton = ({ icon, title, subtitle, to, onClick, variant = "transparent" }) => {
+=======
+const HeaderButton = ({ icon, title, subtitle, to, onClick, variant = "transparent", ...rest }) => {
+>>>>>>> 92dfd95 (add sidebar and navigate)
     const navigate = useNavigate();
     const handleClick = () => {
         if (onClick) {
@@ -61,7 +65,7 @@ const HeaderButton = ({ icon, title, subtitle, to, onClick, variant = "transpare
     };
 
     return (
-        <Button className={`header-button variant-${variant}`} onClick={handleClick}>
+        <Button {...rest} className={`header-button variant-${variant}`} onClick={handleClick}>
             <div className="hb-icon">
                 {icon}
             </div>

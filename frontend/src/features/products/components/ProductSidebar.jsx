@@ -23,12 +23,20 @@ const categories = [
     {
         items: [
             { id: "home", label: "Trang chủ", badge: "Sales", badgeType: "hot" },
+<<<<<<< HEAD
         ],
+=======
+        ]
+>>>>>>> 92dfd95 (add sidebar and navigate)
     },
     {
         section: "Thiết bị chính",
         items: [
             { id: "laptop", label: "Laptop", badge: "Mới", badgeType: "new" },
+<<<<<<< HEAD
+=======
+            { id: "laptop-gaming", label: "Laptop Gaming", badge: "Hot", badgeType: "hot" },
+>>>>>>> 92dfd95 (add sidebar and navigate)
             { id: "pc", label: "PC" },
         ],
     },
@@ -62,7 +70,11 @@ const categories = [
 // Icon map
 // =========================================
 const iconMap = {
+<<<<<<< HEAD
     home: <HomeOutlined style={{ fontSize: 18 }} />,
+=======
+    home: <HomeOutlined size={18} />,
+>>>>>>> 92dfd95 (add sidebar and navigate)
     laptop: <LaptopIcon size={18} />,
     "laptop-gaming": <LaptopOutlined style={{ fontSize: 18 }} />,
     pc: <DesktopTowerIcon size={18} />,
@@ -95,6 +107,7 @@ const menuItems = categories.flatMap((group, gi) => {
         children: group.items.map((item) => ({
             key: item.id,
             icon: iconMap[item.id],
+<<<<<<< HEAD
 
             // FIX: tất cả item đều dùng chung class psb-item-label
             label: (
@@ -112,12 +125,27 @@ const menuItems = categories.flatMap((group, gi) => {
         })),
     };
 
+=======
+            label: item.badge
+                ? <span className="psb-item-label">{item.label} <Badge type={item.badgeType} label={item.badge} /></span>
+                : item.label,
+        })),
+    };
+>>>>>>> 92dfd95 (add sidebar and navigate)
     return gi === 0 ? [groupItem] : [{ type: "divider" }, groupItem];
 });
 
 // =========================================
 // ProductSideBar
 // =========================================
+<<<<<<< HEAD
+=======
+/**
+ * @param {object}   props
+ * @param {string}   props.defaultSelected - Key mặc định được chọn
+ * @param {function} props.onSelect  - Callback khi chọn item (key)
+ */
+>>>>>>> 92dfd95 (add sidebar and navigate)
 export default function ProductSideBar({
     defaultSelected = "home",
     onSelect,
@@ -128,8 +156,12 @@ export default function ProductSideBar({
     const handleSelect = ({ key }) => {
         setSelectedKeys([key]);
         onSelect?.(key);
+<<<<<<< HEAD
 
         if (key === "home") {
+=======
+        if (key == "home") {
+>>>>>>> 92dfd95 (add sidebar and navigate)
             navigate("/");
         } else {
             navigate(`/products/${key}`);
@@ -137,7 +169,11 @@ export default function ProductSideBar({
     };
 
     return (
+<<<<<<< HEAD
         <aside className="psb-wrapper">
+=======
+        <aside className={`psb-wrapper`}>
+>>>>>>> 92dfd95 (add sidebar and navigate)
             <div className="psb-inner">
                 <div className="psb-header">
                     <span className="psb-header__title">Danh mục sản phẩm</span>

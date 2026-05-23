@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @RequestMapping("/api")
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class ProductController {
     private final ProductService productService;
 
+    @Operation(summary = "Tạo sản phẩm mới", description = "API dùng để tạo một sản phẩm mới")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/product")
     public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductRequest productRequest) {
@@ -23,6 +25,7 @@ public class ProductController {
         return ResponseEntity.ok().body(response);
     }
 
+    @Operation(summary = "Lấy tất cả sản phẩm", description = "API dùng để lấy tất cả sản phẩm")
     @PermitAll
     @GetMapping("/products")
     public ResponseEntity<ProductsResponse> getAllProducts() {
@@ -30,6 +33,7 @@ public class ProductController {
         return ResponseEntity.ok().body(response);
     }
 
+    @Operation(summary = "Lấy sản phẩm theo ID", description = "API dùng để lấy thông tin một sản phẩm theo ID")
     @PermitAll
     @GetMapping("/product/{productId}")
     public ResponseEntity<ProductDTO> getProductById(@PathVariable Long productId) {
@@ -37,6 +41,7 @@ public class ProductController {
         return ResponseEntity.ok().body(response);
     }
 
+    @Operation(summary = "Lấy sản phẩm theo danh mục", description = "API dùng để lấy tất cả sản phẩm của một danh mục")
     @PermitAll
     @GetMapping("/products/category/{categoryId}")
     public ResponseEntity<ProductsResponse> getProductsByCategory(@PathVariable Long categoryId) {
@@ -44,6 +49,7 @@ public class ProductController {
         return ResponseEntity.ok().body(response);
     }
 
+    @Operation(summary = "Tìm kiếm sản phẩm", description = "API dùng để tìm kiếm sản phẩm theo từ khóa")
     @PermitAll
     @GetMapping("/products/search")
     public ResponseEntity<ProductsResponse> searchProducts(@RequestParam String keyword) {
@@ -51,6 +57,7 @@ public class ProductController {
         return ResponseEntity.ok().body(response);
     }
 
+    @Operation(summary = "Cập nhật sản phẩm", description = "API dùng để cập nhật thông tin một sản phẩm")
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/product/{productId}")
     public ResponseEntity<ProductDTO> updateProduct(
@@ -61,6 +68,7 @@ public class ProductController {
         return ResponseEntity.ok().body(response);
     }
 
+    @Operation(summary = "Xóa sản phẩm", description = "API dùng để xóa một sản phẩm")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/product/{productId}")
     public ResponseEntity<ProductDTO> deleteProduct(@PathVariable Long productId){

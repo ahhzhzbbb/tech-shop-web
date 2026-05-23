@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @RequestMapping("/api")
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AttributeController {
     private final AttributeService attributeService;
 
+    @Operation(summary = "Lấy tất cả thuộc tính", description = "API dùng để lấy tất cả thuộc tính sản phẩm")
     @PermitAll
     @GetMapping("/attributes")
     public ResponseEntity<AttributesResponse> getAllAttributes() {
@@ -30,6 +32,7 @@ public class AttributeController {
         return ResponseEntity.ok().body(response);
     }
 
+    @Operation(summary = "Lấy thuộc tính theo ID", description = "API dùng để lấy thông tin một thuộc tính sản phẩm theo ID")   
     @PermitAll
     @GetMapping("/attribute/{attributeId}")
     public ResponseEntity<AttributeDTO> getAttributeById(@PathVariable Long attributeId) {
@@ -37,6 +40,7 @@ public class AttributeController {
         return ResponseEntity.ok().body(response);
     }
 
+    @Operation(summary = "Lấy thuộc tính theo danh mục", description = "API dùng để lấy tất cả thuộc tính sản phẩm theo ID danh mục")
     @PermitAll
     @GetMapping("/attributes/category/{categoryId}")
     public ResponseEntity<AttributesResponse> getAttributesByCategory(@PathVariable Long categoryId) {
@@ -44,6 +48,7 @@ public class AttributeController {
         return ResponseEntity.ok().body(response);
     }
 
+    @Operation(summary = "Tạo thuộc tính mới", description = "API dùng để tạo một thuộc tính sản phẩm mới")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/attribute")
     public ResponseEntity<AttributeDTO> createAttribute(@RequestBody AttributeRequest attributeRequest) {
@@ -51,6 +56,7 @@ public class AttributeController {
         return ResponseEntity.ok().body(response);
     }
 
+    @Operation(summary = "Cập nhật thuộc tính", description = "API dùng để cập nhật thông tin một thuộc tính sản phẩm")
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/attribute/{attributeId}")
     public ResponseEntity<AttributeDTO> updateAttribute(
@@ -61,6 +67,7 @@ public class AttributeController {
         return ResponseEntity.ok().body(response);
     }
 
+    @Operation(summary = "Xóa thuộc tính", description = "API dùng để xóa một thuộc tính sản phẩm")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/attribute/{attributeId}")
     public ResponseEntity<AttributeDTO> deleteAttribute(@PathVariable Long attributeId) {

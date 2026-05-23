@@ -1,83 +1,67 @@
+// ===== GearVN Style Header =====
 .header {
-  width: 100%;
-  background-color: #e30019;
-}
-
-.header-container {
-  height: 72px;
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 0 16px;
-
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.header_left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-.header_brand {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-}
-
-.header_logo {
-  width: 64px;
   height: 64px;
-}
-
-.header_name {
-  height: 56px;
-}
-
-/* Nút danh mục */
-.dropdown-button {
-  height: 42px;
-  background: rgba(255, 255, 255, 0.15);
-  border: none;
-  color: white;
-  border-radius: 8px;
-  font-weight: 600;
-}
-
-/* SEARCH */
-.header-search {
-  flex: 1;
-  min-width: 300px;
-  max-width: 600px;
-}
-
-.header-search .ant-input-search {
-  height: 40px;
-}
-
-.header-search .ant-input {
-  height: 40px;
-  border-radius: 8px;
-}
-
-.header-search .ant-btn {
-  height: 40px;
-  border-radius: 0 8px 8px 0;
-}
-
-.header_right {
-  margin-left: auto;
+  background: #E30019;
   display: flex;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  color: #fff;
+  width: 100%;
+  box-sizing: border-box;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+
+  .header_container {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 16px;
+  }
+
+  &_left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .header_logo {
+      height: 48px;
+    }
+  }
+
+  &_center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: 0 8px;
+  }
+
+  &_right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+  }
 }
 
-.header_right .ant-btn,
-.header-button {
-  height: 40px;
-  border-radius: 8px;
-  background: transparent;
-  color: white;
+// ===== Responsive =====
+@media (max-width: 1024px) {
+  .header {
+    height: auto;
+    padding: 10px 0;
+    
+    .header_container {
+      flex-wrap: wrap;
+    }
+    
+    &_center {
+      order: 3;
+      width: 100%;
+      flex: 100%;
+      margin-top: 10px;
+    }
+  }
 }

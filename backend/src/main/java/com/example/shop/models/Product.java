@@ -1,6 +1,11 @@
 package com.example.shop.models;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "products")
 @Getter
@@ -22,5 +27,21 @@ public class Product {
     @Column(nullable = false)
     private Double price;
     private Integer quantity;
+    @Column(columnDefinition = "TEXT")
     private String imageUrl;
+    private String status;
+    private Double averageScore;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
+    @OneToMany(
+            mappedBy = "product",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @JsonIgnore
+    @Builder.Default
+    private Set<ProductAttributeValue> attributeValues = new HashSet<>();
 }

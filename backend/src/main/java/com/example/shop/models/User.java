@@ -38,6 +38,14 @@ public class User {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @JsonIgnore
+    private Set<Order> orders = new HashSet<>();
+
     public User(String username, String password, String phoneNumber) {
         this.username = username;
         this.password = password;

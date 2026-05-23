@@ -1,56 +1,70 @@
+// ===== GearVN Style Button =====
+
 .header-button {
   display: flex !important;
   align-items: center;
-  gap: 6px;
-  background-color: transparent !important;
-  border: 1px solid rgba(255, 255, 255, 0.18) !important;
-  border-radius: 12px !important;
-  padding: 6px 10px !important;
+  gap: 8px;
+  border: none !important;
+  padding: 6px 8px !important;
   height: 42px !important;
-  color: #fff !important;
-  transition:
-    background-color 0.2s ease,
-    border-color 0.2s ease;
-  white-space: nowrap;
-}
+  cursor: pointer;
+  transition: all 0.2s ease;
 
-.header-button:hover {
-  background-color: rgba(255, 255, 255, 0.14) !important;
-  border-color: rgba(255, 255, 255, 0.28) !important;
-}
+  &.variant-transparent {
+    background: transparent !important;
+    
+    &:hover {
+      background: rgba(0, 0, 0, 0.08) !important;
+      border-radius: 6px !important;
+    }
+    
+    .hb-icon {
+      border: none;
+      background: transparent;
+      font-size: 24px;
+    }
+  }
 
-.hb-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: 50%;
-  color: #fff;
-  font-size: 14px;
-  flex-shrink: 0;
-}
+  &.variant-dark {
+    background: rgba(0, 0, 0, 0.15) !important;
+    border-radius: 6px !important;
+    padding: 6px 12px !important;
+    
+    &:hover {
+      background: rgba(0, 0, 0, 0.25) !important;
+    }
+    
+    .hb-icon {
+      border: none;
+      background: transparent;
+      font-size: 20px;
+    }
+  }
 
-.hb-content {
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-  color: #fff;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+  .hb-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    flex-shrink: 0;
+  }
 
-.hb-title {
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1.1;
-}
+  .hb-content {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    color: #fff;
 
-.hb-subtitle {
-  font-size: 11px;
-  opacity: 0.8;
-  line-height: 1.1;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    .hb-title {
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .hb-subtitle {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.2;
+    }
+  }
 }

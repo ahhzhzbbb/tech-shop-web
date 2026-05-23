@@ -3,7 +3,7 @@ import { Button } from "antd";
 import "./HeaderButton.scss";
 import { useNavigate } from 'react-router-dom';
 
-const HeaderButton = ({ icon, title, subtitle, to, onClick, variant = "transparent" }) => {
+const HeaderButton = ({ icon, title, subtitle, to, onClick, variant = "transparent", ...rest }) => {
     const navigate = useNavigate();
     const handleClick = () => {
         if (onClick) {
@@ -16,7 +16,7 @@ const HeaderButton = ({ icon, title, subtitle, to, onClick, variant = "transpare
     };
 
     return (
-        <Button className={`header-button variant-${variant}`} onClick={handleClick}>
+        <Button {...rest} className={`header-button variant-${variant}`} onClick={handleClick}>
             <div className="hb-icon">
                 {icon}
             </div>

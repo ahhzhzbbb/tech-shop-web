@@ -24,4 +24,4 @@ const AppRoute = () => {
     )
 }
 
-export default AppRoute;
+export default AppRoute;

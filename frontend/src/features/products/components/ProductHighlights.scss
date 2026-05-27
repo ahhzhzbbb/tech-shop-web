@@ -5,7 +5,7 @@
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
 
     &__header {
-        background-color: #d70018;
+        background-color: #E30019;
         padding: 10px 16px;
     }
 
@@ -79,17 +79,17 @@
         align-items: center;
         gap: 6px;
         padding: 8px 24px;
-        border: 1px solid #d70018;
+        border: 1px solid #E30019;
         border-radius: 20px;
         background: #fff;
-        color: #d70018;
+        color: #E30019;
         font-size: 14px;
         font-weight: 500;
         cursor: pointer;
         transition: all 0.2s;
 
         &:hover {
-            background: #d70018;
+            background: #E30019;
             color: #fff;
         }
 

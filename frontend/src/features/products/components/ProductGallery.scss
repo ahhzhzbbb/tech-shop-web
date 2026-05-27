@@ -49,7 +49,7 @@
 
         &:hover {
             background: #fff;
-            color: #d70018; /* Shop red color */
+            color: #E30019;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
@@ -100,7 +100,7 @@
         }
 
         &.active {
-            border-color: #d70018; /* Highlight color */
+            border-color: #E30019;
             border-width: 2px;
             opacity: 1;
             padding: 3px; /* Adjust padding to keep size consistent with border increase */

@@ -44,4 +44,5 @@ public class Product {
     @JsonIgnore
     @Builder.Default
     private Set<ProductAttributeValue> attributeValues = new HashSet<>();
+    private Set<Rating> ratings = new HashSet<>();
 }

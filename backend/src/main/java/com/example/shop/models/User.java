@@ -54,4 +54,12 @@ public class User {
         this.password = password;
         this.phoneNumber = phoneNumber;
     }
+
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @JsonIgnore
+    private Set<Rating> ratings = new HashSet<>();
 }

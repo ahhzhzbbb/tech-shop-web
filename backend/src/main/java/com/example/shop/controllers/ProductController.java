@@ -28,8 +28,10 @@ public class ProductController {
     @Operation(summary = "Lấy tất cả sản phẩm", description = "API dùng để lấy tất cả sản phẩm")
     @PermitAll
     @GetMapping("/products")
-    public ResponseEntity<ProductsResponse> getAllProducts() {
-        ProductsResponse response = productService.getAllProducts();
+    public ResponseEntity<ProductsResponse> getAllProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        ProductsResponse response = productService.getAllProducts(page, size);
         return ResponseEntity.ok().body(response);
     }
 
@@ -43,17 +45,37 @@ public class ProductController {
 
     @Operation(summary = "Lấy sản phẩm theo danh mục", description = "API dùng để lấy tất cả sản phẩm của một danh mục")
     @PermitAll
-    @GetMapping("/products/category/{categoryId}")
-    public ResponseEntity<ProductsResponse> getProductsByCategory(@PathVariable Long categoryId) {
-        ProductsResponse response = productService.getProductsByCategory(categoryId);
+    @GetMapping("/products/category/id/{categoryId}")
+    public ResponseEntity<ProductsResponse> getProductsByCategory(
+            @PathVariable Long categoryId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        ProductsResponse response = productService.getProductsByCategory(categoryId, page, size);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @Operation(summary = "Lấy sản phẩm theo tên danh mục", description = "API dùng để lấy tất cả sản phẩm của một danh mục theo tên")
+    @PermitAll
+    @GetMapping("/products/category/{categoryName}")
+    public ResponseEntity<ProductsResponse> getProductsByCategory(
+            @PathVariable String categoryName,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        ProductsResponse response = productService.getProductsByCategory(categoryName, page, size);
         return ResponseEntity.ok().body(response);
     }
 
     @Operation(summary = "Tìm kiếm sản phẩm", description = "API dùng để tìm kiếm sản phẩm theo từ khóa")
     @PermitAll
     @GetMapping("/products/search")
-    public ResponseEntity<ProductsResponse> searchProducts(@RequestParam String keyword) {
-        ProductsResponse response = productService.searchProducts(keyword);
+    public ResponseEntity<ProductsResponse> searchProducts(
+            @RequestParam String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        ProductsResponse response = productService.searchProducts(keyword, page, size);
         return ResponseEntity.ok().body(response);
     }
 

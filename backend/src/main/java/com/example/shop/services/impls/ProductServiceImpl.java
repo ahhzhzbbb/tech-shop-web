@@ -9,6 +9,7 @@ import com.example.shop.payloads.dto.ProductAttributeValueDTO;
 import com.example.shop.payloads.dto.ProductDTO;
 import com.example.shop.payloads.request.ProductAttributeValueRequest;
 import com.example.shop.payloads.request.ProductRequest;
+import com.example.shop.payloads.response.PaginationInfo;
 import com.example.shop.payloads.response.ProductsResponse;
 import com.example.shop.repositories.AttributeRepository;
 import com.example.shop.repositories.CategoryRepository;
@@ -16,6 +17,10 @@ import com.example.shop.repositories.ProductRepository;
 import com.example.shop.services.ProductService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -51,14 +56,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public ProductsResponse getAllProducts() {
-        List<Product> products = productRepository.findAll();
-        List<ProductDTO> productList = products.stream()
-                .map(this::convertToDTO)
-                .toList();
-        ProductsResponse response = new ProductsResponse();
-        response.setProducts(productList);
-        return response;
+    public ProductsResponse getAllProducts(int page, int size) {
+        Page<Product> products = productRepository.findAll(createPageable(page, size));
+        return toProductsResponse(products);
     }
 
     @Transactional
@@ -132,27 +132,55 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public ProductsResponse getProductsByCategory(Long categoryId) {
+    public ProductsResponse getProductsByCategory(Long categoryId, int page, int size) {
         getActiveCategory(categoryId);
-        List<Product> products = productRepository.findByCategoryId(categoryId);
-        List<ProductDTO> productList = products.stream()
-                .map(this::convertToDTO)
-                .toList();
-        ProductsResponse response = new ProductsResponse();
-        response.setProducts(productList);
-        return response;
+        Page<Product> products = productRepository.findByCategoryId(categoryId, createPageable(page, size));
+        return toProductsResponse(products);
     }
 
     @Transactional
     @Override
-    public ProductsResponse searchProducts(String keyword) {
-        List<Product> products = productRepository.findByNameContainingIgnoreCase(keyword);
-        List<ProductDTO> productList = products.stream()
+    public ProductsResponse getProductsByCategory(String categoryName, int page, int size) {
+        Category category = categoryRepository.findByNameIgnoreCase(categoryName)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "name", categoryName));
+        Page<Product> products = productRepository.findByCategoryId(category.getId(), createPageable(page, size));
+        return toProductsResponse(products);
+    }
+
+    @Transactional
+    @Override
+    public ProductsResponse searchProducts(String keyword, int page, int size) {
+        Page<Product> products = productRepository.findByNameContainingIgnoreCase(keyword, createPageable(page, size));
+        return toProductsResponse(products);
+    }
+
+    private ProductsResponse toProductsResponse(Page<Product> productPage) {
+        List<ProductDTO> productList = productPage.getContent().stream()
                 .map(this::convertToDTO)
                 .toList();
         ProductsResponse response = new ProductsResponse();
         response.setProducts(productList);
+        response.setPagination(new PaginationInfo(
+                productPage.getNumber(),
+                productPage.getSize(),
+                productPage.getTotalElements(),
+                productPage.getTotalPages(),
+                productPage.isFirst(),
+                productPage.isLast()
+        ));
         return response;
+    }
+
+    private Pageable createPageable(int page, int size) {
+        if (page < 0) {
+            throw new RuntimeException("page phải lớn hơn hoặc bằng 0");
+        }
+
+        if (size <= 0) {
+            throw new RuntimeException("size phải lớn hơn 0");
+        }
+
+        return PageRequest.of(page, size, Sort.by("id").ascending());
     }
 
     private Category getActiveCategory(Long categoryId) {

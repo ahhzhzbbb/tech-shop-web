@@ -3,18 +3,18 @@ import com.example.shop.payloads.dto.ProductDTO;
 import com.example.shop.payloads.request.ProductRequest;
 import com.example.shop.payloads.response.ProductsResponse;
 
-import java.util.List;
-
 public interface ProductService {
     ProductDTO createProduct(ProductRequest productRequest);
 
-    ProductsResponse getAllProducts();
+    ProductsResponse getAllProducts(int page, int size);
 
     ProductDTO getProductById(Long productId);
 
-    ProductsResponse getProductsByCategory(Long categoryId);
+    ProductsResponse getProductsByCategory(Long categoryId, int page, int size);
 
-    ProductsResponse searchProducts(String keyword);
+    ProductsResponse getProductsByCategory(String categoryName, int page, int size);
+
+    ProductsResponse searchProducts(String keyword, int page, int size);
 
     ProductDTO updateProduct(Long productId, ProductRequest productRequest);
 

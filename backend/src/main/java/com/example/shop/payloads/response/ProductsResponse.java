@@ -12,4 +12,5 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductsResponse {
     private List<ProductDTO> products;
+    private PaginationInfo pagination;
 }

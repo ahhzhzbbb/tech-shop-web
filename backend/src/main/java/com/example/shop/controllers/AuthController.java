@@ -64,7 +64,7 @@ public class AuthController {
     public ResponseEntity<?> updateProfile(
             Authentication authentication,
             @RequestBody UpdateProfileRequest request) {
-        return ResponseEntity.ok().body(authService.updateProfile(authentication, request.getPhoneNumber()));
+        return ResponseEntity.ok().body(authService.updateProfile(authentication, request));
     }
 
     @Operation(summary = "đăng xuất", description = "API dùng để đăng xuất người dùng")

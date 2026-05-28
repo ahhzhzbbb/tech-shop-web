@@ -81,6 +81,7 @@ public class AuthServiceImpl implements AuthService {
                 signUpRequest.getUsername(),
                 encoder.encode(signUpRequest.getPassword()),
                 signUpRequest.getPhoneNumber());
+        user.setAddress(signUpRequest.getAddress());
 
         String strRole = signUpRequest.getRole();
         new Role();
@@ -118,14 +119,18 @@ public class AuthServiceImpl implements AuthService {
 
     @Transactional
     @Override
-    public UserInfoResponse updateProfile(Authentication authentication, String phoneNumber) {
+    public UserInfoResponse updateProfile(Authentication authentication, com.example.shop.security.request.UpdateProfileRequest request) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
         User user = userRepository.findById(userDetails.getId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (phoneNumber != null) {
-            user.setPhoneNumber(phoneNumber);
+        if (request.getPhoneNumber() != null) {
+            user.setPhoneNumber(request.getPhoneNumber());
+        }
+
+        if (request.getAddress() != null) {
+            user.setAddress(request.getAddress());
         }
 
         userRepository.save(user);

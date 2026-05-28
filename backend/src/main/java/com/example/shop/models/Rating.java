@@ -2,8 +2,9 @@ package com.example.shop.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "ratings")
@@ -13,12 +14,16 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class Rating {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
     @Column(nullable = false)
-    private Date createdAt;
     private int score;
 
     @Column(columnDefinition = "TEXT")

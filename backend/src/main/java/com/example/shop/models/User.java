@@ -32,6 +32,9 @@ public class User {
 
     private String phoneNumber;
 
+    @Column(columnDefinition = "TEXT")
+    private String address;
+
     private LocalDate createdAt = LocalDate.now();
 
     @ManyToOne(fetch = FetchType.EAGER)

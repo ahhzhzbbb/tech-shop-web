@@ -145,6 +145,20 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
+    public ProductsResponse getProductsByCategory(String categoryName) {
+        Category category = categoryRepository.findByNameIgnoreCase(categoryName)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "name", categoryName));
+        List<Product> products = productRepository.findByCategoryId(category.getId());
+        List<ProductDTO> productList = products.stream()
+                .map(this::convertToDTO)
+                .toList();
+        ProductsResponse response = new ProductsResponse();
+        response.setProducts(productList);
+        return response;
+    }
+
+    @Transactional
+    @Override
     public ProductsResponse searchProducts(String keyword) {
         List<Product> products = productRepository.findByNameContainingIgnoreCase(keyword);
         List<ProductDTO> productList = products.stream()

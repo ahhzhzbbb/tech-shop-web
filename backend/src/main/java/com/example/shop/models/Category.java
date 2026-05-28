@@ -31,10 +31,18 @@ public class Category {
     private Boolean active = true;
 
     @OneToMany(
-            mappedBy = "category",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
+        mappedBy = "category",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
    )
     @JsonIgnore
     private Set<Product> products = new HashSet<>();
+
+    @OneToMany(
+        mappedBy = "category",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+    )
+    @JsonIgnore
+    private Set<Attribute> attributes = new HashSet<>();
 }

@@ -43,9 +43,17 @@ public class ProductController {
 
     @Operation(summary = "Lấy sản phẩm theo danh mục", description = "API dùng để lấy tất cả sản phẩm của một danh mục")
     @PermitAll
-    @GetMapping("/products/category/{categoryId}")
+    @GetMapping("/products/category/id/{categoryId}")
     public ResponseEntity<ProductsResponse> getProductsByCategory(@PathVariable Long categoryId) {
         ProductsResponse response = productService.getProductsByCategory(categoryId);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @Operation(summary = "Lấy sản phẩm theo tên danh mục", description = "API dùng để lấy tất cả sản phẩm của một danh mục theo tên")
+    @PermitAll
+    @GetMapping("/products/category/{categoryName}")
+    public ResponseEntity<ProductsResponse> getProductsByCategory(@PathVariable String categoryName) {
+        ProductsResponse response = productService.getProductsByCategory(categoryName);
         return ResponseEntity.ok().body(response);
     }
 

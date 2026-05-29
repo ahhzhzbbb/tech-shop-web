@@ -13,6 +13,7 @@ import {
     CpuIcon,
     GraphicsCardIcon,
     FanIcon,
+    UserGearIcon,
 } from "@phosphor-icons/react";
 import "./ProductSideBar.scss";
 
@@ -23,20 +24,12 @@ const categories = [
     {
         items: [
             { id: "home", label: "Trang chủ", badge: "Sales", badgeType: "hot" },
-<<<<<<< HEAD
         ],
-=======
-        ]
->>>>>>> 92dfd95 (add sidebar and navigate)
     },
     {
         section: "Thiết bị chính",
         items: [
             { id: "laptop", label: "Laptop", badge: "Mới", badgeType: "new" },
-<<<<<<< HEAD
-=======
-            { id: "laptop-gaming", label: "Laptop Gaming", badge: "Hot", badgeType: "hot" },
->>>>>>> 92dfd95 (add sidebar and navigate)
             { id: "pc", label: "PC" },
         ],
     },
@@ -64,17 +57,19 @@ const categories = [
             { id: "accessory", label: "Phụ kiện" },
         ],
     },
+    {
+        section: "Admin",
+        items: [
+            { id: "admin", label: "Quản lý" },
+        ]
+    }
 ];
 
 // =========================================
 // Icon map
 // =========================================
 const iconMap = {
-<<<<<<< HEAD
     home: <HomeOutlined style={{ fontSize: 18 }} />,
-=======
-    home: <HomeOutlined size={18} />,
->>>>>>> 92dfd95 (add sidebar and navigate)
     laptop: <LaptopIcon size={18} />,
     "laptop-gaming": <LaptopOutlined style={{ fontSize: 18 }} />,
     pc: <DesktopTowerIcon size={18} />,
@@ -87,6 +82,7 @@ const iconMap = {
     vga: <GraphicsCardIcon size={18} />,
     heatSink: <FanIcon size={18} />,
     accessory: <MoreOutlined style={{ fontSize: 18 }} />,
+    admin: <UserGearIcon size={18} />
 };
 
 // =========================================
@@ -107,7 +103,6 @@ const menuItems = categories.flatMap((group, gi) => {
         children: group.items.map((item) => ({
             key: item.id,
             icon: iconMap[item.id],
-<<<<<<< HEAD
 
             // FIX: tất cả item đều dùng chung class psb-item-label
             label: (
@@ -125,30 +120,16 @@ const menuItems = categories.flatMap((group, gi) => {
         })),
     };
 
-=======
-            label: item.badge
-                ? <span className="psb-item-label">{item.label} <Badge type={item.badgeType} label={item.badge} /></span>
-                : item.label,
-        })),
-    };
->>>>>>> 92dfd95 (add sidebar and navigate)
     return gi === 0 ? [groupItem] : [{ type: "divider" }, groupItem];
 });
 
 // =========================================
 // ProductSideBar
 // =========================================
-<<<<<<< HEAD
-=======
-/**
- * @param {object}   props
- * @param {string}   props.defaultSelected - Key mặc định được chọn
- * @param {function} props.onSelect  - Callback khi chọn item (key)
- */
->>>>>>> 92dfd95 (add sidebar and navigate)
 export default function ProductSideBar({
     defaultSelected = "home",
     onSelect,
+    isAdmin = false
 }) {
     const navigate = useNavigate();
     const [selectedKeys, setSelectedKeys] = useState([defaultSelected]);
@@ -156,24 +137,18 @@ export default function ProductSideBar({
     const handleSelect = ({ key }) => {
         setSelectedKeys([key]);
         onSelect?.(key);
-<<<<<<< HEAD
 
         if (key === "home") {
-=======
-        if (key == "home") {
->>>>>>> 92dfd95 (add sidebar and navigate)
             navigate("/");
+        } else if (key === "admin") {
+            navigate("/admin");
         } else {
             navigate(`/products/${key}`);
         }
     };
 
     return (
-<<<<<<< HEAD
         <aside className="psb-wrapper">
-=======
-        <aside className={`psb-wrapper`}>
->>>>>>> 92dfd95 (add sidebar and navigate)
             <div className="psb-inner">
                 <div className="psb-header">
                     <span className="psb-header__title">Danh mục sản phẩm</span>
@@ -187,14 +162,6 @@ export default function ProductSideBar({
                     className="psb-menu"
                     inlineIndent={16}
                 />
-
-                <div className="psb-promo">
-                    <span className="psb-promo__icon">🏷️</span>
-                    <div>
-                        <p className="psb-promo__title">Khuyến mãi hôm nay</p>
-                        <span className="psb-promo__sub">Giảm đến 30% linh kiện →</span>
-                    </div>
-                </div>
             </div>
         </aside>
     );

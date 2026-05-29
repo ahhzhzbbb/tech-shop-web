@@ -1,56 +1,40 @@
-// --- Tokens (đồng nhất với Header: #E30019) ---
-$primary:         #E30019;
-$primary-light:   #FFF1F0;
-$primary-dark:    #B8000F;
-$primary-deep:    #8C000A;
-$primary-border:  #FFCCC7;
-$hot-bg:          #FFF7E6;
-$hot-text:        #AD6800;
+// =========================================
+// Tokens
+// =========================================
+$primary: #e30019;
+$primary-light: #fff1f0;
+$primary-dark: #b8000f;
+$primary-deep: #8c000a;
+$primary-border: #ffccc7;
 
-$sidebar-width:   240px;
-$radius-lg:       12px;
-$radius-md:       8px;
-$radius-badge:    10px;
-$transition:      0.2s ease;
+$hot-bg: #fff7e6;
+$hot-text: #ad6800;
+
+$sidebar-width: 240px;
+$radius-lg: 0px;
+$radius-md: 0px;
+$radius-badge: 10px;
+$transition: 0.2s ease;
 
 // =========================================
-// Wrapper — controls open/close
+// Wrapper
 // =========================================
 .psb-wrapper {
   width: $sidebar-width;
   overflow: hidden;
-  transition: width $transition, opacity $transition;
-}
-
-.sidebar {
-  width: $sidebar-width;
-  max-width: $sidebar-width;
-  background-color: #fff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: $radius-lg;
-  padding: 16px 0 8px;
-  font-family: system-ui, sans-serif;
-  user-select: none;
-  position: fixed;
-  top: 64px;
-  left: 0;
-  height: calc(100vh - 64px);
-  overflow-y: auto;
-  z-index: 200;
-}
-
-.sidebar--closed {
-  display: none;
+  transition:
+    width $transition,
+    opacity $transition;
 }
 
 // =========================================
-// Inner card
+// Inner Card
 // =========================================
 .psb-inner {
   width: $sidebar-width;
   background-color: #fff;
   border: 0.5px solid #e5e7eb;
-  border-radius: $radius-lg;
+  border-radius: 0 !important;
   padding: 16px 0 8px;
   font-family: system-ui, sans-serif;
   user-select: none;
@@ -72,94 +56,153 @@ $transition:      0.2s ease;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: #6b7280;
+    text-align: center;
+    display: block;
   }
 }
 
 // =========================================
-// Ant Design Menu overrides
+// Menu
 // =========================================
 .psb-menu.ant-menu {
   background: transparent;
   border-inline-end: none !important;
+  width: $sidebar-width;
   font-size: 14px;
-  width: 240px;
 
-  // Group label
+  // =========================
+  // Group Title
+  // =========================
   .ant-menu-item-group-title {
     font-size: 11px;
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 0.07em;
     text-transform: uppercase;
     color: #9ca3af;
     padding: 10px 16px 4px;
+    text-align: center;
   }
 
+  // =========================
   // Divider
+  // =========================
   .ant-menu-item-divider {
-    margin: 6px 0;
+    margin: 8px 0;
     border-color: #e5e7eb;
   }
 
-  // Item
-  .ant-menu-item {
-    margin: 0;
+  // =========================
+  // Menu Item
+  // =========================
+  .ant-menu-item,
+  .ant-menu-item-only-child {
+    margin: 0 !important;
+    height: 40px;
+    line-height: 40px;
+
     border-radius: 0;
-    height: 38px;
-    line-height: 38px;
-    padding-left: 16px !important;
-    padding-right: 12px;
     border-left: 2px solid transparent;
-    transition: background $transition, border-color $transition;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+
+    padding-left: 16px !important;
+    padding-right: 12px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+
     color: #6b7280;
+    transition: all $transition;
+    text-align: left !important;
 
     &:hover {
       background-color: #f9fafb !important;
       color: #374151;
     }
+  }
 
-    // Icon slot
-    .ant-menu-item-icon {
-      color: #9ca3af;
-      transition: color $transition;
-      flex-shrink: 0;
+  // =========================
+  // Icon
+  // =========================
+  .ant-menu-item-icon {
+    width: 20px !important;
+    min-width: 20px !important;
+    height: 20px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    margin-right: 4px !important; // 👈 giảm khoảng cách chữ gần icon
+
+    flex-shrink: 0;
+    color: #9ca3af;
+
+    svg {
+      width: 18px !important;
+      height: 18px !important;
     }
+  }
 
-    // Active/selected
-    &.ant-menu-item-selected {
-      background-color: $primary-light;
-      border-left: 2px solid $primary;
-      color: $primary;
-      font-weight: 500;
+  // =========================
+  // Text Content
+  // =========================
+  .ant-menu-title-content {
+    margin-inline-start: 0 !important;
+    margin-left: 0 !important;
+    padding-left: 0 !important;
 
-      .ant-menu-item-icon {
-        color: $primary;
-      }
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+
+    text-align: left !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
+
+  // =========================
+  // Selected Item
+  // =========================
+  .ant-menu-item-selected {
+    background-color: $primary-light !important;
+    border-left: 2px solid $primary !important;
+    color: $primary !important;
+    font-weight: 600;
+
+    .ant-menu-item-icon {
+      color: $primary !important;
     }
   }
 }
 
 // =========================================
-// Item label + badge
+// Label + Badge
 // =========================================
 .psb-item-label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  width: 100%;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+
+  gap: 6px; // 👈 giảm khoảng cách badge
 }
 
+// =========================================
+// Badge
+// =========================================
 .psb-badge {
   font-size: 11px;
   font-weight: 500;
   padding: 1px 7px;
   border-radius: $radius-badge;
   line-height: 1.6;
+  flex-shrink: 0;
 
   &--new {
-    background-color: #E6F7FF;
-    color: #0050B3;
+    background-color: #e6f7ff;
+    color: #0050b3;
   }
 
   &--hot {
@@ -169,17 +212,20 @@ $transition:      0.2s ease;
 }
 
 // =========================================
-// Promo box
+// Promo Box
 // =========================================
 .psb-promo {
-  margin: 10px 12px 4px;
-  padding: 10px 12px;
+  margin: 12px 12px 6px;
+  padding: 12px;
   border-radius: $radius-md;
+
   background-color: $primary-light;
   border: 0.5px solid $primary-border;
+
   display: flex;
   align-items: center;
   gap: 8px;
+
   cursor: pointer;
   transition: opacity 0.15s;
 
@@ -195,7 +241,7 @@ $transition:      0.2s ease;
   &__title {
     font-size: 12px;
     color: $primary-deep;
-    font-weight: 500;
+    font-weight: 600;
     line-height: 1.4;
     margin: 0;
   }
@@ -205,6 +251,16 @@ $transition:      0.2s ease;
     color: $primary-dark;
     font-weight: 400;
     display: block;
-    margin-top: 1px;
+    margin-top: 2px;
   }
+}
+
+// FORCE bỏ bo góc toàn bộ sidebar
+.psb-wrapper,
+.psb-inner,
+.psb-menu,
+.psb-menu.ant-menu,
+.psb-promo {
+  border-radius: 0 !important;
+  overflow: hidden;
 }

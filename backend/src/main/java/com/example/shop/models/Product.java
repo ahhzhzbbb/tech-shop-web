@@ -44,4 +44,13 @@ public class Product {
     @JsonIgnore
     @Builder.Default
     private Set<ProductAttributeValue> attributeValues = new HashSet<>();
+
+    @OneToMany(
+            mappedBy = "product",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @JsonIgnore
+    @Builder.Default
+    private Set<Rating> ratings = new HashSet<>();
 }

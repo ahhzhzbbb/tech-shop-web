@@ -35,7 +35,6 @@ export const useLogin = () => {
     }
   };
 
-<<<<<<< HEAD
   return { login, loading };
 }
 
@@ -60,7 +59,3 @@ export const useLogout = () => {
 
   return { logout, loading };
 }
-=======
-  return { login, loading };
-};
->>>>>>> 087dbf7 (sua UI header)

@@ -1,11 +1,15 @@
 package com.example.shop.services.impls;
 
 import com.example.shop.models.Category;
+import com.example.shop.payloads.dto.CategoryDTO;
+import com.example.shop.payloads.request.CategoryRequest;
+import com.example.shop.payloads.response.CategoryResponse;
 import com.example.shop.repositories.CategoryRepository;
 import com.example.shop.services.CategoryService;
 
 import lombok.RequiredArgsConstructor;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,67 +19,81 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final ModelMapper modelMapper;
 
     @Override
-    public List<Category> getAllCategory() {
+    public CategoryResponse getAllCategory() {
 
-        return categoryRepository.findAll()
+        List<Category> categories = categoryRepository.findAll()
                 .stream()
                 .filter(Category::getActive)
                 .toList();
+
+        List<CategoryDTO> categoryList = categories.stream()
+                .map(category -> new CategoryDTO(category.getName()))
+                .toList();
+
+        CategoryResponse response = new CategoryResponse();
+        response.setCategories(categoryList);
+
+        return response;
     }
 
+//    @Override
+//    public CategoryDTO getCategoryAndProduct(Long id) {
+//
+//        return categoryRepository.findById(id)
+//                .filter(Category::getActive)
+//                .orElseThrow(() ->
+//                        new RuntimeException("Không tìm thấy danh mục " + id));
+//    }
+
     @Override
-    public Category getCategoryAndProduct(Long id) {
+    public CategoryDTO createCategory(CategoryRequest request) {
 
-        return categoryRepository.findById(id)
-                .filter(Category::getActive)
-                .orElseThrow(() ->
-                        new RuntimeException("Không tìm thấy danh mục " + id));
-    }
-
-    @Override
-    public Category createCategory(Category category) {
-
-        if (categoryRepository.existsByNameIgnoreCase(category.getName())) {
+        if (categoryRepository.existsByNameIgnoreCase(request.getName())) {
             throw new RuntimeException("Danh mục đã tồn tại");
         }
 
-        category.setActive(true);
+        Category newCategory = modelMapper.map(request, Category.class);
+        request.setActive(true);
 
-        return categoryRepository.save(category);
+        categoryRepository.save(newCategory);
+
+        return modelMapper.map(newCategory, CategoryDTO.class);
     }
 
     @Override
-    public Category updateCategory(Long id, Category newCategory) {
+    public CategoryDTO updateCategory(Long id, CategoryRequest request) {
 
         Category category = categoryRepository.findById(id)
                 .filter(Category::getActive)
                 .orElseThrow(() ->
                         new RuntimeException("Không tìm thấy danh mục " + id));
 
-        if (!category.getName().equalsIgnoreCase(newCategory.getName())
-                && categoryRepository.existsByNameIgnoreCase(newCategory.getName())) {
+        if (!category.getName().equalsIgnoreCase(request.getName())
+                && categoryRepository.existsByNameIgnoreCase(request.getName())) {
 
             throw new RuntimeException("Danh mục đã tồn tại");
         }
 
-        category.setName(newCategory.getName());
-
-        return categoryRepository.save(category);
-    }
-
-    @Override
-    public void deleteCategory(Long id) {
-
-        Category category = categoryRepository.findById(id)
-                .filter(Category::getActive)
-                .orElseThrow(() ->
-                        new RuntimeException("Không tìm thấy danh mục " + id));
-
-        // soft delete
-        category.setActive(false);
+        category.setName(request.getName());
 
         categoryRepository.save(category);
+
+        return modelMapper.map(category, CategoryDTO.class);
+    }
+
+    @Override
+    public CategoryDTO deleteCategory(Long id) {
+
+        Category deletedCategory = categoryRepository.findById(id)
+                .filter(Category::getActive)
+                .orElseThrow(() ->
+                        new RuntimeException("Không tìm thấy danh mục " + id));
+
+        categoryRepository.delete(deletedCategory);
+
+        return modelMapper.map(deletedCategory, CategoryDTO.class);
     }
 }

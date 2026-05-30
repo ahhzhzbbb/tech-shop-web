@@ -1,6 +1,8 @@
 package com.example.shop.controllers;
 
-import com.example.shop.models.Category;
+import com.example.shop.payloads.dto.CategoryDTO;
+import com.example.shop.payloads.request.CategoryRequest;
+import com.example.shop.payloads.response.CategoryResponse;
 import com.example.shop.services.CategoryService;
 
 import lombok.RequiredArgsConstructor;
@@ -10,8 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.security.PermitAll;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -23,36 +23,35 @@ public class CategoryController {
     @Operation(summary = "Lấy tất cả danh mục", description = "API dùng để lấy tất cả danh mục sản phẩm")
     @PermitAll
     @GetMapping("/categories")
-    public ResponseEntity<List<Category>> getAllCategory() {
+    public ResponseEntity<CategoryResponse> getAllCategory() {
 
-        List<Category> response =
-                categoryService.getAllCategory();
-
-        return ResponseEntity.ok().body(response);
-    }
-
-    @Operation(summary = "Lấy danh mục theo ID", description = "API dùng để lấy thông tin một danh mục sản phẩm theo ID")
-    @PermitAll
-    @GetMapping("/category/{id}")
-    public ResponseEntity<Category> getCategoryAndProduct(
-            @PathVariable Long id
-    ) {
-
-        Category response =
-                categoryService.getCategoryAndProduct(id);
+        CategoryResponse response = categoryService.getAllCategory();
 
         return ResponseEntity.ok().body(response);
     }
+
+//    @Operation(summary = "Lấy danh mục theo ID", description = "API dùng để lấy thông tin một danh mục sản phẩm theo ID")
+//    @PermitAll
+//    @GetMapping("/category/{id}")
+//    public ResponseEntity<Category> getCategoryAndProduct(
+//            @PathVariable Long id
+//    ) {
+//
+//        Category response =
+//                categoryService.getCategoryAndProduct(id);
+//
+//        return ResponseEntity.ok().body(response);
+//    }
 
     @Operation(summary = "Tạo danh mục mới", description = "API dùng để tạo một danh mục sản phẩm mới")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/category")
-    public ResponseEntity<Category> createCategory(
-            @RequestBody Category category
+    public ResponseEntity<CategoryDTO> createCategory(
+            @RequestBody CategoryRequest request
     ) {
 
-        Category response =
-                categoryService.createCategory(category);
+        CategoryDTO response =
+                categoryService.createCategory(request);
 
         return ResponseEntity.ok().body(response);
     }
@@ -61,13 +60,12 @@ public class CategoryController {
     @Operation(summary = "Cập nhật danh mục", description = "API dùng để cập nhật thông tin một danh mục sản phẩm")
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/category/{id}")
-    public ResponseEntity<Category> updateCategory(
+    public ResponseEntity<CategoryDTO> updateCategory(
             @PathVariable Long id,
-            @RequestBody Category category
+            @RequestBody CategoryRequest request
     ) {
 
-        Category response =
-                categoryService.updateCategory(id, category);
+        CategoryDTO response = categoryService.updateCategory(id, request);
 
         return ResponseEntity.ok().body(response);
     }
@@ -76,12 +74,12 @@ public class CategoryController {
     @Operation(summary = "Xóa danh mục", description = "API dùng để xóa một danh mục sản phẩm")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/category/{id}")
-    public ResponseEntity<String> deleteCategory(
+    public ResponseEntity<CategoryDTO> deleteCategory(
             @PathVariable Long id
     ) {
 
-        categoryService.deleteCategory(id);
+        CategoryDTO response = categoryService.deleteCategory(id);
 
-        return ResponseEntity.ok("Delete category successfully");
+        return ResponseEntity.ok().body(response);
     }
 }

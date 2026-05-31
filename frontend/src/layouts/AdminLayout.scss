@@ -1,0 +1,9 @@
+.main {
+    display: flex;
+    min-height: calc(100vh - 64px); // 64px = chiều cao Header
+}
+
+.admin-content {
+    flex: 1;
+    min-width: 0;
+}

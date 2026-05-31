@@ -8,13 +8,10 @@ import Cart from "../features/cart/pages/Cart.jsx";
 import Orders from "../features/order/pages/Orders.jsx"
 import AdminLayout from "../layouts/AdminLayout.jsx";
 import AdminDashboard from "../features/admin/dashboard/pages/AdminDashboard.jsx";
-<<<<<<< HEAD
 import AdminOrders from "../features/admin/orders/AdminOrders.jsx"
 import AdminCategories from "../features/admin/category/AdminCategories.jsx"
 import AdminProducts from "../features/admin/products/AdminProducts.jsx"
 import AdminStatistics from "../features/admin/statistics/AdminStatistics.jsx"
-=======
->>>>>>> 1f09d4c (add admin dashboard)
 
 const AppRoute = () => {
     return (

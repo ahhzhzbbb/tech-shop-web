@@ -7,7 +7,7 @@ import {
     Tag,
 } from '@phosphor-icons/react';
 import { Typography } from 'antd';
-import AdminCard from './components/AdminCard';
+import AdminCard from '../components/Admincard';
 import './AdminDashboard.scss';
 
 const { Title, Text } = Typography;

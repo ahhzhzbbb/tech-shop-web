@@ -77,6 +77,8 @@ export default function AdminSidebar({
 
         if (key === "home") {
             navigate("/");
+        } else if (key === "overview") {
+            navigate("/admin")
         } else {
             navigate(`/admin/${key}`);
         }

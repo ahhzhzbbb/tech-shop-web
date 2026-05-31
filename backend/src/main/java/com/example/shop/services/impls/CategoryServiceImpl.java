@@ -30,7 +30,10 @@ public class CategoryServiceImpl implements CategoryService {
                 .toList();
 
         List<CategoryDTO> categoryList = categories.stream()
-                .map(category -> new CategoryDTO(category.getName()))
+                .map(category -> new CategoryDTO(
+                        category.getId(),
+                        category.getName(),
+                        category.getActive()))
                 .toList();
 
         CategoryResponse response = new CategoryResponse();
@@ -56,7 +59,9 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         Category newCategory = modelMapper.map(request, Category.class);
-        request.setActive(true);
+        if (newCategory.getActive() == null) {
+            newCategory.setActive(true);
+        }
 
         categoryRepository.save(newCategory);
 
@@ -78,6 +83,9 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         category.setName(request.getName());
+        if (request.getActive() != null) {
+            category.setActive(request.getActive());
+        }
 
         categoryRepository.save(category);
 

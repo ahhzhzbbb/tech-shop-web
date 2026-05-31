@@ -10,7 +10,7 @@ import {
     message,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import { PencilSimple, Trash } from "@phosphor-icons/react";
+import { PencilSimpleIcon, TrashIcon } from "@phosphor-icons/react";
 
 import categoryApi from "./categoryApi";
 import CategoryModal from "../components/CategoryModal";
@@ -62,6 +62,10 @@ export default function AdminCategories() {
         setConfirmLoading(true);
         try {
             if (editingItem) {
+                if (editingItem.id == null) {
+                    messageApi.error("Không tìm thấy ID danh mục. Vui lòng tải lại trang.");
+                    return;
+                }
                 await categoryApi.updateCategory(editingItem.id, values);
                 messageApi.success("Cập nhật danh mục thành công.");
             } else {
@@ -79,6 +83,10 @@ export default function AdminCategories() {
 
     // ── Delete ─────────────────────────────
     const handleDelete = async (record) => {
+        if (record.id == null) {
+            messageApi.error("Không tìm thấy ID danh mục. Vui lòng tải lại trang.");
+            return;
+        }
         try {
             await categoryApi.deleteCategory(record.id);
             messageApi.success(`Đã xoá danh mục "${record.name}".`);
@@ -179,7 +187,7 @@ export default function AdminCategories() {
                 <Table
                     dataSource={categories}
                     columns={columns}
-                    rowKey={(r) => r.id ?? r.name}
+                    rowKey="id"
                     loading={loading}
                     pagination={{ pageSize: 10, showSizeChanger: false }}
                     className="ac-table"

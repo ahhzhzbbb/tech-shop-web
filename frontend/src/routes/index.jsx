@@ -8,6 +8,10 @@ import Cart from "../features/cart/pages/Cart.jsx";
 import Orders from "../features/order/pages/Orders.jsx"
 import AdminLayout from "../layouts/AdminLayout.jsx";
 import AdminDashboard from "../features/admin/dashboard/pages/AdminDashboard.jsx";
+import AdminOrders from "../features/admin/orders/AdminOrders.jsx"
+import AdminCategories from "../features/admin/category/AdminCategories.jsx"
+import AdminProducts from "../features/admin/products/AdminProducts.jsx"
+import AdminStatistics from "../features/admin/statistics/AdminStatistics.jsx"
 
 const AppRoute = () => {
     return (
@@ -26,7 +30,10 @@ const AppRoute = () => {
                 {/* admin */}
                 <Route element={<AdminLayout />}>
                     <Route path="/admin" element={<AdminDashboard />} />
-
+                    <Route path="/admin/products" element={<AdminProducts />} />
+                    <Route path="/admin/categories" element={<AdminCategories />} />
+                    <Route path="/admin/orders" element={<AdminOrders />} />
+                    <Route path="/admin/statistics" element={<AdminStatistics />} />
                 </Route>
             </Routes>
         </BrowserRouter>

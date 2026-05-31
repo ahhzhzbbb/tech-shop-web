@@ -1,0 +1,141 @@
+$red-primary: #D0021B;
+$red-light: #FFF1F0;
+$red-mid: #FFCCC7;
+$white: #ffffff;
+$text-main: #1a1a1a;
+$text-muted: #8c8c8c;
+$border: #f0f0f0;
+
+.ac-page {
+    padding: 32px;
+    min-height: 100vh;
+    background: #fafafa;
+}
+
+// ── Header ───────────────────────────────
+.ac-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1.5px solid $red-mid;
+}
+
+.ac-title {
+    color: $red-primary !important;
+    margin-bottom: 2px !important;
+    font-weight: 700 !important;
+}
+
+.ac-subtitle {
+    color: $text-muted;
+    font-size: 13px;
+}
+
+// ── Add button ───────────────────────────
+.ac-btn-add {
+    background: $red-primary !important;
+    border-color: $red-primary !important;
+    font-weight: 500;
+
+    &:hover {
+        background: darken(#D0021B, 8%) !important;
+        border-color: darken(#D0021B, 8%) !important;
+    }
+}
+
+// ── Table ────────────────────────────────
+.ac-table-wrap {
+    background: $white;
+    border-radius: 12px;
+    border: 1px solid $border;
+    overflow: hidden;
+}
+
+.ac-table {
+    .ant-table-thead > tr > th {
+        background: $red-light;
+        color: $red-primary;
+        font-weight: 600;
+        font-size: 13px;
+        border-bottom: 1.5px solid $red-mid;
+    }
+
+    .ant-table-tbody > tr {
+        transition: background 0.15s;
+
+        &:hover > td {
+            background: #fffafa !important;
+        }
+    }
+
+    .ant-table-pagination {
+        padding: 12px 16px;
+    }
+}
+
+.ac-index {
+    color: $text-muted;
+    font-size: 13px;
+}
+
+.ac-name {
+    font-weight: 500;
+    color: $text-main;
+    font-size: 14px;
+}
+
+// ── Action buttons ───────────────────────
+.ac-btn-edit {
+    border-color: $red-mid !important;
+    color: $red-primary !important;
+    font-size: 12px;
+
+    &:hover {
+        background: $red-light !important;
+        border-color: $red-primary !important;
+    }
+}
+
+.ac-btn-delete {
+    font-size: 12px;
+}
+
+// ── Modal ────────────────────────────────
+.ac-modal-title {
+    color: $red-primary;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.ac-form {
+    margin-top: 16px;
+
+    .ant-form-item-label > label {
+        font-weight: 500;
+        color: $text-main;
+    }
+
+    .ant-input {
+        border-radius: 8px;
+
+        &:focus, &:hover {
+            border-color: $red-primary;
+            box-shadow: 0 0 0 2px rgba(208, 2, 27, 0.08);
+        }
+    }
+
+    .ant-switch-checked {
+        background: $red-primary !important;
+    }
+}
+
+.ac-btn-ok {
+    background: $red-primary !important;
+    border-color: $red-primary !important;
+
+    &:hover {
+        background: darken(#D0021B, 8%) !important;
+    }
+}

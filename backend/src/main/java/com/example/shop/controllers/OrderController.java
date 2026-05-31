@@ -4,7 +4,6 @@ import com.example.shop.payloads.dto.OrderDTO;
 import com.example.shop.payloads.request.OrderRequest;
 import com.example.shop.payloads.response.OrdersResponse;
 import com.example.shop.services.OrderService;
-import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -56,8 +55,7 @@ public class OrderController {
     @PutMapping("/order/{orderId}")
     public ResponseEntity<OrderDTO> updateOrder(
             @PathVariable Long orderId,
-            @RequestBody OrderRequest orderRequest
-    ) {
+            @RequestBody OrderRequest orderRequest) {
         OrderDTO response = orderService.updateOrder(orderId, orderRequest);
         return ResponseEntity.ok().body(response);
     }

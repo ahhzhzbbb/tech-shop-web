@@ -1,0 +1,152 @@
+.product-card {
+  width: 100%;
+  max-width: 240px;
+  background-color: #fff;
+  border-radius: 4px;
+  border: 1px solid #f3f4f6;
+  padding: 12px;
+  position: relative;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-sizing: border-box;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+  }
+
+  &__badge-gift {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    color: #E30019;
+    font-size: 18px;
+    z-index: 2;
+  }
+
+  &__image-container {
+    width: 100%;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    
+    img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    line-height: 1.4;
+    margin: 0 0 8px 0;
+    
+    /* Truncate text to 2 lines */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 39px; // Approximately 2 lines
+  }
+
+  &__specs {
+    background-color: #f3f4f6;
+    border-radius: 4px;
+    padding: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    margin-bottom: 12px;
+
+    .spec-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: #6b7280;
+      
+      .spec-icon {
+        display: flex;
+        align-items: center;
+        font-size: 10px;
+        color: #9ca3af;
+
+        .spec-dot {
+          width: 4px;
+          height: 4px;
+          background-color: #9ca3af;
+          border-radius: 50%;
+        }
+      }
+    }
+  }
+
+  &__price-section {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 8px;
+  }
+
+  &__old-price {
+    font-size: 12px;
+    color: #9ca3af;
+    text-decoration: line-through;
+    margin-bottom: 2px;
+  }
+
+  &__price-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__new-price {
+    font-size: 16px;
+    font-weight: 700;
+    color: #E30019;
+  }
+
+  &__discount {
+    font-size: 11px;
+    font-weight: 500;
+    color: #E30019;
+    border: 1px solid #E30019;
+    border-radius: 2px;
+    padding: 1px 4px;
+    background-color: #fffafb;
+  }
+
+  &__rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+
+    .rating-score {
+      color: #f59e0b;
+      font-weight: 500;
+    }
+
+    .rating-star {
+      color: #f59e0b;
+      font-size: 12px;
+    }
+
+    .rating-count {
+      color: #6b7280;
+      margin-left: 2px;
+    }
+  }
+}

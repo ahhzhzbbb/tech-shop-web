@@ -1,0 +1,41 @@
+$red-primary: #D0021B;
+$red-light: #FFF1F0;
+$red-mid: #FFCCC7;
+
+.cm-title {
+    color: $red-primary;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.cm-form {
+    margin-top: 16px;
+
+    .ant-form-item-label > label {
+        font-weight: 500;
+    }
+
+    .ant-input {
+        border-radius: 8px;
+
+        &:hover,
+        &:focus {
+            border-color: $red-primary;
+            box-shadow: 0 0 0 2px rgba(208, 2, 27, 0.08);
+        }
+    }
+
+    .ant-switch-checked {
+        background: $red-primary !important;
+    }
+}
+
+.cm-btn-ok {
+    background: $red-primary !important;
+    border-color: $red-primary !important;
+
+    &:hover {
+        background: #b0011a !important;
+        border-color: #b0011a !important;
+    }
+}

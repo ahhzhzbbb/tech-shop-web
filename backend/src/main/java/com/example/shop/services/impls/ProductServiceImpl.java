@@ -48,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
         newProduct.setAverageScore(productRequest.getAverageScore());
         newProduct.setCategory(getActiveCategory(productRequest.getCategoryId()));
 
-        replaceAttributeValues(newProduct, productRequest.getAttributes());
+        replaceAttributeValues(newProduct, productRequest.getAttributeValues());
 
         Product savedProduct = productRepository.save(newProduct);
         return convertToDTO(savedProduct);
@@ -102,8 +102,8 @@ public class ProductServiceImpl implements ProductService {
                     !value.getAttribute().getCategory().getId().equals(category.getId()));
         }
 
-        if (productRequest.getAttributes() != null) {
-            replaceAttributeValues(product, productRequest.getAttributes());
+        if (productRequest.getAttributeValues() != null) {
+            replaceAttributeValues(product, productRequest.getAttributeValues());
         }
 
         Product savedProduct = productRepository.save(product);
@@ -200,6 +200,46 @@ public class ProductServiceImpl implements ProductService {
 
         return attributeRepository.findById(attributeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Attribute", "id", attributeId));
+    }
+
+    @Transactional
+    @Override
+    public ProductDTO addProductToCategory(Long productId, Long categoryId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productId));
+
+        Category category = getActiveCategory(categoryId);
+
+        if (product.getCategory().getId().equals(category.getId())) {
+            return convertToDTO(product);
+        }
+
+        product.setCategory(category);
+
+        product.getAttributeValues().removeIf(value ->
+                !value.getAttribute().getCategory().getId().equals(category.getId()));
+
+        Product updatedProduct = productRepository.save(product);
+        return convertToDTO(updatedProduct);
+    }
+
+    @Transactional
+    @Override
+    public ProductDTO removeProductFromCategory(Long productId, Long categoryId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productId));
+
+        if (!product.getCategory().getId().equals(categoryId)) {
+            throw new RuntimeException("Sản phẩm không thuộc danh mục này");
+        }
+
+        ProductDTO deletedProduct = convertToDTO(product);
+
+        product.setCategory(null);
+        product.getAttributeValues().clear();
+        productRepository.save(product);
+
+        return deletedProduct;
     }
 
     private void replaceAttributeValues(

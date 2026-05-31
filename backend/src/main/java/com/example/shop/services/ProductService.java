@@ -19,4 +19,8 @@ public interface ProductService {
     ProductDTO updateProduct(Long productId, ProductRequest productRequest);
 
     ProductDTO deleteProduct(Long productId);
+
+    ProductDTO addProductToCategory(Long productId, Long categoryId);
+
+    ProductDTO removeProductFromCategory(Long productId, Long categoryId);
 }

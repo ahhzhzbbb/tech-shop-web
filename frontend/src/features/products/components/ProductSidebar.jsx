@@ -13,6 +13,7 @@ import {
     CpuIcon,
     GraphicsCardIcon,
     FanIcon,
+    UserGearIcon,
 } from "@phosphor-icons/react";
 import "./ProductSideBar.scss";
 
@@ -56,6 +57,12 @@ const categories = [
             { id: "accessory", label: "Phụ kiện" },
         ],
     },
+    {
+        section: "Admin",
+        items: [
+            { id: "admin", label: "Quản lý" },
+        ]
+    }
 ];
 
 // =========================================
@@ -75,6 +82,7 @@ const iconMap = {
     vga: <GraphicsCardIcon size={18} />,
     heatSink: <FanIcon size={18} />,
     accessory: <MoreOutlined style={{ fontSize: 18 }} />,
+    admin: <UserGearIcon size={18} />
 };
 
 // =========================================
@@ -121,6 +129,7 @@ const menuItems = categories.flatMap((group, gi) => {
 export default function ProductSideBar({
     defaultSelected = "home",
     onSelect,
+    isAdmin = false
 }) {
     const navigate = useNavigate();
     const [selectedKeys, setSelectedKeys] = useState([defaultSelected]);
@@ -131,6 +140,8 @@ export default function ProductSideBar({
 
         if (key === "home") {
             navigate("/");
+        } else if (key === "admin") {
+            navigate("/admin");
         } else {
             navigate(`/products/${key}`);
         }
@@ -151,14 +162,6 @@ export default function ProductSideBar({
                     className="psb-menu"
                     inlineIndent={16}
                 />
-
-                <div className="psb-promo">
-                    <span className="psb-promo__icon">🏷️</span>
-                    <div>
-                        <p className="psb-promo__title">Khuyến mãi hôm nay</p>
-                        <span className="psb-promo__sub">Giảm đến 30% linh kiện →</span>
-                    </div>
-                </div>
             </div>
         </aside>
     );

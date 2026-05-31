@@ -6,11 +6,14 @@ import ProductDetail from "../features/products/pages/ProductDetail.jsx";
 import UserInfo from "../features/user/pages/UserInfo.jsx";
 import Cart from "../features/cart/pages/Cart.jsx";
 import Orders from "../features/order/pages/Orders.jsx"
+import AdminLayout from "../layouts/AdminLayout.jsx";
+import AdminDashboard from "../features/admin/dashboard/pages/AdminDashboard.jsx";
 
 const AppRoute = () => {
     return (
         <BrowserRouter>
             <Routes>
+                {/* user */}
                 <Route element={<MainLayout />}>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/products/:category" element={<Products />} />
@@ -18,6 +21,12 @@ const AppRoute = () => {
                     <Route path="/user" element={<UserInfo />} />
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/orders" element={<Orders />} />
+                </Route>
+
+                {/* admin */}
+                <Route element={<AdminLayout />}>
+                    <Route path="/admin" element={<AdminDashboard />} />
+
                 </Route>
             </Routes>
         </BrowserRouter>

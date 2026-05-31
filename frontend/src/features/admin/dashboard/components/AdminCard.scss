@@ -1,0 +1,108 @@
+$red-primary: #D0021B;
+$red-light: #FFF1F0;
+$red-mid: #FFCCC7;
+$red-hover: #B0011A;
+$white: #FFFFFF;
+$text-main: #1a1a1a;
+$text-muted: #8c8c8c;
+
+.admin-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 24px 0;
+}
+
+.admin-card {
+    cursor: pointer;
+    border: 1.5px solid $red-mid !important;
+    border-radius: 12px !important;
+    background: $white;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: $red-primary;
+        border-radius: 12px 0 0 12px;
+        transition: width 0.2s ease;
+    }
+
+    &:hover {
+        border-color: $red-primary !important;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(208, 2, 27, 0.12) !important;
+
+        &::before {
+            width: 6px;
+        }
+
+        .admin-card__icon-wrap {
+            background: $red-primary;
+            color: $white;
+        }
+
+        .admin-card__arrow {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    // Ant Design Card body override
+    .ant-card-body {
+        padding: 20px 20px 20px 24px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    &__icon-wrap {
+        flex-shrink: 0;
+        width: 52px;
+        height: 52px;
+        border-radius: 10px;
+        background: $red-light;
+        color: $red-primary;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    &__body {
+        flex: 1;
+        min-width: 0;
+    }
+
+    &__label {
+        font-size: 15px;
+        font-weight: 600;
+        color: $text-main;
+        margin: 0 0 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &__desc {
+        font-size: 12px;
+        color: $text-muted;
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    &__arrow {
+        font-size: 16px;
+        color: $red-primary;
+        opacity: 0;
+        transform: translateX(-6px);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        flex-shrink: 0;
+    }
+}

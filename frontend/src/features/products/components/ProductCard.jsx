@@ -1,15 +1,7 @@
 import React from 'react';
-import { 
-    GiftFilled, 
+import {
+    GiftFilled,
     StarFilled,
-    ApiOutlined,
-    DatabaseOutlined,
-    HddOutlined,
-    DesktopOutlined,
-    FormatPainterOutlined,
-    FieldTimeOutlined,
-    ThunderboltOutlined,
-    ShoppingOutlined
 } from '@ant-design/icons';
 import './ProductCard.scss';
 
@@ -21,31 +13,13 @@ const formatCurrency = (amount) => {
 };
 
 const ProductCard = ({ product }) => {
-    // Fallback data if product is undefined
-    const data = product || {
-        name: "Laptop gaming Acer Nitro ProPanel ANV15",
-        imageUrl: "https://via.placeholder.com/200x150?text=Laptop",
-        price: 36790000,
-        salePrice: 31990000,
-        discount: 13,
-        averageScore: 0.0,
-        reviewsCount: 0,
-        attributes: [
-            { name: "CPU", value: "Core i7 240H", icon: <ApiOutlined /> },
-            { name: "GPU", value: "RTX 3050", icon: <FormatPainterOutlined /> },
-            { name: "RAM", value: "16 GB", icon: <DatabaseOutlined /> },
-            { name: "Storage", value: "512 GB", icon: <HddOutlined /> },
-            { name: "Screen", value: "15.6 Inch FHD", icon: <DesktopOutlined /> },
-            { name: "Refresh", value: "180 Hz", icon: <FieldTimeOutlined /> },
-            { name: "Battery", value: "57 Wh", icon: <ThunderboltOutlined /> },
-            { name: "Weight", value: "2.1 Kg", icon: <ShoppingOutlined /> }
-        ]
-    };
+    if (!product) return null;
 
-    // Calculate discount if salePrice and price are provided but discount is missing
-    const oldPrice = data.price;
-    const newPrice = data.salePrice || data.price;
-    const discountPercent = data.discount || (oldPrice > newPrice ? Math.round(((oldPrice - newPrice) / oldPrice) * 100) : 0);
+    const { name, imageUrl, price, salePrice, discount, averageScore, reviewsCount, attributes } = product;
+
+    const oldPrice = price;
+    const newPrice = salePrice || price;
+    const discountPercent = discount || (oldPrice > newPrice ? Math.round(((oldPrice - newPrice) / oldPrice) * 100) : 0);
 
     return (
         <div className="product-card">
@@ -56,19 +30,19 @@ const ProductCard = ({ product }) => {
 
             {/* Product Image */}
             <div className="product-card__image-container">
-                <img src={data.imageUrl} alt={data.name} className="product-card__image" />
+                <img src={imageUrl} alt={name} className="product-card__image" />
             </div>
 
             <div className="product-card__content">
                 {/* Product Name */}
-                <h3 className="product-card__name" title={data.name}>
-                    {data.name}
+                <h3 className="product-card__name" title={name}>
+                    {name}
                 </h3>
 
                 {/* Specs Box */}
-                {data.attributes && data.attributes.length > 0 && (
+                {attributes && attributes.length > 0 && (
                     <div className="product-card__specs">
-                        {data.attributes.map((attr, index) => (
+                        {attributes.map((attr, index) => (
                             <div key={index} className="spec-item">
                                 <span className="spec-icon">{attr.icon || <div className="spec-dot" />}</span>
                                 <span className="spec-text">{attr.value}</span>
@@ -94,9 +68,9 @@ const ProductCard = ({ product }) => {
 
                 {/* Rating Section */}
                 <div className="product-card__rating">
-                    <span className="rating-score">{data.averageScore.toFixed(1)}</span>
+                    <span className="rating-score">{averageScore?.toFixed(1)}</span>
                     <StarFilled className="rating-star" />
-                    <span className="rating-count">({data.reviewsCount} đánh giá)</span>
+                    <span className="rating-count">({reviewsCount} đánh giá)</span>
                 </div>
             </div>
         </div>

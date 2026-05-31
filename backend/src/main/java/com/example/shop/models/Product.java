@@ -32,8 +32,8 @@ public class Product {
     private String status;
     private Double averageScore;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "category_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "category_id", nullable = true)
     private Category category;
 
     @OneToMany(

@@ -16,5 +16,5 @@ public class ProductRequest {
     private String status;
     private Double averageScore;
     private Long categoryId;
-    private List<ProductAttributeValueRequest> attributes;
+    private List<ProductAttributeValueRequest> attributeValues;
 }

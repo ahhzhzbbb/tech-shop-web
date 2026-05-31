@@ -97,4 +97,26 @@ public class ProductController {
         ProductDTO response = productService.deleteProduct(productId);
         return ResponseEntity.ok().body(response);
     }
+
+    @Operation(summary = "Thêm sản phẩm vào danh mục", description = "API dùng để thêm một sản phẩm vào một danh mục")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/product/{productId}/categories/{categoryId}")
+    public ResponseEntity<ProductDTO> addProductToCategory(
+            @PathVariable Long productId,
+            @PathVariable Long categoryId
+    ) {
+        ProductDTO response = productService.addProductToCategory(productId, categoryId);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @Operation(summary = "Xóa sản phẩm ra khỏi danh mục", description = "API dùng để xóa một sản phẩm ra khỏi một danh mục")
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/product/{productId}/categories/{categoryId}")
+    public ResponseEntity<ProductDTO> removeProductFromCategory(
+            @PathVariable Long productId,
+            @PathVariable Long categoryId
+    ) {
+        ProductDTO response = productService.removeProductFromCategory(productId, categoryId);
+        return ResponseEntity.ok().body(response);
+    }
 }

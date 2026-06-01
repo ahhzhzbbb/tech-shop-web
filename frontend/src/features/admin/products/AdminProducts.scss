@@ -1,0 +1,144 @@
+$red-primary: #D0021B;
+$red-light: #FFF1F0;
+$red-mid: #FFCCC7;
+$white: #ffffff;
+$text-main: #1a1a1a;
+$text-muted: #8c8c8c;
+$border: #f0f0f0;
+
+.ap-page {
+    padding: 32px;
+    min-height: 100vh;
+    background: #fafafa;
+}
+
+// ── Header ───────────────────────────────
+.ap-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1.5px solid $red-mid;
+}
+
+.ap-title {
+    color: $red-primary !important;
+    margin-bottom: 2px !important;
+    font-weight: 700 !important;
+}
+
+.ap-subtitle {
+    color: $text-muted;
+    font-size: 13px;
+}
+
+.ap-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.ap-btn-add {
+    background: $red-primary !important;
+    border-color: $red-primary !important;
+    font-weight: 500;
+
+    &:hover {
+        background: darken(#D0021B, 8%) !important;
+        border-color: darken(#D0021B, 8%) !important;
+    }
+}
+
+// ── Group theo danh mục ──────────────────
+.ap-group {
+    margin-bottom: 36px;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.ap-group-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: $text-main;
+    margin: 0 0 16px;
+    padding-left: 10px;
+    border-left: 4px solid $red-primary;
+}
+
+// ── Grid ─────────────────────────────────
+.ap-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.ap-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    .product-card {
+        max-width: 100%;
+        flex: 1;
+    }
+
+    // Hiện nút hành động khi hover vào thẻ
+    .ap-card-actions {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        display: flex;
+        gap: 6px;
+        opacity: 0;
+        transform: translateY(-4px);
+        transition: opacity 0.15s, transform 0.15s;
+        z-index: 3;
+    }
+
+    &:hover .ap-card-actions {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ap-btn-edit {
+    border-color: $red-mid !important;
+    color: $red-primary !important;
+    font-size: 12px;
+    background: $white !important;
+
+    &:hover {
+        background: $red-light !important;
+        border-color: $red-primary !important;
+    }
+}
+
+.ap-btn-delete {
+    font-size: 12px;
+    background: $white !important;
+}
+
+// ── Empty / Pagination ───────────────────
+.ap-empty {
+    padding: 64px 0;
+}
+
+.ap-pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 28px;
+
+    .ant-pagination-item-active {
+        border-color: $red-primary;
+
+        a {
+            color: $red-primary;
+        }
+    }
+}

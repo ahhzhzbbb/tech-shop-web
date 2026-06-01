@@ -1,0 +1,70 @@
+$red-primary: #D0021B;
+$red-light: #FFF1F0;
+$text-main: #1a1a1a;
+$text-muted: #8c8c8c;
+
+.pd-title {
+    color: $red-primary;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.pd-form {
+    .ant-form-item-label > label {
+        font-weight: 500;
+        color: $text-main;
+    }
+
+    .ant-input,
+    .ant-input-number,
+    .ant-select-selector {
+        border-radius: 8px !important;
+    }
+
+    .ant-input:focus,
+    .ant-input:hover {
+        border-color: $red-primary;
+        box-shadow: 0 0 0 2px rgba(208, 2, 27, 0.08);
+    }
+}
+
+.pd-row {
+    display: flex;
+    gap: 16px;
+
+    > .ant-form-item {
+        flex: 1;
+    }
+}
+
+.pd-divider {
+    color: $red-primary !important;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.pd-hint {
+    display: block;
+    color: $text-muted;
+    font-size: 13px;
+}
+
+.pd-attr-loading {
+    display: flex;
+    justify-content: center;
+    padding: 16px 0;
+}
+
+.pd-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.pd-btn-ok {
+    background: $red-primary !important;
+    border-color: $red-primary !important;
+
+    &:hover {
+        background: darken(#D0021B, 8%) !important;
+    }
+}

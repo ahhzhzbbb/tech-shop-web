@@ -25,6 +25,21 @@ export const searchProducts = async (keyword, page = 0, size = 10) => {
     return res.data;
 };
 
+export const createProduct = async (productRequest) => {
+    const res = await api.post('/api/product', productRequest, { withCredentials: true });
+    return res.data;
+};
+
+export const updateProduct = async (productId, productRequest) => {
+    const res = await api.put(`/api/product/${productId}`, productRequest, { withCredentials: true });
+    return res.data;
+};
+
+export const deleteProduct = async (productId) => {
+    const res = await api.delete(`/api/product/${productId}`, { withCredentials: true });
+    return res.data;
+};
+
 // Product attribute value endpoints
 export const getProductAttributeValues = async (productId) => {
     const res = await api.get(`/api/product/${productId}/attribute-values`);
@@ -46,16 +61,19 @@ export const deleteProductAttributeValue = async (productId, attributeId) => {
     return res.data;
 };
 
-const productsService = {
+const productsApi = {
     getAllProducts,
     getProductById,
     getProductsByCategoryName,
     getProductsByCategoryId,
     searchProducts,
+    createProduct,
+    updateProduct,
+    deleteProduct,
     getProductAttributeValues,
     saveProductAttributeValue,
     replaceProductAttributeValues,
     deleteProductAttributeValue,
 };
 
-export default productsService;
+export default productsApi;

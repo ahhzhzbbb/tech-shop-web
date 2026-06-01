@@ -13,6 +13,7 @@ import { PencilSimpleIcon, TrashIcon, ListBulletsIcon } from "@phosphor-icons/re
 import categoryApi from "./categoryApi";
 import CategoryModal from "../components/CategoryModal";
 import CategoryAttributesDrawer from "../components/CategoryAttributesDrawer";
+import useCategoryStore from "../../../store/categoryStore";
 import "./AdminCategories.scss";
 
 const { Title, Text } = Typography;
@@ -27,6 +28,8 @@ export default function AdminCategories() {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [messageApi, contextHolder] = message.useMessage();
 
+    const refreshCategoryStore = useCategoryStore((s) => s.fetchCategories);
+
     const fetchCategories = async () => {
         setLoading(true);
         try {
@@ -38,6 +41,7 @@ export default function AdminCategories() {
             setLoading(false);
         }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => { fetchCategories(); }, []);
 
     const openCreate = () => {
@@ -82,6 +86,7 @@ export default function AdminCategories() {
             }
             closeModal();
             fetchCategories();
+            refreshCategoryStore(true); // đồng bộ store dùng chung
         } catch {
             messageApi.error("Có lỗi xảy ra, vui lòng thử lại.");
         } finally {
@@ -99,6 +104,7 @@ export default function AdminCategories() {
             await categoryApi.deleteCategory(record.id);
             messageApi.success(`Đã xoá danh mục "${record.name}".`);
             fetchCategories();
+            refreshCategoryStore(true); // đồng bộ store dùng chung
         } catch {
             messageApi.error("Xoá thất bại, vui lòng thử lại.");
         }

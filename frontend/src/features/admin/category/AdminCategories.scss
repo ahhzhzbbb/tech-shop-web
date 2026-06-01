@@ -87,6 +87,19 @@ $border: #f0f0f0;
 }
 
 // ── Action buttons ───────────────────────
+.ac-btn-attributes {
+    border-color: #ffd6d6 !important;
+    color: #a8071a !important;
+    font-size: 12px;
+    background: #fff7f7 !important;
+
+    &:hover {
+        background: $red-light !important;
+        border-color: $red-primary !important;
+        color: $red-primary !important;
+    }
+}
+
 .ac-btn-edit {
     border-color: $red-mid !important;
     color: $red-primary !important;

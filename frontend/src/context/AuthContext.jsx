@@ -1,9 +1,10 @@
 import { createContext, useContext, useState } from "react";
+import { getInitialAuthUser } from "../utils/authToken";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(getInitialAuthUser);
 
     return (
         <AuthContext.Provider value={{ user, setUser }}>

@@ -1,11 +1,12 @@
 import { Modal, Form, Input, Button, message } from "antd";
 import { useLogin } from "../hooks/useAuth";
 import { useAuthContext } from "../../../context/AuthContext";
+import { setStoredUser } from "../../../utils/authToken";
 
 const LoginModal = ({ open, onCancel, onOpenRegister }) => {
   const { login, loading } = useLogin();
   const [form] = Form.useForm();
-  const { user, setUser } = useAuthContext();
+  const { setUser } = useAuthContext();
 
   const getErrorMessage = (err) => {
     const status = err?.status;
@@ -37,10 +38,13 @@ const LoginModal = ({ open, onCancel, onOpenRegister }) => {
   const handleLogin = async (values) => {
     try {
       const res = await login(values);
-      setUser({
+      const userData = {
         username: res?.username,
         phoneNumber: res?.phoneNumber,
-      })
+        roles: res?.roles ?? [],
+      };
+      setUser(userData);
+      setStoredUser(userData);
       message.success("Đăng nhập thành công");
       form.resetFields();
       onCancel();

@@ -6,7 +6,7 @@ const api = axios.create({
     baseURL: 'https://tech-shop-web.onrender.com',
 });
 
-api.defaults.withCredentials = true;
+api.defaults.withCredentials = true; 
 
 api.interceptors.request.use((config) => {
     const token = getAuthToken();

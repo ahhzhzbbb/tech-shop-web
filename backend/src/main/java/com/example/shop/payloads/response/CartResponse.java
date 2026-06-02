@@ -20,5 +20,7 @@ public class CartResponse {
 
     private Integer totalItems;
 
-    private Double totalAmount;
+    private Long amount;
+
+    private Long totalAmount;
 }

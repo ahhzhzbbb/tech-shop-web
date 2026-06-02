@@ -17,9 +17,9 @@ public class CartItemDTO {
 
     private String imageUrl;
 
-    private Double price;
+    private Long price;
 
     private Integer quantity;
 
-    private Double subTotal;
+    private Long subTotal;
 }

@@ -25,6 +25,10 @@ public class Cart {
     private User user;
 
     @Builder.Default
+    @Column(nullable = false)
+    private Long amount = 0L;
+
+    @Builder.Default
     @OneToMany(
             mappedBy = "cart",
             cascade = CascadeType.ALL,

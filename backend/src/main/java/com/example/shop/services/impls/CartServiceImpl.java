@@ -46,10 +46,17 @@ public class CartServiceImpl implements CartService {
 
                     Cart cart = Cart.builder()
                             .user(user)
+                            .amount(0L)
                             .build();
 
                     return cartRepository.save(cart);
                 });
+    }
+
+    private Long calculateSubTotal(CartItem item) {
+
+        return item.getQuantity()
+                * item.getProduct().getPrice();
     }
 
     private CartResponse buildResponse(Cart cart) {
@@ -64,16 +71,13 @@ public class CartServiceImpl implements CartService {
                                 .imageUrl(item.getProduct().getImageUrl())
                                 .price(item.getProduct().getPrice())
                                 .quantity(item.getQuantity())
-                                .subTotal(
-                                        item.getQuantity()
-                                                * item.getProduct().getPrice()
-                                )
+                                .subTotal(calculateSubTotal(item))
                                 .build())
                         .collect(Collectors.toList());
 
-        double totalAmount =
+        Long amount =
                 items.stream()
-                        .mapToDouble(CartItemDTO::getSubTotal)
+                        .mapToLong(CartItemDTO::getSubTotal)
                         .sum();
 
         int totalItems =
@@ -81,12 +85,15 @@ public class CartServiceImpl implements CartService {
                         .mapToInt(CartItemDTO::getQuantity)
                         .sum();
 
+        cart.setAmount(amount);
+
         return CartResponse.builder()
                 .cartId(cart.getId())
                 .userId(cart.getUser().getUserId())
                 .items(items)
                 .totalItems(totalItems)
-                .totalAmount(totalAmount)
+                .amount(amount)
+                .totalAmount(amount)
                 .build();
     }
 
@@ -113,10 +120,6 @@ public class CartServiceImpl implements CartService {
                         .orElseThrow(() ->
                                 new RuntimeException("Product not found"));
 
-        if (product.getQuantity() < request.getQuantity()) {
-            throw new RuntimeException("Not enough stock");
-        }
-
         CartItem item =
                 cartItemRepository
                         .findByCartIdAndProductId(
@@ -124,6 +127,15 @@ public class CartServiceImpl implements CartService {
                                 product.getId()
                         )
                         .orElse(null);
+
+        int newQuantity =
+                item == null
+                        ? request.getQuantity()
+                        : item.getQuantity() + request.getQuantity();
+
+        if (product.getQuantity() < newQuantity) {
+            throw new RuntimeException("Not enough stock");
+        }
 
         if (item == null) {
 
@@ -133,12 +145,11 @@ public class CartServiceImpl implements CartService {
                     .quantity(request.getQuantity())
                     .build();
 
+            cart.getCartItems().add(item);
+
         } else {
 
-            item.setQuantity(
-                    item.getQuantity()
-                            + request.getQuantity()
-            );
+            item.setQuantity(newQuantity);
         }
 
         cartItemRepository.save(item);
@@ -182,6 +193,8 @@ public class CartServiceImpl implements CartService {
 
         Cart cart = item.getCart();
 
+        cart.getCartItems().remove(item);
+
         cartItemRepository.delete(item);
 
         return buildResponse(cart);
@@ -195,6 +208,8 @@ public class CartServiceImpl implements CartService {
         Cart cart = getOrCreateCart(user);
 
         cart.getCartItems().clear();
+
+        cart.setAmount(0L);
 
         cartRepository.save(cart);
     }

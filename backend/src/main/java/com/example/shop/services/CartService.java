@@ -1,9 +1,21 @@
 package com.example.shop.services;
-import com.example.shop.models.Cart;
+
+import com.example.shop.payloads.request.AddToCartRequest;
+import com.example.shop.payloads.request.UpdateCartItemRequest;
+import com.example.shop.payloads.response.CartResponse;
+
 public interface CartService {
-    Cart GetCartByUserId(Long userId);
-    Cart AddToCart(Long userId, Long productId, Integer quantity);
-    Cart RemoveFromCart(Long userId, Long productId);
-    Cart UpdateCartItemQuantity(Long userId, Long productId, Integer quantity);
-    void clearCart(Long userId);
+
+    CartResponse getCart();
+
+    CartResponse addToCart(AddToCartRequest request);
+
+    CartResponse updateCartItem(
+            Long cartItemId,
+            UpdateCartItemRequest request
+    );
+
+    CartResponse removeCartItem(Long cartItemId);
+
+    void clearCart();
 }

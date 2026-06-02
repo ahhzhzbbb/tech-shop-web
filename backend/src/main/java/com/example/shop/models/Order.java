@@ -24,7 +24,7 @@ public class Order {
     private LocalDate orderDate;
 
     @Column(nullable = false)
-    private Double totalAmount;
+    private Long totalAmount;
 
     @Column(nullable = false)
     private String status;
@@ -43,4 +43,8 @@ public class Order {
     )
     @JsonIgnore
     private Set<OrderItem> orderItems = new HashSet<>();
+
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private Payment payment;
 }

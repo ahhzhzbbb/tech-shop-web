@@ -10,7 +10,7 @@ import java.util.List;
 public class ProductRequest {
     private String name;
     private String description;
-    private Double price;
+    private Long price;
     private Integer quantity;
     private String imageUrl;
     private String status;

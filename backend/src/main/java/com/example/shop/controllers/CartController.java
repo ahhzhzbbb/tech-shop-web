@@ -1,74 +1,76 @@
 package com.example.shop.controllers;
 
-import com.example.shop.models.Cart;
+import com.example.shop.payloads.request.AddToCartRequest;
+import com.example.shop.payloads.request.UpdateCartItemRequest;
+import com.example.shop.payloads.response.CartResponse;
 import com.example.shop.services.CartService;
-
-
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.annotation.security.PermitAll;
-
-import java.util.List;
-
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/cart")
 @RequiredArgsConstructor
 public class CartController {
+
     private final CartService cartService;
-    @PermitAll
-    @GetMapping("/cart")
-    public ResponseEntity<Cart> getCartByUserId(
-            @RequestParam Long userId
-    ) {
 
-        Cart response =
-                cartService.GetCartByUserId(userId);
+    @Operation(summary = "Lấy giỏ hàng hiện tại")
+    @GetMapping
+    public ResponseEntity<CartResponse> getCart() {
 
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok(
+                cartService.getCart()
+        );
     }
 
-    @PermitAll
-    @PostMapping("/cart/add")
-    public ResponseEntity<Cart> addToCart(
-            @RequestParam Long userId,
-            @RequestParam Long productId,
-            @RequestParam Integer quantity
+    @Operation(summary = "Thêm sản phẩm vào giỏ hàng")
+    @PostMapping("/items")
+    public ResponseEntity<CartResponse> addToCart(
+            @Valid @RequestBody AddToCartRequest request
     ) {
 
-        Cart response =
-                cartService.AddToCart(userId, productId, quantity);
-
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok(
+                cartService.addToCart(request)
+        );
     }
 
-    @PermitAll
-    @DeleteMapping("/cart/remove")
-    public ResponseEntity<Cart> removeFromCart(
-            @RequestParam Long userId,
-            @RequestParam Long productId
+    @Operation(summary = "Cập nhật số lượng sản phẩm")
+    @PutMapping("/items/{cartItemId}")
+    public ResponseEntity<CartResponse> updateCartItem(
+            @PathVariable Long cartItemId,
+            @Valid @RequestBody UpdateCartItemRequest request
     ) {
 
-        Cart response =
-                cartService.RemoveFromCart(userId, productId);
-
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok(
+                cartService.updateCartItem(
+                        cartItemId,
+                        request
+                )
+        );
     }
 
-    @PermitAll
-    @PutMapping("/cart/update")
-    public ResponseEntity<Cart> updateCartItemQuantity(
-            @RequestParam Long userId,
-            @RequestParam Long productId,
-            @RequestParam Integer quantity
+    @Operation(summary = "Xóa sản phẩm khỏi giỏ hàng")
+    @DeleteMapping("/items/{cartItemId}")
+    public ResponseEntity<CartResponse> removeCartItem(
+            @PathVariable Long cartItemId
     ) {
 
-        Cart response =
-                cartService.UpdateCartItemQuantity(userId, productId, quantity);
+        return ResponseEntity.ok(
+                cartService.removeCartItem(cartItemId)
+        );
+    }
 
-        return ResponseEntity.ok().body(response);
-    }    
+    @Operation(summary = "Xóa toàn bộ giỏ hàng")
+    @DeleteMapping("/clear")
+    public ResponseEntity<String> clearCart() {
+
+        cartService.clearCart();
+
+        return ResponseEntity.ok(
+                "Cart cleared successfully"
+        );
+    }
 }

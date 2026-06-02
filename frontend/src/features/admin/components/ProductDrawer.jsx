@@ -252,7 +252,11 @@ export default function ProductDrawer({
                 </div>
 
                 <div className="pd-row">
-                    <Form.Item name="categoryId" label="Danh mục">
+                    <Form.Item
+                        name="categoryId"
+                        label="Danh mục"
+                        rules={[{ required: true, message: "Vui lòng chọn danh mục" }]}
+                    >
                         <Select
                             allowClear
                             placeholder="Chọn danh mục"

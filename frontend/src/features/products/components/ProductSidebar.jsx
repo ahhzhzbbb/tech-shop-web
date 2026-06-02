@@ -15,7 +15,7 @@ import {
     FanIcon,
     UserGearIcon,
 } from "@phosphor-icons/react";
-import "./ProductSideBar.scss";
+import "./ProductSidebar.scss";
 import useCategoryStore from "../../../store/categoryStore";
 
 // =========================================

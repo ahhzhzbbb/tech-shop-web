@@ -1,5 +1,4 @@
 import { Modal, Form, Input, Button, message } from "antd";
-import { useState } from "react";
 import { useRegister } from "../hooks/useAuth";
 
 const RegisterModal = ({ open, onCancel, onOpenLogin }) => {

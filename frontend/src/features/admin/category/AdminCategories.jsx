@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     Button,
+    Input,
     Table,
     Tag,
     Popconfirm,
@@ -8,7 +9,7 @@ import {
     Space,
     message,
 } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { PencilSimpleIcon, TrashIcon, ListBulletsIcon } from "@phosphor-icons/react";
 import categoryApi from "./categoryApi";
 import CategoryModal from "../components/CategoryModal";
@@ -26,6 +27,7 @@ export default function AdminCategories() {
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [attributesDrawerOpen, setAttributesDrawerOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
+    const [keyword, setKeyword] = useState("");
     const [messageApi, contextHolder] = message.useMessage();
 
     const refreshCategoryStore = useCategoryStore((s) => s.fetchCategories);
@@ -69,6 +71,24 @@ export default function AdminCategories() {
         setAttributesDrawerOpen(false);
         setSelectedCategory(null);
     };
+
+    const filteredCategories = useMemo(() => {
+        const normalizedKeyword = keyword.trim().toLowerCase();
+        if (!normalizedKeyword) return categories;
+
+        return categories.filter((category) =>
+            category.name?.toLowerCase().includes(normalizedKeyword)
+        );
+    }, [categories, keyword]);
+
+    const metrics = useMemo(() => {
+        const active = categories.filter((category) => category.active !== false).length;
+        return {
+            total: categories.length,
+            active,
+            hidden: categories.length - active,
+        };
+    }, [categories]);
 
     const handleSubmit = async (values) => {
         setConfirmLoading(true);
@@ -185,7 +205,7 @@ export default function AdminCategories() {
             <div className="ac-header">
                 <div>
                     <Title level={3} className="ac-title">Quản lý danh mục</Title>
-                    <Text className="ac-subtitle">{categories.length} danh mục</Text>
+                    <Text className="ac-subtitle">Quản lý danh mục và bộ thuộc tính kỹ thuật</Text>
                 </div>
 
                 <Button
@@ -198,13 +218,43 @@ export default function AdminCategories() {
                 </Button>
             </div>
 
+            <div className="ac-metrics">
+                <div className="ac-metric">
+                    <span>Tổng danh mục</span>
+                    <strong>{metrics.total}</strong>
+                </div>
+                <div className="ac-metric">
+                    <span>Hoạt động</span>
+                    <strong>{metrics.active}</strong>
+                </div>
+                <div className="ac-metric">
+                    <span>Đang ẩn</span>
+                    <strong>{metrics.hidden}</strong>
+                </div>
+            </div>
+
+            <div className="ac-toolbar">
+                <Input
+                    className="ac-search"
+                    prefix={<SearchOutlined />}
+                    placeholder="Tìm danh mục"
+                    allowClear
+                    value={keyword}
+                    onChange={(event) => setKeyword(event.target.value)}
+                />
+            </div>
+
             <div className="ac-table-wrap">
                 <Table
-                    dataSource={categories}
+                    dataSource={filteredCategories}
                     columns={columns}
                     rowKey="id"
                     loading={loading}
-                    pagination={{ pageSize: 10, showSizeChanger: false }}
+                    pagination={{
+                        pageSize: 10,
+                        showSizeChanger: false,
+                        showTotal: (total) => `${total} danh mục`,
+                    }}
                     className="ac-table"
                 />
             </div>

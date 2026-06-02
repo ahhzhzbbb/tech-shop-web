@@ -2,7 +2,8 @@ import axios from 'axios';
 import { getAuthToken } from '../utils/authToken';
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
+    // baseURL: import.meta.env.VITE_API_URL,
+    baseURL: 'https://tech-shop-web.onrender.com',
 });
 
 api.defaults.withCredentials = true;

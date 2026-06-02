@@ -6,13 +6,13 @@ $text-main: #1f2937;
 $text-muted: #6b7280;
 $border: #e5e7eb;
 
-.ap-page {
-    padding: 28px;
+.apr-page {
     min-height: 100%;
+    padding: 28px;
     background: #f6f7f9;
 }
 
-.ap-header {
+.apr-header {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
@@ -21,27 +21,26 @@ $border: #e5e7eb;
     margin-bottom: 20px;
 }
 
-.ap-title {
+.apr-title {
     color: $text-main !important;
     margin-bottom: 4px !important;
     font-weight: 700 !important;
 }
 
-.ap-subtitle {
+.apr-subtitle {
     color: $text-muted;
     font-size: 13px;
 }
 
-.ap-header-actions,
-.ap-toolbar {
+.apr-header-actions,
+.apr-toolbar {
     display: flex;
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
 }
 
-.ap-btn-add,
-.ap-btn-ok {
+.apr-btn-add {
     background: $red-primary !important;
     border-color: $red-primary !important;
     font-weight: 600;
@@ -52,21 +51,21 @@ $border: #e5e7eb;
     }
 }
 
-.ap-metrics {
+.apr-metrics {
     display: grid;
-    grid-template-columns: repeat(5, minmax(140px, 1fr));
+    grid-template-columns: repeat(4, minmax(140px, 1fr));
     gap: 12px;
     margin-bottom: 18px;
 }
 
-.ap-metric {
+.apr-metric {
     background: $white;
     border: 1px solid $border;
     border-left: 3px solid $red-primary;
     border-radius: 8px;
     padding: 14px 16px;
 
-    &__label {
+    span {
         display: block;
         color: $text-muted;
         font-size: 12px;
@@ -75,27 +74,23 @@ $border: #e5e7eb;
 
     strong {
         color: $text-main;
-        font-size: 22px;
+        font-size: 21px;
         line-height: 1;
     }
 }
 
-.ap-toolbar {
+.apr-toolbar {
     background: $white;
     border: 1px solid $border;
     border-radius: 8px 8px 0 0;
     padding: 14px;
 }
 
-.ap-search {
-    width: min(360px, 100%);
+.apr-search {
+    width: min(380px, 100%);
 }
 
-.ap-filter {
-    width: 180px;
-}
-
-.ap-table {
+.apr-table {
     background: $white;
     border: 1px solid $border;
     border-top: 0;
@@ -119,68 +114,23 @@ $border: #e5e7eb;
     }
 }
 
-.ap-product-cell {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    min-width: 0;
-}
-
-.ap-product-image {
-    width: 58px !important;
-    height: 58px !important;
-    object-fit: contain;
-    border-radius: 6px;
-    background: #f9fafb;
-    border: 1px solid #f0f0f0;
-    flex: 0 0 58px;
-
-    &--empty {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #9ca3af;
-        font-size: 10px;
-        text-align: center;
-    }
-}
-
-.ap-product-main {
-    min-width: 0;
+.apr-product-cell {
     display: flex;
     flex-direction: column;
     gap: 3px;
 }
 
-.ap-product-name {
+.apr-product-name {
     color: $text-main;
     font-weight: 700;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 260px;
 }
 
-.ap-product-desc {
-    color: $text-muted;
-    font-size: 12px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 260px;
-}
-
-.ap-price {
-    color: $red-primary;
-    font-weight: 700;
-}
-
-.ap-muted {
+.apr-product-meta {
     color: $text-muted;
     font-size: 12px;
 }
 
-.ap-btn-edit {
+.apr-btn-edit {
     border-color: $red-mid !important;
     color: $red-primary !important;
 
@@ -190,32 +140,47 @@ $border: #e5e7eb;
     }
 }
 
-@media (max-width: 1100px) {
-    .ap-metrics {
-        grid-template-columns: repeat(2, minmax(150px, 1fr));
+.apr-drawer-title {
+    color: $red-primary;
+    font-weight: 700;
+}
+
+.apr-drawer {
+    .ant-drawer-body {
+        background: #fafafa;
+    }
+}
+
+.apr-form {
+    .ant-form-item-label > label {
+        font-weight: 600;
+        color: $text-main;
+    }
+}
+
+.apr-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+@media (max-width: 900px) {
+    .apr-metrics {
+        grid-template-columns: repeat(2, minmax(140px, 1fr));
     }
 }
 
 @media (max-width: 720px) {
-    .ap-page {
+    .apr-page {
         padding: 18px;
     }
 
-    .ap-header {
-        align-items: flex-start;
-    }
-
-    .ap-header-actions,
-    .ap-toolbar {
+    .apr-header-actions,
+    .apr-toolbar,
+    .apr-search {
         width: 100%;
     }
 
-    .ap-search,
-    .ap-filter {
-        width: 100%;
-    }
-
-    .ap-metrics {
+    .apr-metrics {
         grid-template-columns: 1fr;
     }
 }

@@ -12,6 +12,7 @@ import AdminOrders from "../features/admin/orders/AdminOrders.jsx"
 import AdminCategories from "../features/admin/category/AdminCategories.jsx"
 import AdminProducts from "../features/admin/products/AdminProducts.jsx"
 import AdminStatistics from "../features/admin/statistics/AdminStatistics.jsx"
+import AdminPromotions from "../features/admin/promotions/AdminPromotions.jsx"
 
 const AppRoute = () => {
     return (
@@ -33,6 +34,7 @@ const AppRoute = () => {
                     <Route path="/admin/products" element={<AdminProducts />} />
                     <Route path="/admin/categories" element={<AdminCategories />} />
                     <Route path="/admin/orders" element={<AdminOrders />} />
+                    <Route path="/admin/promotions" element={<AdminPromotions />} />
                     <Route path="/admin/statistics" element={<AdminStatistics />} />
                 </Route>
             </Routes>

@@ -33,7 +33,7 @@ export default function CategoryModal({
                 form.setFieldsValue({ active: true });
             }
         }
-    }, [open, editingItem]);
+    }, [open, editingItem, form, isEditing]);
 
     const handleOk = async () => {
         try {

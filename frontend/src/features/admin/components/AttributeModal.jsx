@@ -21,7 +21,7 @@ export default function AttributeModal({
                 form.resetFields();
             }
         }
-    }, [open, editingItem, form]);
+    }, [open, editingItem, form, isEditing]);
 
     const handleOk = async () => {
         try {

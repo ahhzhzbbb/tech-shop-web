@@ -1,0 +1,197 @@
+package com.example.shop.services.impls;
+
+import com.example.shop.configs.VNPayConfig;
+import com.example.shop.exceptions.ResourceNotFoundException;
+import com.example.shop.models.Order;
+import com.example.shop.models.Payment;
+import com.example.shop.models.PaymentMethod;
+import com.example.shop.models.PaymentStatus;
+import com.example.shop.payloads.dto.PaymentDTO;
+import com.example.shop.payloads.request.PaymentRequest;
+import com.example.shop.payloads.response.PaymentResponse;
+import com.example.shop.repositories.OrderRepository;
+import com.example.shop.repositories.PaymentRepository;
+import com.example.shop.services.PaymentService;
+import com.example.shop.utils.VNPayUtil;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.*;
+
+import static javax.xml.crypto.dsig.DigestMethod.SHA256;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class PaymentServiceImpl implements PaymentService {
+    
+    private final PaymentRepository paymentRepository;
+    private final OrderRepository orderRepository;
+    private final VNPayConfig vnPayConfig;
+    private final ModelMapper modelMapper;
+    
+    @Override
+    @Transactional
+    public PaymentResponse createPayment(PaymentRequest paymentRequest) {
+        Order order = orderRepository.findById(paymentRequest.getOrderId())
+                .orElseThrow(() -> new ResourceNotFoundException("Order", "id", paymentRequest.getOrderId()));
+
+        paymentRepository.findByOrderId(order.getId())
+                .ifPresent(p -> {
+                    throw new RuntimeException("Payment already exists for this order");
+                });
+
+        String transactionId = "ORD" + order.getId() + System.currentTimeMillis();
+        
+        Payment payment = Payment.builder()
+                .transactionId(transactionId)
+                .amount(BigDecimal.valueOf(order.getTotalAmount()))
+                .method(paymentRequest.getPaymentMethod())
+                .status(PaymentStatus.PENDING)
+                .order(order)
+                .build();
+        
+        payment = paymentRepository.save(payment);
+        
+        String paymentUrl = "";
+
+        if (paymentRequest.getPaymentMethod() == PaymentMethod.VNPAY) {
+            paymentUrl = generateVNPayUrl(payment, paymentRequest.getBankCode());
+        }
+        
+        return PaymentResponse.builder()
+                .paymentId(payment.getId())
+                .transactionId(payment.getTransactionId())
+                .amount(payment.getAmount())
+                .method(payment.getMethod())
+                .status(payment.getStatus())
+                .createdAt(payment.getCreatedAt())
+                .paymentUrl(paymentUrl)
+                .message("Payment created successfully")
+                .build();
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public PaymentDTO getPaymentById(Long paymentId) {
+        Payment payment = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Payment", "id", paymentId));
+        return modelMapper.map(payment, PaymentDTO.class);
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public PaymentDTO getPaymentByOrderId(Long orderId) {
+        Payment payment = paymentRepository.findByOrderId(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Payment", "orderId", orderId));
+        return modelMapper.map(payment, PaymentDTO.class);
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public List<PaymentDTO> getPaymentsByUserId(Long userId) {
+        List<Payment> payments = paymentRepository.findByOrderUserUserId(userId);
+        return payments.stream()
+                .map(payment -> modelMapper.map(payment, PaymentDTO.class))
+                .toList();
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public List<PaymentDTO> getAllPayments() {
+        return paymentRepository.findAll()
+                .stream()
+                .map(payment -> modelMapper.map(payment, PaymentDTO.class))
+                .toList();
+    }
+    
+    @Override
+    @Transactional
+    public PaymentDTO handleVNPayCallback(Map<String, String> params) {
+        String transactionId = params.get("vnp_TxnRef");
+        String responseCode = params.get("vnp_ResponseCode");
+        String secureHash = params.get("vnp_SecureHash");
+        
+        // Remove secure hash from params for hash verification
+        params.remove("vnp_SecureHash");
+        
+        // Verify hash
+        String calculatedHash = VNPayUtil.hashAllFields(params, vnPayConfig.getHashSecret());
+        if (!calculatedHash.equals(secureHash)) {
+            log.warn("Invalid VNPay hash for transaction: {}", transactionId);
+            throw new RuntimeException("Invalid VNPay hash");
+        }
+        
+        Payment payment = paymentRepository.findByTransactionId(transactionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Payment", "transactionId", transactionId));
+        
+        // Update payment status based on response code
+        if ("00".equals(responseCode)) {
+            payment.setStatus(PaymentStatus.SUCCESS);
+            payment.setPaidAt(LocalDateTime.now());
+            payment.setResponseCode(responseCode);
+            
+            // Update order status
+            Order order = payment.getOrder();
+            order.setStatus("PAID");
+        } else {
+            payment.setStatus(PaymentStatus.FAILED);
+            payment.setResponseCode(responseCode);
+        }
+        
+        payment = paymentRepository.save(payment);
+        return modelMapper.map(payment, PaymentDTO.class);
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public String checkTransactionStatus(String transactionId) {
+        Payment payment = paymentRepository.findByTransactionId(transactionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Payment", "transactionId", transactionId));
+        return payment.getStatus().toString();
+    }
+    
+    @Override
+    @Transactional
+    public PaymentDTO cancelPayment(Long paymentId) {
+        Payment payment = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Payment", "id", paymentId));
+        
+        if (payment.getStatus() != PaymentStatus.PENDING) {
+            throw new RuntimeException("Can only cancel PENDING payments");
+        }
+        
+        payment.setStatus(PaymentStatus.FAILED);
+        payment = paymentRepository.save(payment);
+        
+        return modelMapper.map(payment, PaymentDTO.class);
+    }
+
+    private String generateVNPayUrl(Payment payment, String bankCode) {
+        Map<String, String> vnpParams = new HashMap<>();
+        vnpParams.put("vnp_Version", "2.1.0");
+        vnpParams.put("vnp_Command", "pay");
+        vnpParams.put("vnp_TmnCode", vnPayConfig.getTmnCode());
+        vnpParams.put("vnp_Amount", String.valueOf(payment.getAmount().multiply(new BigDecimal("100")).longValue()));
+        vnpParams.put("vnp_CreateDate", VNPayUtil.getVNPayDateTime());
+        vnpParams.put("vnp_CurrCode", "VND");
+        vnpParams.put("vnp_IpAddr", "127.0.0.1");
+        vnpParams.put("vnp_Locale", "vn");
+        vnpParams.put("vnp_OrderInfo", "Order payment for transaction " + payment.getTransactionId());
+        vnpParams.put("vnp_OrderType", "other");
+        vnpParams.put("vnp_ReturnUrl", vnPayConfig.getReturnUrl());
+        vnpParams.put("vnp_ExpireDate", VNPayUtil.getVNPayExpireDate(5));
+        vnpParams.put("vnp_TxnRef", payment.getTransactionId());
+
+        if (bankCode != null && !bankCode.isEmpty()) {
+            vnpParams.put("vnp_BankCode", bankCode);
+        }
+        
+        return VNPayUtil.buildPaymentUrl(vnpParams, vnPayConfig.getPayUrl(), vnPayConfig.getHashSecret());
+    }
+}

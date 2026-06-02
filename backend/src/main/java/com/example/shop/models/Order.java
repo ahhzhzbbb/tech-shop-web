@@ -43,4 +43,8 @@ public class Order {
     )
     @JsonIgnore
     private Set<OrderItem> orderItems = new HashSet<>();
+
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private Payment payment;
 }

@@ -255,6 +255,47 @@ $transition: 0.2s ease;
   }
 }
 
+// =========================================
+// Flyout danh mục "Phụ kiện" (Popover)
+// =========================================
+.psb-options-popover {
+  .ant-popover-inner {
+    padding: 6px;
+  }
+}
+
+.psb-options {
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+
+  &__item {
+    appearance: none;
+    border: none;
+    background: transparent;
+    text-align: left;
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #374151;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all $transition;
+
+    &:hover {
+      background-color: $primary-light;
+      color: $primary;
+    }
+  }
+
+  &__empty {
+    display: block;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: #9ca3af;
+  }
+}
+
 // FORCE bỏ bo góc toàn bộ sidebar
 .psb-wrapper,
 .psb-inner,

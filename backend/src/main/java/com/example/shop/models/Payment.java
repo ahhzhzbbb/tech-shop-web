@@ -18,11 +18,9 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Mã giao dịch của hệ thống hoặc VNPay
     @Column(unique = true)
     private String transactionId;
 
-    // Số tiền thanh toán
     @Column(nullable = false)
     private BigDecimal amount;
 
@@ -34,18 +32,15 @@ public class Payment {
     @Column(nullable = false)
     private PaymentStatus status;
 
-    // Mã phản hồi từ cổng thanh toán
     private String responseCode;
 
-    // Thời điểm tạo payment
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    // Thời điểm thanh toán thành công
     private LocalDateTime paidAt;
 
     @OneToOne
-    @JoinColumn(name = "order_id", nullable = false, unique = true)
+    @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
     @PrePersist

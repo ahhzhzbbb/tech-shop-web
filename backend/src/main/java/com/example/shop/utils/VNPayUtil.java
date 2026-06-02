@@ -1,5 +1,6 @@
 package com.example.shop.utils;
 
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -35,31 +36,50 @@ public class VNPayUtil {
     /**
      * Build VNPay payment URL with hash
      */
-    public static String buildPaymentUrl(Map<String, String> vnpParams, String vnpPayUrl, String hashSecret) {
+    public static String buildPaymentUrl(
+            Map<String, String> vnpParams,
+            String vnpPayUrl,
+            String hashSecret) {
+
         List<String> fieldNames = new ArrayList<>(vnpParams.keySet());
         Collections.sort(fieldNames);
+
         StringBuilder hashData = new StringBuilder();
         StringBuilder query = new StringBuilder();
-        
-        for (int i = 0; i < fieldNames.size(); i++) {
-            String fieldName = fieldNames.get(i);
+
+        Iterator<String> itr = fieldNames.iterator();
+
+        while (itr.hasNext()) {
+            String fieldName = itr.next();
             String fieldValue = vnpParams.get(fieldName);
+
             if (fieldValue != null && !fieldValue.isEmpty()) {
-                String encodedValue = urlEncode(fieldValue);
-                hashData.append(fieldName).append("=").append(encodedValue);
-                query.append(urlEncode(fieldName)).append("=").append(encodedValue);
-                
-                if (i < fieldNames.size() - 1) {
-                    hashData.append("&");
-                    query.append("&");
+
+                hashData.append(fieldName);
+                hashData.append('=');
+                hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
+
+                query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII));
+                query.append('=');
+                query.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
+
+                if (itr.hasNext()) {
+                    hashData.append('&');
+                    query.append('&');
                 }
             }
         }
-        
-        String vnpSecureHash = hmacSHA512(hashSecret, hashData.toString());
-        System.out.println("HASH DATA: " + hashData);
-        System.out.println("HASH: " + vnpSecureHash);
-        return vnpPayUrl + "?" + query.toString() + "&vnp_SecureHash=" + vnpSecureHash;
+
+        String secureHash = hmacSHA512(hashSecret, hashData.toString());
+
+        System.out.println("HASH DATA = " + hashData);
+        System.out.println("HASH = " + secureHash);
+
+        return vnpPayUrl
+                + "?"
+                + query
+                + "&vnp_SecureHash="
+                + secureHash;
     }
     
     /**
@@ -95,25 +115,40 @@ public class VNPayUtil {
             return "";
         }
     }
-    
-    /**
-     * Hash all fields for verification
-     */
-    public static String hashAllFields(Map<String, String> fields, String hashSecret) {
+
+    public static String hashAllFields(
+            Map<String, String> fields,
+            String hashSecret) {
+
         List<String> fieldNames = new ArrayList<>(fields.keySet());
         Collections.sort(fieldNames);
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < fieldNames.size(); i++) {
-            String fieldName = fieldNames.get(i);
+
+        StringBuilder hashData = new StringBuilder();
+
+        boolean first = true;
+
+        for (String fieldName : fieldNames) {
             String fieldValue = fields.get(fieldName);
+
             if (fieldValue != null && !fieldValue.isEmpty()) {
-                sb.append(fieldName).append("=").append(fieldValue);
-                if (i < fieldNames.size() - 1) {
-                    sb.append("&");
+
+                if (!first) {
+                    hashData.append("&");
                 }
+
+                hashData.append(fieldName)
+                        .append("=")
+                        .append(URLEncoder.encode(
+                                fieldValue,
+                                StandardCharsets.US_ASCII));
+
+                first = false;
             }
         }
-        return hmacSHA512(hashSecret, sb.toString());
+
+        System.out.println("VERIFY HASH DATA = " + hashData);
+
+        return hmacSHA512(hashSecret, hashData.toString());
     }
 
 

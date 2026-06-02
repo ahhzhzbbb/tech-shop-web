@@ -24,7 +24,7 @@ public class Order {
     private LocalDate orderDate;
 
     @Column(nullable = false)
-    private Double totalAmount;
+    private Long totalAmount;
 
     @Column(nullable = false)
     private String status;

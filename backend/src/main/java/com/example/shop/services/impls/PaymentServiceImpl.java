@@ -5,7 +5,6 @@ import com.example.shop.exceptions.ResourceNotFoundException;
 import com.example.shop.models.Order;
 import com.example.shop.models.Payment;
 import com.example.shop.models.PaymentMethod;
-import com.example.shop.models.PaymentStatus;
 import com.example.shop.payloads.dto.PaymentDTO;
 import com.example.shop.payloads.request.PaymentRequest;
 import com.example.shop.payloads.response.PaymentResponse;
@@ -23,7 +22,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static javax.xml.crypto.dsig.DigestMethod.SHA256;
+import static com.example.shop.models.PaymentStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -41,29 +40,47 @@ public class PaymentServiceImpl implements PaymentService {
         Order order = orderRepository.findById(paymentRequest.getOrderId())
                 .orElseThrow(() -> new ResourceNotFoundException("Order", "id", paymentRequest.getOrderId()));
 
-        paymentRepository.findByOrderId(order.getId())
-                .ifPresent(p -> {
-                    throw new RuntimeException("Payment already exists for this order");
-                });
+        Optional<Payment> existedPayment = paymentRepository.findByOrderId(order.getId());
 
-        String transactionId = "ORD" + order.getId() + System.currentTimeMillis();
-        
-        Payment payment = Payment.builder()
+        Payment payment;
+
+        if (existedPayment.isPresent()) {
+            payment = existedPayment.get();
+
+            if (payment.getStatus() == SUCCESS) {
+                throw new RuntimeException("Đơn hàng này đã được thanh toán");
+            }
+
+            if (payment.getStatus() == PENDING) {
+                throw new RuntimeException("Đơn hàng này đang trong giai đoạn thanh toán");
+            }
+
+            payment.setTransactionId(
+                    "ORD" + order.getId() + System.currentTimeMillis()
+            );
+            payment.setStatus(PENDING);
+            payment.setResponseCode(null);
+            payment.setPaidAt(null);
+            payment.setMethod(paymentRequest.getPaymentMethod());
+        } else {
+            String transactionId = "ORD" + order.getId() + System.currentTimeMillis();
+            payment = Payment.builder()
                 .transactionId(transactionId)
                 .amount(BigDecimal.valueOf(order.getTotalAmount()))
                 .method(paymentRequest.getPaymentMethod())
-                .status(PaymentStatus.PENDING)
+                .status(PENDING)
                 .order(order)
                 .build();
-        
-        payment = paymentRepository.save(payment);
-        
+
+            payment = paymentRepository.save(payment);
+        }
+
         String paymentUrl = "";
 
         if (paymentRequest.getPaymentMethod() == PaymentMethod.VNPAY) {
             paymentUrl = generateVNPayUrl(payment, paymentRequest.getBankCode());
         }
-        
+
         return PaymentResponse.builder()
                 .paymentId(payment.getId())
                 .transactionId(payment.getTransactionId())
@@ -119,9 +136,21 @@ public class PaymentServiceImpl implements PaymentService {
         
         // Remove secure hash from params for hash verification
         params.remove("vnp_SecureHash");
-        
+        params.remove("vnp_SecureHashType");
+
+        System.out.println("========== CALLBACK PARAMS ==========");
+        params.forEach((k,v) ->
+                System.out.println(k + " = " + v));
+
         // Verify hash
-        String calculatedHash = VNPayUtil.hashAllFields(params, vnPayConfig.getHashSecret());
+        String calculatedHash =
+                VNPayUtil.hashAllFields(params,
+                        vnPayConfig.getHashSecret());
+
+        System.out.println("VNPay Hash      = " + secureHash);
+        System.out.println("Calculated Hash = " + calculatedHash);
+        System.out.println("=====================================");
+
         if (!calculatedHash.equals(secureHash)) {
             log.warn("Invalid VNPay hash for transaction: {}", transactionId);
             throw new RuntimeException("Invalid VNPay hash");
@@ -132,7 +161,7 @@ public class PaymentServiceImpl implements PaymentService {
         
         // Update payment status based on response code
         if ("00".equals(responseCode)) {
-            payment.setStatus(PaymentStatus.SUCCESS);
+            payment.setStatus(SUCCESS);
             payment.setPaidAt(LocalDateTime.now());
             payment.setResponseCode(responseCode);
             
@@ -140,10 +169,10 @@ public class PaymentServiceImpl implements PaymentService {
             Order order = payment.getOrder();
             order.setStatus("PAID");
         } else {
-            payment.setStatus(PaymentStatus.FAILED);
+            payment.setStatus(FAILED);
             payment.setResponseCode(responseCode);
         }
-        
+
         payment = paymentRepository.save(payment);
         return modelMapper.map(payment, PaymentDTO.class);
     }
@@ -162,11 +191,11 @@ public class PaymentServiceImpl implements PaymentService {
         Payment payment = paymentRepository.findById(paymentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Payment", "id", paymentId));
         
-        if (payment.getStatus() != PaymentStatus.PENDING) {
+        if (payment.getStatus() != PENDING) {
             throw new RuntimeException("Can only cancel PENDING payments");
         }
         
-        payment.setStatus(PaymentStatus.FAILED);
+        payment.setStatus(FAILED);
         payment = paymentRepository.save(payment);
         
         return modelMapper.map(payment, PaymentDTO.class);

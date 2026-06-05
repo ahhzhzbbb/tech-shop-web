@@ -1,0 +1,288 @@
+// === Order Management Tokens ===
+$primary: #E30019;
+$border: #e5e7eb;
+$text: #333;
+$text-light: #666;
+$bg: #fff;
+$bg-light: #f9fafb;
+
+.order-mgmt {
+    width: 100%;
+    background: $bg;
+    border-radius: 8px;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+
+    // =========================================
+    // Header
+    // =========================================
+    &__header {
+        padding: 20px 24px 16px;
+        border-bottom: 1px solid $border;
+    }
+
+    &__title {
+        font-size: 20px;
+        font-weight: 700;
+        color: $text;
+        margin: 0;
+    }
+
+    // =========================================
+    // Tabs
+    // =========================================
+    &__tabs {
+        display: flex;
+        border-bottom: 1px solid $border;
+        padding: 0 24px;
+        gap: 0;
+    }
+
+    &__tab {
+        padding: 14px 20px;
+        font-size: 13px;
+        font-weight: 600;
+        color: $text-light;
+        background: none;
+        border: none;
+        border-bottom: 2px solid transparent;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        transition: color 0.2s, border-color 0.2s;
+        white-space: nowrap;
+
+        &:hover {
+            color: $text;
+        }
+
+        &--active {
+            color: $text;
+            border-bottom-color: $primary;
+        }
+    }
+
+    // =========================================
+    // Search
+    // =========================================
+    &__search {
+        display: flex;
+        align-items: center;
+        padding: 16px 24px;
+        gap: 0;
+        border-bottom: 1px solid $border;
+    }
+
+    &__search-input {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        border: 1px solid $border;
+        border-right: none;
+        border-radius: 4px 0 0 4px;
+        background: $bg;
+
+        input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            color: $text;
+            font-family: inherit;
+            background: transparent;
+
+            &::placeholder {
+                color: #aaa;
+            }
+        }
+    }
+
+    &__search-icon {
+        color: #aaa;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    &__search-btn {
+        padding: 10px 20px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #1677ff;
+        background: $bg;
+        border: 1px solid $border;
+        border-left: 1px solid $border;
+        border-radius: 0 4px 4px 0;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background 0.2s, color 0.2s;
+
+        &:hover {
+            background: #f0f5ff;
+            color: #0958d9;
+        }
+    }
+
+    // =========================================
+    // Content
+    // =========================================
+    &__content {
+        min-height: 200px;
+    }
+
+    // Empty state
+    &__empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 48px 24px;
+        color: $text-light;
+
+        p {
+            margin: 0;
+            font-size: 14px;
+        }
+    }
+
+    &__empty-icon {
+        font-size: 48px;
+        color: #d9d9d9;
+        margin-bottom: 12px;
+    }
+
+    // Loading
+    &__loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 48px 24px;
+        color: $text-light;
+        font-size: 14px;
+    }
+
+    // =========================================
+    // Order list
+    // =========================================
+    &__list {
+        padding: 0;
+    }
+
+    &__item {
+        padding: 16px 24px;
+        border-bottom: 1px solid $border;
+        transition: background 0.15s;
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        &:hover {
+            background: $bg-light;
+        }
+    }
+
+    &__item-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+
+    &__item-id {
+        font-size: 14px;
+        font-weight: 600;
+        color: $text;
+    }
+
+    &__item-status {
+        font-size: 12px;
+        font-weight: 500;
+        padding: 2px 10px;
+        border-radius: 12px;
+
+        &--new {
+            background: #E6F7FF;
+            color: #0050B3;
+        }
+
+        &--processing {
+            background: #FFF7E6;
+            color: #AD6800;
+        }
+
+        &--shipping {
+            background: #F0F5FF;
+            color: #1D39C4;
+        }
+
+        &--completed {
+            background: #F6FFED;
+            color: #389E0D;
+        }
+
+        &--cancelled {
+            background: #FFF1F0;
+            color: #CF1322;
+        }
+    }
+
+    &__item-body {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 6px;
+    }
+
+    &__item-date {
+        font-size: 13px;
+        color: $text-light;
+    }
+
+    &__item-total {
+        font-size: 15px;
+        font-weight: 700;
+        color: $primary;
+    }
+
+    &__item-products {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    &__item-product {
+        font-size: 12px;
+        color: $text-light;
+        background: $bg-light;
+        padding: 2px 8px;
+        border-radius: 4px;
+    }
+}
+
+// === Responsive ===
+@media (max-width: 768px) {
+    .order-mgmt {
+        &__tabs {
+            overflow-x: auto;
+            padding: 0 16px;
+
+            &::-webkit-scrollbar {
+                display: none;
+            }
+        }
+
+        &__tab {
+            padding: 12px 14px;
+            font-size: 12px;
+        }
+
+        &__search {
+            padding: 12px 16px;
+        }
+
+        &__item {
+            padding: 12px 16px;
+        }
+    }
+}

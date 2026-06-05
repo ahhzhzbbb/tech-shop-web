@@ -1,0 +1,365 @@
+// === Footer Tokens ===
+$footer-bg: #fff;
+$footer-border: #e5e7eb;
+$footer-text: #333;
+$footer-heading: #111;
+$footer-link-hover: #e30019;
+$footer-contact-value: #e30019;
+
+.footer {
+  width: 100%;
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  border-top: 1px solid $footer-border;
+  margin-top: auto;
+
+  // === Container ===
+  &__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 16px;
+    display: flex;
+    gap: 0;
+  }
+
+  // =========================================
+  // Main footer (row 1)
+  // =========================================
+  &__main {
+    background: $footer-bg;
+    padding: 28px 0 20px;
+
+    .footer__container {
+      align-items: flex-start;
+    }
+  }
+
+  // === Columns ===
+  &__col {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 0 0 15%;
+    min-width: 0;
+    padding-right: 24px;
+
+    &:nth-child(3) {
+      flex: 0 0 18%;
+    }
+
+    &:nth-child(4) {
+      flex: 0 0 22%;
+    }
+
+    &--badges {
+      flex: 1;
+      padding-right: 0;
+    }
+  }
+
+  // === Heading ===
+  &__heading {
+    font-size: 13px;
+    font-weight: 700;
+    color: $footer-heading;
+    text-transform: uppercase;
+    margin: 0 0 12px;
+    letter-spacing: 0.03em;
+    text-align: left;
+  }
+
+  &__heading-sub {
+    font-weight: 400;
+    font-size: 11px;
+    color: #888;
+  }
+
+  // === Links ===
+  &__links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+
+    li {
+      margin-bottom: 8px;
+      width: 100%;
+    }
+
+    a {
+      font-size: 14px;
+      color: $footer-text;
+      text-decoration: none;
+      transition: color 0.2s;
+      display: inline-block;
+      width: 100%;
+      text-align: left;
+
+      &:hover {
+        color: $footer-link-hover;
+      }
+    }
+  }
+
+  // === Contact list ===
+  &__contact {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+  }
+
+  &__contact-icon {
+    color: #999;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+
+  &__contact-label {
+    color: $footer-text;
+    white-space: nowrap;
+    display: inline-block;
+    min-width: 75px;
+  }
+
+  &__contact-value {
+    color: $footer-contact-value;
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  // === Badge groups (shipping & payment) ===
+  &__badge-group {
+    margin-bottom: 16px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__badge-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #555;
+    background: #fff;
+    white-space: nowrap;
+    gap: 3px;
+
+    strong {
+      font-weight: 800;
+    }
+
+    small {
+      font-size: 8px;
+      font-weight: 400;
+      opacity: 0.7;
+    }
+
+    // === Image logo badge ===
+    &--img {
+      padding: 4px 6px;
+      background: #fff;
+
+      img {
+        height: 22px;
+        width: auto;
+        max-width: 70px;
+        object-fit: contain;
+      }
+    }
+
+    // === Shipping brands (text) ===
+    &--gvn {
+      background: #fff;
+      color: #E8740C;
+      border-color: #e0e0e0;
+      font-size: 13px;
+
+      small { color: #888; }
+    }
+
+    // === Payment brands (text) ===
+    &--banking {
+      background: #fff;
+      color: #333;
+      border-color: #e0e0e0;
+    }
+
+    &--mastercard {
+      background: #fff;
+      color: #333;
+      border-color: #e0e0e0;
+      font-size: 11px;
+    }
+
+    &--cash {
+      background: #fff;
+      color: #333;
+      border-color: #e0e0e0;
+    }
+
+    &--installment {
+      background: #fff;
+      color: #333;
+      border-color: #e0e0e0;
+
+      strong { font-size: 13px; }
+    }
+  }
+
+  // =========================================
+  // Bottom bar (row 2)
+  // =========================================
+  &__bottom {
+    background: #f9fafb;
+    border-top: 1px solid $footer-border;
+    padding: 14px 0;
+
+    .footer__container {
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  // === Social ===
+  &__social {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__social-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: $footer-heading;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  &__social-icons {
+    display: flex;
+    gap: 8px;
+  }
+
+  &__social-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+
+    color: #fff;
+    font-size: 18px;
+    text-decoration: none;
+
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      color: #fff;
+    }
+
+    // Facebook
+    &--facebook {
+      background: #1877f2;
+    }
+
+    // TikTok
+    &--tiktok {
+      background: #000;
+    }
+
+    // YouTube
+    &--youtube {
+      background: #ff0000;
+    }
+
+    // Zalo
+    &--zalo {
+      background: #0068ff;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    // Community
+    &--community {
+      background: #1e88e5;
+    }
+  }
+
+  // === Certification ===
+  &__cert {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__cert-icon {
+    font-size: 28px;
+    color: #2eaa56;
+  }
+
+  &__cert-text {
+    font-size: 10px;
+    font-weight: 600;
+    color: #2eaa56;
+    line-height: 1.3;
+    text-transform: uppercase;
+  }
+}
+
+// === Responsive ===
+@media (max-width: 1024px) {
+  .footer {
+    &__main .footer__container {
+      flex-wrap: wrap;
+    }
+
+    &__col {
+      flex: 0 0 calc(50% - 12px);
+      margin-bottom: 20px;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .footer {
+    &__col {
+      flex: 0 0 100%;
+    }
+
+    &__bottom .footer__container {
+      flex-direction: column;
+      gap: 12px;
+    }
+  }
+}

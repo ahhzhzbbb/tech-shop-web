@@ -20,13 +20,13 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @Operation(summary = "Lấy tất cả danh mục", description = "API dùng để lấy tất cả danh mục sản phẩm")
+    @Operation(summary = "Lấy tất cả danh mục", description = "API dùng để lấy tất cả danh mục sản phẩm. Truyền all=true để lấy cả danh mục đã ẩn (dùng cho admin).")
     @PermitAll
     @GetMapping("/categories")
-    public ResponseEntity<CategoryResponse> getAllCategory() {
-
-        CategoryResponse response = categoryService.getAllCategory();
-
+    public ResponseEntity<CategoryResponse> getAllCategory(
+            @RequestParam(name = "all", defaultValue = "false") boolean includeInactive
+    ) {
+        CategoryResponse response = categoryService.getAllCategory(includeInactive);
         return ResponseEntity.ok().body(response);
     }
 

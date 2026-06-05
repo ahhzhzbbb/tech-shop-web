@@ -22,15 +22,17 @@ public class CategoryServiceImpl implements CategoryService {
     private final ModelMapper modelMapper;
 
     @Override
-    public CategoryResponse getAllCategory() {
+    public CategoryResponse getAllCategory(boolean includeInactive) {
 
-        List<Category> categories = categoryRepository.findAll()
-                .stream()
-                .filter(Category::getActive)
-                .toList();
+        List<Category> categories = categoryRepository.findAll();
+        if (!includeInactive) {
+            categories = categories.stream()
+                    .filter(Category::getActive)
+                    .toList();
+        }
 
         List<CategoryDTO> categoryList = categories.stream()
-                .map(category -> new CategoryDTO(category.getName()))
+                .map(this::toCategoryDTO)
                 .toList();
 
         CategoryResponse response = new CategoryResponse();
@@ -56,11 +58,13 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         Category newCategory = modelMapper.map(request, Category.class);
-        request.setActive(true);
+        if (newCategory.getActive() == null) {
+            newCategory.setActive(true);
+        }
 
         categoryRepository.save(newCategory);
 
-        return modelMapper.map(newCategory, CategoryDTO.class);
+        return toCategoryDTO(newCategory);
     }
 
     @Override
@@ -78,10 +82,13 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         category.setName(request.getName());
+        if (request.getActive() != null) {
+            category.setActive(request.getActive());
+        }
 
         categoryRepository.save(category);
 
-        return modelMapper.map(category, CategoryDTO.class);
+        return toCategoryDTO(category);
     }
 
     @Override
@@ -94,6 +101,14 @@ public class CategoryServiceImpl implements CategoryService {
 
         categoryRepository.delete(deletedCategory);
 
-        return modelMapper.map(deletedCategory, CategoryDTO.class);
+        return toCategoryDTO(deletedCategory);
+    }
+
+    private CategoryDTO toCategoryDTO(Category category) {
+        return new CategoryDTO(
+                category.getId(),
+                category.getName(),
+                category.getActive()
+        );
     }
 }

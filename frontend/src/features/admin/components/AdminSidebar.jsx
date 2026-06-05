@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { Menu } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
     SquaresFour,
     Package,
@@ -8,6 +7,7 @@ import {
     ShoppingCart,
     ChartBar,
     House,
+    Percent,
 } from "@phosphor-icons/react";
 import "./AdminSidebar.scss";
 
@@ -20,10 +20,11 @@ const categories = [
     {
         section: "Quản lý",
         items: [
-            { id: "overview", label: "Tổng quan", badge: "Admin", badgeType: "admin" },
+            { id: "overview", label: "Tổng quan" },
             { id: "products", label: "Sản phẩm" },
             { id: "categories", label: "Danh mục" },
             { id: "orders", label: "Đơn hàng" },
+            { id: "promotions", label: "Khuyến mãi" },
             { id: "statistics", label: "Thống kê" },
         ],
     },
@@ -35,6 +36,7 @@ const iconMap = {
     products: <Package size={18} />,
     categories: <Tag size={18} />,
     orders: <ShoppingCart size={18} />,
+    promotions: <Percent size={18} />,
     statistics: <ChartBar size={18} />,
 };
 
@@ -64,15 +66,20 @@ const menuItems = categories.flatMap((group, gi) => {
     return gi === 0 ? [groupItem] : [{ type: "divider" }, groupItem];
 });
 
-export default function AdminSidebar({
-    defaultSelected = "overview",
-    onSelect,
-}) {
+const getSelectedKey = (pathname) => {
+    if (pathname === "/") return "home";
+    if (pathname === "/admin") return "overview";
+
+    const match = pathname.match(/^\/admin\/([^/]+)/);
+    return match?.[1] || "overview";
+};
+
+export default function AdminSidebar({ onSelect }) {
     const navigate = useNavigate();
-    const [selectedKeys, setSelectedKeys] = useState([defaultSelected]);
+    const location = useLocation();
+    const selectedKey = getSelectedKey(location.pathname);
 
     const handleSelect = ({ key }) => {
-        setSelectedKeys([key]);
         onSelect?.(key);
 
         if (key === "home") {
@@ -94,7 +101,7 @@ export default function AdminSidebar({
 
                 <Menu
                     mode="inline"
-                    selectedKeys={selectedKeys}
+                    selectedKeys={[selectedKey]}
                     onSelect={handleSelect}
                     items={menuItems}
                     className="asb-menu"

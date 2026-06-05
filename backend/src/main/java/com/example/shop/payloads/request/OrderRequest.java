@@ -10,7 +10,7 @@ import java.util.List;
 @Setter
 public class OrderRequest {
     private LocalDate orderDate;
-    private Double totalAmount;
+    private Long totalAmount;
     private String status;
     private String notes;
     private Long userId;

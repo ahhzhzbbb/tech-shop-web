@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { registerApi, loginApi, logoutApi } from "../services/auth.service";
 import { useAuthContext } from "../../../context/AuthContext.jsx";
+import {
+  clearAuthToken,
+  clearStoredUser,
+  extractJwtFromLoginResponse,
+  setAuthToken,
+} from "../../../utils/authToken";
 
 export const useRegister = () => {
   const [loading, setLoading] = useState(false);
@@ -27,6 +33,10 @@ export const useLogin = () => {
     try {
       setLoading(true);
       const res = await loginApi(data);
+      const token = extractJwtFromLoginResponse(res);
+      if (token) {
+        setAuthToken(token);
+      }
       return res;
     } catch (err) {
       throw err?.response?.data || err;
@@ -47,8 +57,8 @@ export const useLogout = () => {
       setLoading(true);
       await logoutApi();
       setUser(null);
-      // Xóa token từ localStorage nếu có
-      localStorage.removeItem('token');
+      clearAuthToken();
+      clearStoredUser();
       return true;
     } catch (err) {
       throw err?.response?.data || err;

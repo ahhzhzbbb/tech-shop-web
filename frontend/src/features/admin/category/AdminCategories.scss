@@ -7,9 +7,9 @@ $text-muted: #8c8c8c;
 $border: #f0f0f0;
 
 .ac-page {
-    padding: 32px;
-    min-height: 100vh;
-    background: #fafafa;
+    padding: 28px;
+    min-height: 100%;
+    background: #f6f7f9;
 }
 
 // ── Header ───────────────────────────────
@@ -17,13 +17,11 @@ $border: #f0f0f0;
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    margin-bottom: 24px;
-    padding-bottom: 20px;
-    border-bottom: 1.5px solid $red-mid;
+    margin-bottom: 20px;
 }
 
 .ac-title {
-    color: $red-primary !important;
+    color: #1f2937 !important;
     margin-bottom: 2px !important;
     font-weight: 700 !important;
 }
@@ -40,16 +38,59 @@ $border: #f0f0f0;
     font-weight: 500;
 
     &:hover {
-        background: darken(#D0021B, 8%) !important;
-        border-color: darken(#D0021B, 8%) !important;
+        background: #b0011a !important;
+        border-color: #b0011a !important;
     }
+}
+
+.ac-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.ac-metric {
+    background: $white;
+    border: 1px solid #e5e7eb;
+    border-left: 3px solid $red-primary;
+    border-radius: 8px;
+    padding: 14px 16px;
+
+    span {
+        display: block;
+        color: #6b7280;
+        font-size: 12px;
+        margin-bottom: 6px;
+    }
+
+    strong {
+        color: #1f2937;
+        font-size: 22px;
+        line-height: 1;
+    }
+}
+
+.ac-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: $white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px 8px 0 0;
+    padding: 14px;
+}
+
+.ac-search {
+    width: min(360px, 100%);
 }
 
 // ── Table ────────────────────────────────
 .ac-table-wrap {
     background: $white;
-    border-radius: 12px;
-    border: 1px solid $border;
+    border-radius: 0 0 8px 8px;
+    border: 1px solid #e5e7eb;
+    border-top: 0;
     overflow: hidden;
 }
 
@@ -75,6 +116,26 @@ $border: #f0f0f0;
     }
 }
 
+@media (max-width: 720px) {
+    .ac-page {
+        padding: 18px;
+    }
+
+    .ac-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .ac-metrics {
+        grid-template-columns: 1fr;
+    }
+
+    .ac-toolbar,
+    .ac-search {
+        width: 100%;
+    }
+}
+
 .ac-index {
     color: $text-muted;
     font-size: 13px;
@@ -87,6 +148,19 @@ $border: #f0f0f0;
 }
 
 // ── Action buttons ───────────────────────
+.ac-btn-attributes {
+    border-color: #ffd6d6 !important;
+    color: #a8071a !important;
+    font-size: 12px;
+    background: #fff7f7 !important;
+
+    &:hover {
+        background: $red-light !important;
+        border-color: $red-primary !important;
+        color: $red-primary !important;
+    }
+}
+
 .ac-btn-edit {
     border-color: $red-mid !important;
     color: $red-primary !important;
@@ -136,6 +210,6 @@ $border: #f0f0f0;
     border-color: $red-primary !important;
 
     &:hover {
-        background: darken(#D0021B, 8%) !important;
+        background: #b0011a !important;
     }
 }

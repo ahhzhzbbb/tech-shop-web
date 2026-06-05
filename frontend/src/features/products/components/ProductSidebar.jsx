@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Menu } from "antd";
+import { useState, useEffect, useMemo } from "react";
+import { Menu, Popover } from "antd";
 import { useNavigate } from "react-router-dom";
 import { MoreOutlined, LaptopOutlined, HomeOutlined } from "@ant-design/icons";
 import {
@@ -15,7 +15,8 @@ import {
     FanIcon,
     UserGearIcon,
 } from "@phosphor-icons/react";
-import "./ProductSideBar.scss";
+import "./ProductSidebar.scss";
+import useCategoryStore from "../../../store/categoryStore";
 
 // =========================================
 // Categories data
@@ -65,6 +66,8 @@ const categories = [
     }
 ];
 
+const DEFAULT_CATEGORY_NAME = ["Laptop", "PC", "Chuột", "Bàn phím", "Màn hình", "Tai nghe", "RAM", "CPU", "Card đồ họa", "Tản nhiệt"];
+
 // =========================================
 // Icon map
 // =========================================
@@ -93,48 +96,92 @@ const Badge = ({ type, label }) => (
 );
 
 // =========================================
-// Build Menu items from categories
-// =========================================
-const menuItems = categories.flatMap((group, gi) => {
-    const groupItem = {
-        key: `group-${gi}`,
-        type: "group",
-        label: group.section,
-        children: group.items.map((item) => ({
-            key: item.id,
-            icon: iconMap[item.id],
-
-            // FIX: tất cả item đều dùng chung class psb-item-label
-            label: (
-                <span className="psb-item-label">
-                    <span className="psb-item-text">{item.label}</span>
-
-                    {item.badge && (
-                        <Badge
-                            type={item.badgeType}
-                            label={item.badge}
-                        />
-                    )}
-                </span>
-            ),
-        })),
-    };
-
-    return gi === 0 ? [groupItem] : [{ type: "divider" }, groupItem];
-});
-
-// =========================================
 // ProductSideBar
 // =========================================
 export default function ProductSideBar({
     defaultSelected = "home",
-    onSelect,
-    isAdmin = false
+    onSelect
 }) {
     const navigate = useNavigate();
     const [selectedKeys, setSelectedKeys] = useState([defaultSelected]);
 
+    const storeCategories = useCategoryStore((s) => s.categories);
+    const fetchCategories = useCategoryStore((s) => s.fetchCategories);
+
+    useEffect(() => { fetchCategories(); }, [fetchCategories]);
+
+    // Các danh mục thuộc nhóm "Phụ kiện" (không nằm trong danh mục mặc định)
+    const optionCategories = useMemo(
+        () => storeCategories.filter((c) => !DEFAULT_CATEGORY_NAME.includes(c.name)),
+        [storeCategories]
+    );
+
+    // Nội dung flyout hiển thị khi hover vào "Phụ kiện"
+    const accessoryOptions = (
+        <div className="psb-options">
+            {optionCategories.length > 0 ? (
+                optionCategories.map((c) => (
+                    <button
+                        key={c.id}
+                        type="button"
+                        className="psb-options__item"
+                        onClick={() => navigate(`/products/${c.name}`)}
+                    >
+                        {c.name}
+                    </button>
+                ))
+            ) : (
+                <span className="psb-options__empty">Chưa có danh mục</span>
+            )}
+        </div>
+    );
+
+    const menuItems = useMemo(
+        () =>
+            categories.flatMap((group, gi) => {
+                const groupItem = {
+                    key: `group-${gi}`,
+                    type: "group",
+                    label: group.section,
+                    children: group.items.map((item) => ({
+                        key: item.id,
+                        icon: iconMap[item.id],
+
+                        // "Phụ kiện": hover hiện danh mục con (Popover), không điều hướng
+                        label:
+                            item.id === "accessory" ? (
+                                <Popover
+                                    trigger="hover"
+                                    placement="rightTop"
+                                    overlayClassName="psb-options-popover"
+                                    content={accessoryOptions}
+                                >
+                                    <span className="psb-item-label">
+                                        <span className="psb-item-text">{item.label}</span>
+                                    </span>
+                                </Popover>
+                            ) : (
+                                <span className="psb-item-label">
+                                    <span className="psb-item-text">{item.label}</span>
+                                    {item.badge && (
+                                        <Badge type={item.badgeType} label={item.badge} />
+                                    )}
+                                </span>
+                            ),
+                    })),
+                };
+
+                return gi === 0 ? [groupItem] : [{ type: "divider" }, groupItem];
+            }),
+        // accessoryOptions phụ thuộc optionCategories nên đủ để rebuild
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [optionCategories]
+    );
+
     const handleSelect = ({ key }) => {
+        // Nhấn vào "Phụ kiện" không điều hướng, chỉ dùng để hover xem danh mục con
+        if (key === "accessory") return;
+
         setSelectedKeys([key]);
         onSelect?.(key);
 

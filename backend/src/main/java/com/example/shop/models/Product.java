@@ -25,7 +25,7 @@ public class Product {
     @Column(columnDefinition = "TEXT")
     private String description;
     @Column(nullable = false)
-    private Double price;
+    private Long price;
     private Integer quantity;
     @Column(columnDefinition = "TEXT")
     private String imageUrl;

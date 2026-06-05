@@ -6,7 +6,7 @@ import com.example.shop.payloads.response.CategoryResponse;
 
 public interface CategoryService {
 
-    CategoryResponse getAllCategory();
+    CategoryResponse getAllCategory(boolean includeInactive);
 //    CategoryDTO getCategoryAndProduct(Long id);
     CategoryDTO createCategory(CategoryRequest request);
     CategoryDTO updateCategory(Long id, CategoryRequest request);

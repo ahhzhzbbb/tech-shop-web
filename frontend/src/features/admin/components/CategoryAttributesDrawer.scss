@@ -1,0 +1,105 @@
+$red-primary: #D0021B;
+$red-light: #FFF1F0;
+$red-mid: #FFCCC7;
+$white: #ffffff;
+$text-muted: #8c8c8c;
+
+.cad-drawer {
+    .ant-drawer-header {
+        border-bottom: 1.5px solid $red-mid;
+    }
+
+    .ant-drawer-body {
+        padding: 20px 24px;
+        background: #fafafa;
+    }
+}
+
+.cad-drawer-title {
+    .cad-title {
+        margin: 0 !important;
+        color: $red-primary !important;
+        font-weight: 700 !important;
+    }
+
+    .cad-subtitle {
+        display: block;
+        margin-top: 2px;
+        color: $text-muted;
+        font-size: 13px;
+    }
+}
+
+.cad-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.cad-count {
+    color: $text-muted;
+    font-size: 13px;
+}
+
+.cad-btn-add {
+    background: $red-primary !important;
+    border-color: $red-primary !important;
+    font-weight: 500;
+
+    &:hover {
+        background: #b0011a !important;
+        border-color: #b0011a !important;
+    }
+}
+
+.cad-table-wrap {
+    background: $white;
+    border-radius: 12px;
+    border: 1px solid #f0f0f0;
+    overflow: hidden;
+    min-height: 200px;
+}
+
+.cad-empty {
+    padding: 48px 0;
+}
+
+.cad-table {
+    .ant-table-thead > tr > th {
+        background: $red-light;
+        color: $red-primary;
+        font-weight: 600;
+        font-size: 13px;
+        border-bottom: 1.5px solid $red-mid;
+    }
+
+    .ant-table-tbody > tr:hover > td {
+        background: #fffafa !important;
+    }
+}
+
+.cad-index {
+    color: $text-muted;
+    font-size: 13px;
+}
+
+.cad-name {
+    font-weight: 500;
+    color: #1a1a1a;
+}
+
+.cad-btn-edit {
+    border-color: $red-mid !important;
+    color: $red-primary !important;
+    font-size: 12px;
+
+    &:hover {
+        background: $red-light !important;
+        border-color: $red-primary !important;
+    }
+}
+
+.cad-btn-delete {
+    font-size: 12px;
+}

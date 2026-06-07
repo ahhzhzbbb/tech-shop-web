@@ -10,8 +10,31 @@ export const getProductById = async (productId) => {
     return res.data;
 };
 
-export const getProductsByCategoryName = async (categoryName) => {
-    const res = await api.get(`/api/products/category/${categoryName}`);
+export const getProductsByCategoryName = async (categoryName, options = {}) => {
+    const hasOptions = Object.keys(options).length > 0;
+    if (!hasOptions) {
+        const res = await api.get(`/api/products/category/${categoryName}`);
+        return res.data;
+    }
+
+    const {
+        page = 0,
+        size = 10,
+        minPrice,
+        maxPrice,
+        sortBy,
+        sortDir,
+        attributes,
+    } = options;
+
+    const params = { categoryName, page, size };
+    if (minPrice != null) params.minPrice = minPrice;
+    if (maxPrice != null) params.maxPrice = maxPrice;
+    if (sortBy) params.sortBy = sortBy;
+    if (sortDir) params.sortDir = sortDir;
+    if (attributes) params.attributes = attributes;
+
+    const res = await api.get('/api/products/filter', { params });
     return res.data;
 };
 
@@ -22,6 +45,24 @@ export const getProductsByCategoryId = async (categoryId, page = 0, size = 10) =
 
 export const searchProducts = async (keyword, page = 0, size = 10) => {
     const res = await api.get('/api/products/search', { params: { keyword, page, size } });
+    return res.data;
+};
+
+export const filterProducts = async ({
+    categoryName,
+    minPrice,
+    maxPrice,
+    sortBy = 'id',
+    sortDir = 'asc',
+    attributes,
+    page = 0,
+    size = 20,
+}) => {
+    const params = { categoryName, minPrice, maxPrice, sortBy, sortDir, page, size };
+    if (attributes) {
+        params.attributes = attributes;
+    }
+    const res = await api.get('/api/products/filter', { params });
     return res.data;
 };
 
@@ -52,6 +93,7 @@ const productsService = {
     getProductsByCategoryName,
     getProductsByCategoryId,
     searchProducts,
+    filterProducts,
     getProductAttributeValues,
     saveProductAttributeValue,
     replaceProductAttributeValues,

@@ -17,6 +17,7 @@ import {
 } from "@phosphor-icons/react";
 import "./ProductSidebar.scss";
 import useCategoryStore from "../../../store/categoryStore";
+import useAuthStore from "../../../store/authStore";
 
 // =========================================
 // Categories data
@@ -136,46 +137,56 @@ export default function ProductSideBar({
         </div>
     );
 
+    const roles = useAuthStore((state) => state.user?.roles);
+    const normalizedRoles = useMemo(
+        () => (Array.isArray(roles) ? roles : roles ? [roles] : []),
+        [roles]
+    );
+    const isAdmin = useMemo(
+        () => normalizedRoles.some((role) => ["ROLE_ADMIN", "ADMIN", "admin"].includes(role)),
+        [normalizedRoles]
+    );
+
     const menuItems = useMemo(
         () =>
-            categories.flatMap((group, gi) => {
-                const groupItem = {
-                    key: `group-${gi}`,
-                    type: "group",
-                    label: group.section,
-                    children: group.items.map((item) => ({
-                        key: item.id,
-                        icon: iconMap[item.id],
+            categories
+                .filter((group) => isAdmin || group.section !== "Admin")
+                .flatMap((group, gi) => {
+                    const groupItem = {
+                        key: `group-${gi}`,
+                        type: "group",
+                        label: group.section,
+                        children: group.items.map((item) => ({
+                            key: item.label,
+                            icon: iconMap[item.id],
 
-                        // "Phụ kiện": hover hiện danh mục con (Popover), không điều hướng
-                        label:
-                            item.id === "accessory" ? (
-                                <Popover
-                                    trigger="hover"
-                                    placement="rightTop"
-                                    overlayClassName="psb-options-popover"
-                                    content={accessoryOptions}
-                                >
+                            // "Phụ kiện": hover hiện danh mục con (Popover), không điều hướng
+                            label:
+                                item.id === "accessory" ? (
+                                    <Popover
+                                        trigger="hover"
+                                        placement="rightTop"
+                                        overlayClassName="psb-options-popover"
+                                        content={accessoryOptions}
+                                    >
+                                        <span className="psb-item-label">
+                                            <span className="psb-item-text">{item.label}</span>
+                                        </span>
+                                    </Popover>
+                                ) : (
                                     <span className="psb-item-label">
                                         <span className="psb-item-text">{item.label}</span>
+                                        {item.badge && (
+                                            <Badge type={item.badgeType} label={item.badge} />
+                                        )}
                                     </span>
-                                </Popover>
-                            ) : (
-                                <span className="psb-item-label">
-                                    <span className="psb-item-text">{item.label}</span>
-                                    {item.badge && (
-                                        <Badge type={item.badgeType} label={item.badge} />
-                                    )}
-                                </span>
-                            ),
-                    })),
-                };
+                                ),
+                        })),
+                    };
 
-                return gi === 0 ? [groupItem] : [{ type: "divider" }, groupItem];
-            }),
-        // accessoryOptions phụ thuộc optionCategories nên đủ để rebuild
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [optionCategories]
+                    return gi === 0 ? [groupItem] : [{ type: "divider" }, groupItem];
+                }),
+        [optionCategories, accessoryOptions, isAdmin]
     );
 
     const handleSelect = ({ key }) => {
@@ -185,7 +196,7 @@ export default function ProductSideBar({
         setSelectedKeys([key]);
         onSelect?.(key);
 
-        if (key === "home") {
+        if (key === "Trang chủ") {
             navigate("/");
         } else if (key === "admin") {
             navigate("/admin");

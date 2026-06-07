@@ -13,7 +13,7 @@ export const getProductById = async (productId) => {
 export const getProductsByCategoryName = async (categoryName, options = {}) => {
     const hasOptions = Object.keys(options).length > 0;
     if (!hasOptions) {
-        const res = await api.get(`/api/products/category/${categoryName}`);
+        const res = await api.get(`/api/products/category/${encodeURIComponent(categoryName)}`);
         return res.data;
     }
 
@@ -48,24 +48,6 @@ export const searchProducts = async (keyword, page = 0, size = 10) => {
     return res.data;
 };
 
-export const filterProducts = async ({
-    categoryName,
-    minPrice,
-    maxPrice,
-    sortBy = 'id',
-    sortDir = 'asc',
-    attributes,
-    page = 0,
-    size = 20,
-}) => {
-    const params = { categoryName, minPrice, maxPrice, sortBy, sortDir, page, size };
-    if (attributes) {
-        params.attributes = attributes;
-    }
-    const res = await api.get('/api/products/filter', { params });
-    return res.data;
-};
-
 // Product attribute value endpoints
 export const getProductAttributeValues = async (productId) => {
     const res = await api.get(`/api/product/${productId}/attribute-values`);
@@ -93,7 +75,6 @@ const productsService = {
     getProductsByCategoryName,
     getProductsByCategoryId,
     searchProducts,
-    filterProducts,
     getProductAttributeValues,
     saveProductAttributeValue,
     replaceProductAttributeValues,

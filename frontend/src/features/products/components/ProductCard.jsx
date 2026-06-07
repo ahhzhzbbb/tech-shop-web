@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
     GiftFilled,
     StarFilled,
@@ -12,17 +13,37 @@ const formatCurrency = (amount) => {
         .replace('₫', 'đ');
 };
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, categoryName }) => {
+    const navigate = useNavigate();
+
     if (!product) return null;
 
-    const { name, thumbnail, price, salePrice, discount, averageScore, reviewsCount, attributes } = product;
+    const { id, name, thumbnail, price, salePrice, discount, averageScore, reviewsCount, attributes } = product;
 
     const oldPrice = price;
     const newPrice = salePrice || price;
     const discountPercent = discount || (oldPrice > newPrice ? Math.round(((oldPrice - newPrice) / oldPrice) * 100) : 0);
 
+    const category = categoryName || product.categoryName;
+
+    const handleClick = () => {
+        if (id == null) return;
+        navigate(`/products/${encodeURIComponent(category)}/${id}`);
+    };
+
     return (
-        <div className="product-card">
+        <div
+            className="product-card"
+            onClick={handleClick}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    handleClick();
+                }
+            }}
+        >
             {/* Gift Icon Badge */}
             <div className="product-card__badge-gift">
                 <GiftFilled />

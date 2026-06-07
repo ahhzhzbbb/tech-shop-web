@@ -3,7 +3,7 @@ import { getAuthToken } from '../utils/authToken';
 
 const api = axios.create({
     // baseURL: import.meta.env.VITE_API_URL,
-    baseURL: 'https://tech-shop-web.onrender.com',
+    baseURL: 'http://localhost:8080',
 });
 
 api.defaults.withCredentials = true; 

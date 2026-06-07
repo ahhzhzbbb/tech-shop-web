@@ -215,9 +215,9 @@ export default function AdminProducts() {
             width: 360,
             render: (_, record) => (
                 <div className="ap-product-cell">
-                    {record.imageUrl ? (
+                    {record.thumbnail ? (
                         <Image
-                            src={record.imageUrl}
+                            src={record.thumbnail}
                             alt={record.name}
                             width={58}
                             height={58}

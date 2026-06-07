@@ -77,7 +77,7 @@ export default function ProductDrawer({
                 name: editingItem.name,
                 price: editingItem.price,
                 quantity: editingItem.quantity,
-                imageUrl: editingItem.imageUrl,
+                thumbnail: editingItem.thumbnail,
                 categoryId: editingItem.categoryId ?? undefined,
                 status: editingItem.status ?? "ACTIVE",
                 description: editingItem.description,
@@ -269,7 +269,7 @@ export default function ProductDrawer({
                     </Form.Item>
                 </div>
 
-                <Form.Item name="imageUrl" label="Ảnh sản phẩm (URL)">
+                <Form.Item name="thumbnail" label="Ảnh sản phẩm (URL)">
                     <Input placeholder="https://..." />
                 </Form.Item>
 

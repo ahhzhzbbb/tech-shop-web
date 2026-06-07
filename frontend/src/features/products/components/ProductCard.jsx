@@ -15,7 +15,7 @@ const formatCurrency = (amount) => {
 const ProductCard = ({ product }) => {
     if (!product) return null;
 
-    const { name, imageUrl, price, salePrice, discount, averageScore, reviewsCount, attributes } = product;
+    const { name, thumbnail, price, salePrice, discount, averageScore, reviewsCount, attributes } = product;
 
     const oldPrice = price;
     const newPrice = salePrice || price;
@@ -30,7 +30,7 @@ const ProductCard = ({ product }) => {
 
             {/* Product Image */}
             <div className="product-card__image-container">
-                <img src={imageUrl} alt={name} className="product-card__image" />
+                <img src={thumbnail} alt={name} className="product-card__image" />
             </div>
 
             <div className="product-card__content">

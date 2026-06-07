@@ -7,8 +7,9 @@ import { useAuthContext } from "../context/AuthContext.jsx";
 
 const AdminLayout = () => {
     const { user } = useAuthContext();
-    const roles = user?.roles || [];
-    const isAdmin = roles.includes("ROLE_ADMIN") || roles.includes("ADMIN");
+    const roles = user?.roles;
+    const normalizedRoles = Array.isArray(roles) ? roles : roles ? [roles] : [];
+    const isAdmin = normalizedRoles.some((role) => ["ROLE_ADMIN", "ADMIN", "admin"].includes(role));
 
     return (
         <>

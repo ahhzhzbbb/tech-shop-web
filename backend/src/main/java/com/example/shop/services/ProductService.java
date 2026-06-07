@@ -1,4 +1,5 @@
 package com.example.shop.services;
+
 import com.example.shop.payloads.dto.ProductDTO;
 import com.example.shop.payloads.request.ProductRequest;
 import com.example.shop.payloads.response.ProductsResponse;
@@ -15,6 +16,17 @@ public interface ProductService {
     ProductsResponse getProductsByCategory(String categoryName, int page, int size);
 
     ProductsResponse searchProducts(String keyword, int page, int size);
+
+    ProductsResponse filterProducts(
+            Long categoryId,
+            String categoryName,
+            Long minPrice,
+            Long maxPrice,
+            String attributesCsv,
+            String sortBy,
+            String sortDir,
+            int page,
+            int size);
 
     ProductDTO updateProduct(Long productId, ProductRequest productRequest);
 

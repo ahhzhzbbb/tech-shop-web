@@ -21,6 +21,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -33,7 +38,6 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final AttributeRepository attributeRepository;
-
 
     @Transactional
     @Override
@@ -98,8 +102,8 @@ public class ProductServiceImpl implements ProductService {
         if (productRequest.getCategoryId() != null) {
             Category category = getActiveCategory(productRequest.getCategoryId());
             product.setCategory(category);
-            product.getAttributeValues().removeIf(value ->
-                    !value.getAttribute().getCategory().getId().equals(category.getId()));
+            product.getAttributeValues()
+                    .removeIf(value -> !value.getAttribute().getCategory().getId().equals(category.getId()));
         }
 
         if (productRequest.getAttributeValues() != null) {
@@ -154,6 +158,94 @@ public class ProductServiceImpl implements ProductService {
         return toProductsResponse(products);
     }
 
+    @Transactional
+    @Override
+    public ProductsResponse filterProducts(Long categoryId, String categoryName, Long minPrice, Long maxPrice,
+            String attributesCsv, String sortBy, String sortDir, int page, int size) {
+        Long resolvedCategoryId;
+        if (categoryName != null && (categoryId == null)) {
+            Category category = categoryRepository.findByNameIgnoreCase(categoryName)
+                    .orElseThrow(() -> new ResourceNotFoundException("Category", "name", categoryName));
+            resolvedCategoryId = category.getId();
+        } else {
+            resolvedCategoryId = categoryId;
+        }
+
+        Specification<Product> spec = (root, query, cb) -> {
+            query.distinct(true);
+            Predicate predicate = cb.conjunction();
+
+            if (resolvedCategoryId != null) {
+                predicate = cb.and(predicate, cb.equal(root.get("category").get("id"), resolvedCategoryId));
+            }
+
+            if (minPrice != null) {
+                predicate = cb.and(predicate, cb.ge(root.get("price"), minPrice));
+            }
+
+            if (maxPrice != null) {
+                predicate = cb.and(predicate, cb.le(root.get("price"), maxPrice));
+            }
+
+            if (attributesCsv != null && !attributesCsv.trim().isEmpty()) {
+                String[] pairs = attributesCsv.split(",");
+                for (String pair : pairs) {
+                    String[] kv = pair.split(":", 2);
+                    if (kv.length != 2)
+                        continue;
+                    Long attrId;
+                    try {
+                        attrId = Long.parseLong(kv[0]);
+                    } catch (NumberFormatException e) {
+                        continue;
+                    }
+                    String val = kv[1];
+
+                    Join<Product, ProductAttributeValue> join = root.join("attributeValues", JoinType.INNER);
+                    predicate = cb.and(predicate,
+                            cb.and(
+                                    cb.equal(join.get("attribute").get("id"), attrId),
+                                    cb.equal(join.get("value"), val)));
+                }
+            }
+
+            return predicate;
+        };
+
+        Page<Product> products = productRepository.findAll(spec, createPageable(sortBy, sortDir, page, size));
+        return toProductsResponse(products);
+    }
+
+    private Pageable createPageable(String sortBy, String sortDir, int page, int size) {
+        if (page < 0) {
+            throw new RuntimeException("page phải lớn hơn hoặc bằng 0");
+        }
+
+        if (size <= 0) {
+            throw new RuntimeException("size phải lớn hơn 0");
+        }
+
+        String normalized = (sortBy == null) ? "id" : sortBy.toLowerCase();
+        String dir = (sortDir == null) ? "asc" : sortDir.toLowerCase();
+
+        Sort sort;
+        if ("name".equals(normalized)) {
+            sort = Sort.by("name");
+        } else if ("price".equals(normalized)) {
+            sort = Sort.by("price");
+        } else {
+            sort = Sort.by("id");
+        }
+
+        if ("desc".equals(dir)) {
+            sort = sort.descending();
+        } else {
+            sort = sort.ascending();
+        }
+
+        return PageRequest.of(page, size, sort);
+    }
+
     private ProductsResponse toProductsResponse(Page<Product> productPage) {
         List<ProductDTO> productList = productPage.getContent().stream()
                 .map(this::convertToDTO)
@@ -166,8 +258,7 @@ public class ProductServiceImpl implements ProductService {
                 productPage.getTotalElements(),
                 productPage.getTotalPages(),
                 productPage.isFirst(),
-                productPage.isLast()
-        ));
+                productPage.isLast()));
         return response;
     }
 
@@ -216,8 +307,8 @@ public class ProductServiceImpl implements ProductService {
 
         product.setCategory(category);
 
-        product.getAttributeValues().removeIf(value ->
-                !value.getAttribute().getCategory().getId().equals(category.getId()));
+        product.getAttributeValues()
+                .removeIf(value -> !value.getAttribute().getCategory().getId().equals(category.getId()));
 
         Product updatedProduct = productRepository.save(product);
         return convertToDTO(updatedProduct);
@@ -244,8 +335,7 @@ public class ProductServiceImpl implements ProductService {
 
     private void replaceAttributeValues(
             Product product,
-            List<ProductAttributeValueRequest> attributeRequests
-    ) {
+            List<ProductAttributeValueRequest> attributeRequests) {
         if (attributeRequests == null) {
             return;
         }
@@ -275,8 +365,7 @@ public class ProductServiceImpl implements ProductService {
             existingValue.setValue(normalizeAttributeValue(attributeRequest.getValue()));
         }
 
-        product.getAttributeValues().removeIf(value ->
-                !requestedAttributeIds.contains(value.getAttribute().getId()));
+        product.getAttributeValues().removeIf(value -> !requestedAttributeIds.contains(value.getAttribute().getId()));
     }
 
     private void validateAttributeBelongsToProductCategory(Product product, Attribute attribute) {
@@ -300,8 +389,7 @@ public class ProductServiceImpl implements ProductService {
                         value.getId(),
                         value.getAttribute().getId(),
                         value.getAttribute().getName(),
-                        value.getValue()
-                ))
+                        value.getValue()))
                 .toList();
 
         return new ProductDTO(
@@ -315,7 +403,6 @@ public class ProductServiceImpl implements ProductService {
                 product.getAverageScore(),
                 product.getCategory().getId(),
                 product.getCategory().getName(),
-                attributes
-        );
+                attributes);
     }
 }

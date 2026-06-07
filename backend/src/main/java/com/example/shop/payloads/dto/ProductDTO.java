@@ -20,6 +20,7 @@ public class ProductDTO {
     private String imageUrl;
     private String status;
     private Double averageScore;
+    private String brandName;
     private Long categoryId;
     private String categoryName;
     private List<ProductAttributeValueDTO> attributes;

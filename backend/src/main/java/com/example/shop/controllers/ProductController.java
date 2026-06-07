@@ -30,7 +30,7 @@ public class ProductController {
     @GetMapping("/products")
     public ResponseEntity<ProductsResponse> getAllProducts(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "30") int size) {
         ProductsResponse response = productService.getAllProducts(page, size);
         return ResponseEntity.ok().body(response);
     }

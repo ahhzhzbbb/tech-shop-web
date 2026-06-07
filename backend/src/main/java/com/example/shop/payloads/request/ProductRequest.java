@@ -15,6 +15,7 @@ public class ProductRequest {
     private String imageUrl;
     private String status;
     private Double averageScore;
+    private String brandName;
     private Long categoryId;
     private List<ProductAttributeValueRequest> attributeValues;
 }

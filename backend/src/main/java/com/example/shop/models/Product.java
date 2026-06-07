@@ -31,6 +31,7 @@ public class Product {
     private String imageUrl;
     private String status;
     private Double averageScore;
+    private String brandName;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "category_id", nullable = true)

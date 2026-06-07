@@ -50,6 +50,7 @@ public class ProductServiceImpl implements ProductService {
         newProduct.setImageUrl(productRequest.getImageUrl());
         newProduct.setStatus(productRequest.getStatus());
         newProduct.setAverageScore(productRequest.getAverageScore());
+        newProduct.setBrandName(productRequest.getBrandName());
         newProduct.setCategory(getActiveCategory(productRequest.getCategoryId()));
 
         replaceAttributeValues(newProduct, productRequest.getAttributeValues());
@@ -97,6 +98,10 @@ public class ProductServiceImpl implements ProductService {
 
         if (productRequest.getAverageScore() != null) {
             product.setAverageScore(productRequest.getAverageScore());
+        }
+
+        if (productRequest.getBrandName() != null) {
+            product.setBrandName(productRequest.getBrandName());
         }
 
         if (productRequest.getCategoryId() != null) {
@@ -401,6 +406,7 @@ public class ProductServiceImpl implements ProductService {
                 product.getImageUrl(),
                 product.getStatus(),
                 product.getAverageScore(),
+                product.getBrandName(),
                 product.getCategory().getId(),
                 product.getCategory().getName(),
                 attributes);

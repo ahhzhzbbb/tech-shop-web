@@ -12,10 +12,11 @@ public class ProductRequest {
     private String description;
     private Long price;
     private Integer quantity;
-    private String imageUrl;
+    private String thumbnail;
     private String status;
     private Double averageScore;
     private String brandName;
+    private String images;
     private Long categoryId;
     private List<ProductAttributeValueRequest> attributeValues;
 }

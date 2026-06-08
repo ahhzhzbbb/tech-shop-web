@@ -47,10 +47,11 @@ public class ProductServiceImpl implements ProductService {
         newProduct.setDescription(productRequest.getDescription());
         newProduct.setPrice(productRequest.getPrice());
         newProduct.setQuantity(productRequest.getQuantity());
-        newProduct.setImageUrl(productRequest.getImageUrl());
+        newProduct.setThumbnail(productRequest.getThumbnail());
         newProduct.setStatus(productRequest.getStatus());
         newProduct.setAverageScore(productRequest.getAverageScore());
         newProduct.setBrandName(productRequest.getBrandName());
+        newProduct.setImages(productRequest.getImages());
         newProduct.setCategory(getActiveCategory(productRequest.getCategoryId()));
 
         replaceAttributeValues(newProduct, productRequest.getAttributeValues());
@@ -88,8 +89,8 @@ public class ProductServiceImpl implements ProductService {
             product.setQuantity(productRequest.getQuantity());
         }
 
-        if (productRequest.getImageUrl() != null) {
-            product.setImageUrl(productRequest.getImageUrl());
+        if (productRequest.getThumbnail() != null) {
+            product.setThumbnail(productRequest.getThumbnail());
         }
 
         if (productRequest.getStatus() != null) {
@@ -102,6 +103,10 @@ public class ProductServiceImpl implements ProductService {
 
         if (productRequest.getBrandName() != null) {
             product.setBrandName(productRequest.getBrandName());
+        }
+
+        if (productRequest.getImages() != null) {
+            product.setImages(product.getImages());
         }
 
         if (productRequest.getCategoryId() != null) {
@@ -198,7 +203,7 @@ public class ProductServiceImpl implements ProductService {
                     String[] kv = pair.split(":", 2);
                     if (kv.length != 2)
                         continue;
-                    Long attrId;
+                    long attrId;
                     try {
                         attrId = Long.parseLong(kv[0]);
                     } catch (NumberFormatException e) {
@@ -403,10 +408,11 @@ public class ProductServiceImpl implements ProductService {
                 product.getDescription(),
                 product.getPrice(),
                 product.getQuantity(),
-                product.getImageUrl(),
+                product.getThumbnail(),
                 product.getStatus(),
                 product.getAverageScore(),
                 product.getBrandName(),
+                product.getImages(),
                 product.getCategory().getId(),
                 product.getCategory().getName(),
                 attributes);

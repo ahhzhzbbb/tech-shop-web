@@ -15,7 +15,7 @@ public class CartItemDTO {
 
     private String productName;
 
-    private String imageUrl;
+    private String thumbnail;
 
     private Long price;
 

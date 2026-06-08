@@ -28,10 +28,13 @@ public class Product {
     private Long price;
     private Integer quantity;
     @Column(columnDefinition = "TEXT")
-    private String imageUrl;
+    private String thumbnail;
     private String status;
     private Double averageScore;
     private String brandName;
+
+    @Column(columnDefinition = "JSON")
+    private String images;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "category_id", nullable = true)

@@ -12,6 +12,7 @@ import com.example.shop.services.PromotionItemService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 
@@ -47,6 +48,7 @@ public class PromotionItemServiceImpl implements PromotionItemService {
     }
 
     @Override
+    @Cacheable(value = "promotions", key = "#page + '-' + #size")
     public PromotionItemsResponse getAllPromotionItems() {
 
         List<PromotionItem> promotionItems = promotionItemRepository.findAll();

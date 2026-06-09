@@ -17,6 +17,7 @@ import com.example.shop.repositories.ProductRepository;
 import com.example.shop.services.ProductService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -62,6 +63,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
+    @Cacheable(value = "products", key = "#page + '-' + #size")
     public ProductsResponse getAllProducts(int page, int size) {
         Page<Product> products = productRepository.findAll(createPageable(page, size));
         return toProductsResponse(products);
@@ -146,6 +148,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
+    @Cacheable(value = "products", key = "#categoryId + '-' + #page + '-' + #size")
     public ProductsResponse getProductsByCategory(Long categoryId, int page, int size) {
         getActiveCategory(categoryId);
         Page<Product> products = productRepository.findByCategoryId(categoryId, createPageable(page, size));
@@ -154,6 +157,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
+    @Cacheable(value = "products", key = "#categoryName + '-' + #page + '-' + #size")
     public ProductsResponse getProductsByCategory(String categoryName, int page, int size) {
         Category category = categoryRepository.findByNameIgnoreCase(categoryName)
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "name", categoryName));

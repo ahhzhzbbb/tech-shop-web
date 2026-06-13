@@ -39,6 +39,7 @@ const useAuthStore = create(
                     const response = await loginApi(credentials);
                     const token = extractJwtFromLoginResponse(response);
                     const user = {
+                        id: response?.userId,
                         username: response?.username,
                         phoneNumber: response?.phoneNumber,
                         roles: response?.roles ?? [],

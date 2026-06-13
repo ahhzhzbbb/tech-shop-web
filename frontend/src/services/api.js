@@ -2,11 +2,11 @@ import axios from 'axios';
 import { getAuthToken } from '../utils/authToken';
 
 const api = axios.create({
-    // baseURL: import.meta.env.VITE_API_URL,
-    baseURL: 'http://localhost:8080',
+    baseURL: import.meta.env.VITE_API_URL || 'https://tech-shop-web.onrender.com',
+    // baseURL: 'http://localhost:8080',
 });
 
-api.defaults.withCredentials = true; 
+api.defaults.withCredentials = true;
 
 api.interceptors.request.use((config) => {
     const token = getAuthToken();

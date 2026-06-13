@@ -70,6 +70,16 @@ const Header = () => {
     },
   ]
 
+  const handleOrdersClick = () => {
+    console.log("handleOrdersClick triggered, current user:", user);
+    if (user) {
+      navigate("/orders");
+    } else {
+      console.log("User not logged in, opening LoginModal");
+      setOpenLogin(true);
+    }
+  };
+
   return (
     <>
       <div className="header">
@@ -88,7 +98,7 @@ const Header = () => {
           <div className="header_right">
             <HeaderButton icon={<PhoneOutlined />} title="Hotline" subtitle="1900.5301" />
             <HeaderButton icon={<EnvironmentOutlined />} title="Hệ thống" subtitle="Showroom" />
-            <HeaderButton icon={<ContainerOutlined />} title="Tra cứu" subtitle="đơn hàng" to="/orders" />
+            <HeaderButton icon={<ContainerOutlined />} title="Tra cứu" subtitle="đơn hàng" onClick={handleOrdersClick} />
             <HeaderButton icon={<ShoppingCartOutlined />} title="Giỏ" subtitle="hàng" to="/cart" />
             {user ? (
               <>

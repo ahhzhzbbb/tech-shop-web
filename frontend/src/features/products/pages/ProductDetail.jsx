@@ -13,7 +13,7 @@ import ProductCard from "../components/ProductCard";
 import "./Product.scss";
 import "./ProductDetail.scss";
 
-const RELATED_LIMIT = 8;
+const RELATED_LIMIT = 20;
 
 const formatCurrency = (amount) =>
     new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" })
@@ -201,7 +201,7 @@ function ProductDetail() {
 
                 {related.length > 0 && (
                     <section className="product-detail__related">
-                        <h2 className="product-detail__related-title">Sản phẩm cùng danh mục</h2>
+                        <h2 className="product-detail__related-title">Sản phẩm tương tự</h2>
                         <div className="products__grid">
                             {related.map((item) => (
                                 <ProductCard

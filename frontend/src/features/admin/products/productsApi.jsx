@@ -25,6 +25,26 @@ export const searchProducts = async (keyword, page = 0, size = 10) => {
     return res.data;
 };
 
+// Lọc + phân trang phía server: /api/products/filter
+export const filterProducts = async ({
+    categoryId,
+    categoryName,
+    minPrice,
+    maxPrice,
+    sortBy = 'id',
+    sortDir = 'desc',
+    page = 0,
+    size = 10,
+} = {}) => {
+    const params = { page, size, sortBy, sortDir };
+    if (categoryId != null) params.categoryId = categoryId;
+    if (categoryName) params.categoryName = categoryName;
+    if (minPrice != null) params.minPrice = minPrice;
+    if (maxPrice != null) params.maxPrice = maxPrice;
+    const res = await api.get('/api/products/filter', { params });
+    return res.data;
+};
+
 export const createProduct = async (productRequest) => {
     const res = await api.post('/api/product', productRequest, { withCredentials: true });
     return res.data;
@@ -67,6 +87,7 @@ const productsApi = {
     getProductsByCategoryName,
     getProductsByCategoryId,
     searchProducts,
+    filterProducts,
     createProduct,
     updateProduct,
     deleteProduct,

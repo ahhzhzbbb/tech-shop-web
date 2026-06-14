@@ -24,8 +24,9 @@ import {
     getProductStatusMeta,
     PRODUCT_STATUS_OPTIONS,
 } from "../utils/adminFormat";
-import { fetchAllProducts } from "../utils/adminData";
 import "./AdminProducts.scss";
+
+const PAGE_SIZE_OPTIONS = [30, 50, 100];
 
 const { Title, Text } = Typography;
 
@@ -45,9 +46,14 @@ export default function AdminProducts() {
     const [promotions, setPromotions] = useState([]);
     const [loading, setLoading] = useState(false);
     const [keyword, setKeyword] = useState("");
+    const [debouncedKeyword, setDebouncedKeyword] = useState("");
     const [categoryId, setCategoryId] = useState("all");
     const [status, setStatus] = useState("all");
     const [stockStatus, setStockStatus] = useState("all");
+    // Phân trang phía server (page 0-based theo backend)
+    const [page, setPage] = useState(0);
+    const [pageSize, setPageSize] = useState(30);
+    const [total, setTotal] = useState(0);
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [editingItem, setEditingItem] = useState(null);
     const [confirmLoading, setConfirmLoading] = useState(false);
@@ -61,62 +67,74 @@ export default function AdminProducts() {
         return map;
     }, [promotions]);
 
-    const fetchData = useCallback(async () => {
-        setLoading(true);
+    const fetchMeta = useCallback(async () => {
         try {
-            const [productList, categoryData, promotionData] = await Promise.all([
-                fetchAllProducts(),
-                categoryApi.getCategories(true),
+            const [categoryData, promotionData] = await Promise.all([
+                categoryApi.getCategories(true), // Bao gồm cả danh mục ẩn
                 promotionApi.getAllPromotions(),
             ]);
-
-            setProducts(productList);
             setCategories(categoryData.categories || []);
             setPromotions(promotionData.promotionItems || []);
+        } catch (error) {
+            messageApi.error(getErrorText(error, "Không thể tải danh mục/khuyến mãi."));
+        }
+    }, [messageApi]);
+
+    // Tải danh sách sản phẩm theo trang (server-side)
+    const fetchProducts = useCallback(async () => {
+        setLoading(true);
+        try {
+            let data;
+            if (debouncedKeyword) {
+                // /filter không hỗ trợ keyword -> dùng /search (bỏ qua lọc danh mục)
+                data = await productsApi.searchProducts(debouncedKeyword, page, pageSize);
+            } else {
+                data = await productsApi.filterProducts({
+                    categoryId: categoryId !== "all" ? categoryId : undefined,
+                    page,
+                    size: pageSize,
+                });
+            }
+            setProducts(data.products || []);
+            setTotal(data.pagination?.totalElements || 0);
         } catch (error) {
             messageApi.error(getErrorText(error, "Không thể tải danh sách sản phẩm."));
         } finally {
             setLoading(false);
         }
-    }, [messageApi]);
+    }, [debouncedKeyword, categoryId, page, pageSize, messageApi]);
 
     useEffect(() => {
-        fetchData();
-    }, [fetchData]);
+        fetchMeta();
+    }, [fetchMeta]);
 
-    const filteredProducts = useMemo(() => {
-        const normalizedKeyword = keyword.trim().toLowerCase();
+    useEffect(() => {
+        fetchProducts();
+    }, [fetchProducts]);
 
+    // Debounce ô tìm kiếm + về trang đầu khi đổi từ khoá
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedKeyword(keyword.trim());
+            setPage(0);
+        }, 400);
+        return () => clearTimeout(timer);
+    }, [keyword]);
+
+    // status / stock backend chưa hỗ trợ -> lọc thêm trên trang hiện tại
+    const visibleProducts = useMemo(() => {
         return products.filter((product) => {
-            const productName = product.name?.toLowerCase() || "";
-            const categoryName = product.categoryName?.toLowerCase() || "";
             const quantity = Number(product.quantity) || 0;
-
-            if (
-                normalizedKeyword &&
-                !productName.includes(normalizedKeyword) &&
-                !categoryName.includes(normalizedKeyword)
-            ) {
-                return false;
-            }
-
-            if (categoryId !== "all" && product.categoryId !== categoryId) {
-                return false;
-            }
-
-            if (status !== "all" && product.status !== status) {
-                return false;
-            }
-
+            if (status !== "all" && product.status !== status) return false;
             if (stockStatus === "out" && quantity > 0) return false;
             if (stockStatus === "low" && (quantity <= 0 || quantity > 5)) return false;
             if (stockStatus === "available" && quantity <= 5) return false;
-
             return true;
         });
-    }, [categoryId, keyword, products, status, stockStatus]);
+    }, [products, status, stockStatus]);
 
     const metrics = useMemo(() => {
+        // Tổng = totalElements từ server; các chỉ số trạng thái tính trên trang hiện tại
         const activeProducts = products.filter((item) => item.status === "ACTIVE").length;
         const lowStockProducts = products.filter((item) => {
             const quantity = Number(item.quantity) || 0;
@@ -125,13 +143,18 @@ export default function AdminProducts() {
         const outOfStockProducts = products.filter((item) => Number(item.quantity) <= 0).length;
 
         return {
-            total: products.length,
+            total,
             active: activeProducts,
             lowStock: lowStockProducts,
             outOfStock: outOfStockProducts,
             promotions: promotions.length,
         };
-    }, [products, promotions.length]);
+    }, [products, promotions.length, total]);
+
+    const handleCategoryChange = (value) => {
+        setCategoryId(value);
+        setPage(0);
+    };
 
     const openCreate = () => {
         setEditingItem(null);
@@ -189,7 +212,8 @@ export default function AdminProducts() {
 
             await applyPromotion(productId, promotion);
             closeDrawer();
-            fetchData();
+            fetchProducts();
+            fetchMeta();
         } catch (error) {
             messageApi.error(getErrorText(error, "Có lỗi xảy ra, vui lòng thử lại."));
         } finally {
@@ -201,7 +225,7 @@ export default function AdminProducts() {
         try {
             await productsApi.deleteProduct(product.id);
             messageApi.success(`Đã xoá sản phẩm "${product.name}".`);
-            fetchData();
+            fetchProducts();
         } catch (error) {
             messageApi.error(getErrorText(error, "Xoá thất bại, vui lòng thử lại."));
         }
@@ -347,7 +371,7 @@ export default function AdminProducts() {
                 </div>
 
                 <div className="ap-header-actions">
-                    <Button icon={<ReloadOutlined />} onClick={fetchData} disabled={loading}>
+                    <Button icon={<ReloadOutlined />} onClick={fetchProducts} disabled={loading}>
                         Tải lại
                     </Button>
                     <Button
@@ -396,7 +420,8 @@ export default function AdminProducts() {
                 <Select
                     className="ap-filter"
                     value={categoryId}
-                    onChange={setCategoryId}
+                    onChange={handleCategoryChange}
+                    disabled={!!debouncedKeyword}
                     options={[
                         { label: "Tất cả danh mục", value: "all" },
                         ...categories.map((category) => ({
@@ -428,7 +453,7 @@ export default function AdminProducts() {
             <Table
                 className="ap-table"
                 columns={columns}
-                dataSource={filteredProducts}
+                dataSource={visibleProducts}
                 rowKey="id"
                 loading={loading}
                 locale={{
@@ -440,10 +465,16 @@ export default function AdminProducts() {
                     ),
                 }}
                 pagination={{
-                    pageSize: 10,
+                    current: page + 1,
+                    pageSize,
+                    total,
                     showSizeChanger: true,
-                    pageSizeOptions: [10, 20, 50],
-                    showTotal: (total) => `${formatNumber(total)} sản phẩm`,
+                    pageSizeOptions: PAGE_SIZE_OPTIONS,
+                    showTotal: (value) => `${formatNumber(value)} sản phẩm`,
+                }}
+                onChange={(pag) => {
+                    setPage((pag.current || 1) - 1);
+                    setPageSize(pag.pageSize || 10);
                 }}
                 scroll={{ x: 1120 }}
             />

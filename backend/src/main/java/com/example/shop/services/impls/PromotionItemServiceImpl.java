@@ -12,7 +12,6 @@ import com.example.shop.services.PromotionItemService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 
@@ -48,7 +47,6 @@ public class PromotionItemServiceImpl implements PromotionItemService {
     }
 
     @Override
-    @Cacheable(value = "promotions", key = "#page + '-' + #size")
     public PromotionItemsResponse getAllPromotionItems() {
 
         List<PromotionItem> promotionItems = promotionItemRepository.findAll();
@@ -116,8 +114,11 @@ public class PromotionItemServiceImpl implements PromotionItemService {
     private PromotionItemDTO convertToDTO(PromotionItem promotionItem) {
         PromotionItemDTO dto = new PromotionItemDTO();
         dto.setId(promotionItem.getId());
-        dto.setProductId(promotionItem.getProduct().getId());
-        dto.setProductName(promotionItem.getProduct().getName());
+        Product product = promotionItem.getProduct();
+        if (product != null) {
+            dto.setProductId(product.getId());
+            dto.setProductName(product.getName());
+        }
         dto.setDiscountPercent(promotionItem.getDiscountPercent());
         dto.setStartDate(promotionItem.getStartDate());
         dto.setEndDate(promotionItem.getEndDate());

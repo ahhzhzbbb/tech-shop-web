@@ -72,6 +72,14 @@
     color: #e11d48;
 }
 
+.product-detail__buy {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 4px 0;
+}
+
 .product-detail__description {
     color: #374151;
     line-height: 1.6;

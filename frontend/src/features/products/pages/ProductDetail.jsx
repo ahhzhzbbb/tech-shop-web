@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Spin, Alert, Empty, Rate, Tag } from "antd";
+import { Spin, Alert, Empty, Rate, Tag, InputNumber, Button, message } from "antd";
+import { ShoppingCartSimpleIcon } from "@phosphor-icons/react";
 
 import productsService from "../services/products.service";
+import cartService from "../../cart/service/cart.service";
+import useCartStore from "../../../store/cartStore";
 import ProductSideBar from "../components/ProductSidebar";
 import ProductGallery from "../components/ProductGallery";
 import ProductHighlights from "../components/ProductHighlights";
@@ -24,6 +27,9 @@ function ProductDetail() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [related, setRelated] = useState([]);
+    const [adding, setAdding] = useState(false);
+    const [messageApi, contextHolder] = message.useMessage();
+    const setCartCount = useCartStore((s) => s.setCount);
 
     useEffect(() => {
         if (!id) return;
@@ -91,6 +97,22 @@ function ProductDetail() {
         [product]
     );
 
+    const handleAddToCart = async () => {
+        if (!product?.id) return;
+        setAdding(true);
+        try {
+            const data = await cartService.addToCart(product.id, 1);
+            setCartCount(data?.totalItems);
+            messageApi.success(`Đã thêm sản phẩm vào giỏ hàng.`);
+        } catch (err) {
+            messageApi.error(
+                err?.response?.data?.message || err?.message || "Thêm vào giỏ hàng thất bại."
+            );
+        } finally {
+            setAdding(false);
+        }
+    };
+
     const renderDetail = () => {
         if (loading) {
             return (
@@ -156,6 +178,19 @@ function ProductDetail() {
                             )}
                         </div>
 
+                        <div className="product-detail__buy">
+                            <Button
+                                type="primary"
+                                size="large"
+                                icon={<ShoppingCartSimpleIcon size={18} weight="fill" />}
+                                onClick={handleAddToCart}
+                                loading={adding}
+                                disabled={!inStock}
+                            >
+                                Thêm vào giỏ hàng
+                            </Button>
+                        </div>
+
                         {product.description && (
                             <p className="product-detail__description">{product.description}</p>
                         )}
@@ -184,6 +219,7 @@ function ProductDetail() {
 
     return (
         <div className="productLayout">
+            {contextHolder}
             <ProductSideBar />
             <div className="product-detail">{renderDetail()}</div>
         </div>

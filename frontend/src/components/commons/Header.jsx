@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Popconfirm, message } from "antd";
+import { Badge, Button, Popconfirm, message } from "antd";
 import { ShoppingCartOutlined, ContainerOutlined, EnvironmentOutlined, UserOutlined, MenuOutlined, PhoneOutlined, LogoutOutlined } from '@ant-design/icons';
 
 import logo from "../../assets/logo_shop.png"
@@ -14,6 +14,7 @@ import { useLogout } from "../../features/auth/hooks/useAuth.jsx";
 import RegisterModal from "../../features/auth/component/RegisterModal.jsx";
 import LoginModal from "../../features/auth/component/LoginModal.jsx";
 import SearchInput from "../../features/search/components/SearchInput.jsx";
+import useCartStore from "../../store/cartStore.js";
 import "./Header.scss";
 
 const Header = () => {
@@ -22,6 +23,19 @@ const Header = () => {
   const { logout, loading: logoutLoading } = useLogout();
   const [openRegister, setOpenRegister] = useState(false);
   const [openLogin, setOpenLogin] = useState(false);
+
+  const cartCount = useCartStore((s) => s.count);
+  const refreshCart = useCartStore((s) => s.refresh);
+  const resetCart = useCartStore((s) => s.reset);
+
+  // Đồng bộ số lượng giỏ hàng theo trạng thái đăng nhập
+  useEffect(() => {
+    if (user) {
+      refreshCart();
+    } else {
+      resetCart();
+    }
+  }, [user, refreshCart, resetCart]);
 
   const handleLogout = async () => {
     try {
@@ -98,8 +112,10 @@ const Header = () => {
           <div className="header_right">
             <HeaderButton icon={<PhoneOutlined />} title="Hotline" subtitle="1900.5301" />
             <HeaderButton icon={<EnvironmentOutlined />} title="Hệ thống" subtitle="Showroom" />
-            <HeaderButton icon={<ContainerOutlined />} title="Tra cứu" subtitle="đơn hàng" onClick={handleOrdersClick} />
-            <HeaderButton icon={<ShoppingCartOutlined />} title="Giỏ" subtitle="hàng" to="/cart" />
+            <HeaderButton icon={<ContainerOutlined />} title="Tra cứu" subtitle="đơn hàng" onClick={handleOrdersClick} />            
+            <Badge count={cartCount} size="small" offset={[-6, 8]}>
+              <HeaderButton icon={<ShoppingCartOutlined />} title="Giỏ" subtitle="hàng" to="/cart" />
+            </Badge>
             {user ? (
               <>
                 <Dropdown icon={<UserOutlined />} title="Tài khoản" subtitle={user.username} menu={{ items }} variant="dark" />

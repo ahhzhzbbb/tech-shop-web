@@ -22,6 +22,7 @@ export const getProductsByCategoryName = async (categoryName, options = {}) => {
         size = 10,
         minPrice,
         maxPrice,
+        brandName,
         sortBy,
         sortDir,
         attributes,
@@ -30,6 +31,7 @@ export const getProductsByCategoryName = async (categoryName, options = {}) => {
     const params = { categoryName, page, size };
     if (minPrice != null) params.minPrice = minPrice;
     if (maxPrice != null) params.maxPrice = maxPrice;
+    if (brandName) params.brandName = brandName;
     if (sortBy) params.sortBy = sortBy;
     if (sortDir) params.sortDir = sortDir;
     if (attributes) params.attributes = attributes;

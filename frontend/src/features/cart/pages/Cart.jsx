@@ -106,7 +106,7 @@ function Cart() {
         }
     };
 
-    const handleCheckout = () => navigate("/orders");
+    const handleCheckout = () => navigate("/checkout");
     const handleContinue = () => navigate("/");
 
     const renderBody = () => {

@@ -38,6 +38,9 @@ public class OrderServiceImpl implements OrderService {
         newOrder.setTotalAmount(orderRequest.getTotalAmount());
         newOrder.setStatus(orderRequest.getStatus());
         newOrder.setNotes(orderRequest.getNotes());
+        newOrder.setRecipientName(orderRequest.getRecipientName());
+        newOrder.setRecipientPhone(orderRequest.getRecipientPhone());
+        newOrder.setShippingAddress(orderRequest.getShippingAddress());
         newOrder.setUser(user);
 
         Order savedOrder = orderRepository.save(newOrder);
@@ -114,6 +117,18 @@ public class OrderServiceImpl implements OrderService {
             order.setNotes(orderRequest.getNotes());
         }
 
+        if (orderRequest.getRecipientName() != null) {
+            order.setRecipientName(orderRequest.getRecipientName());
+        }
+
+        if (orderRequest.getRecipientPhone() != null) {
+            order.setRecipientPhone(orderRequest.getRecipientPhone());
+        }
+
+        if (orderRequest.getShippingAddress() != null) {
+            order.setShippingAddress(orderRequest.getShippingAddress());
+        }
+
         Order updatedOrder = orderRepository.save(order);
         return convertToDTO(updatedOrder);
     }
@@ -135,6 +150,9 @@ public class OrderServiceImpl implements OrderService {
         orderDTO.setTotalAmount(order.getTotalAmount());
         orderDTO.setStatus(order.getStatus());
         orderDTO.setNotes(order.getNotes());
+        orderDTO.setRecipientName(order.getRecipientName());
+        orderDTO.setRecipientPhone(order.getRecipientPhone());
+        orderDTO.setShippingAddress(order.getShippingAddress());
         orderDTO.setUserId(order.getUser().getUserId());
 
         List<OrderItemDTO> orderItemDTOs = order.getOrderItems().stream()

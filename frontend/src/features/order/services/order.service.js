@@ -12,7 +12,7 @@ export const getOrdersByUserId = async (userId) => {
 
 /**
  * Lấy chi tiết một đơn hàng theo ID
- * @param {number|string} orderId 
+ * @param {number|string} orderId
  * @returns {Promise<Object>} Chi tiết đơn hàng
  */
 export const getOrderById = async (orderId) => {
@@ -20,9 +20,21 @@ export const getOrderById = async (orderId) => {
     return response.data;
 };
 
+/**
+ * Tạo đơn hàng mới
+ * @param {Object} payload OrderRequest: { userId, orderDate, totalAmount, status, notes,
+ *   recipientName, recipientPhone, shippingAddress, orderItems: [{ productId, quantity, price }] }
+ * @returns {Promise<Object>} OrderDTO vừa tạo
+ */
+export const createOrder = async (payload) => {
+    const response = await api.post('/api/order', payload, { withCredentials: true });
+    return response.data;
+};
+
 const orderService = {
     getOrdersByUserId,
     getOrderById,
+    createOrder,
 };
 
 export default orderService;

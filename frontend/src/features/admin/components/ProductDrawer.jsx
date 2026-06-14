@@ -75,6 +75,7 @@ export default function ProductDrawer({
         if (isEditing) {
             form.setFieldsValue({
                 name: editingItem.name,
+                brandName: editingItem.brandName,
                 price: editingItem.price,
                 quantity: editingItem.quantity,
                 thumbnail: editingItem.thumbnail,
@@ -223,7 +224,14 @@ export default function ProductDrawer({
                     label="Tên sản phẩm"
                     rules={[{ required: true, message: "Vui lòng nhập tên sản phẩm" }]}
                 >
-                    <Input placeholder="Ví dụ: Laptop Dell XPS 13..." />
+                    <Input placeholder="Nhập tên sản phẩm" />
+                </Form.Item>
+
+                <Form.Item
+                    name="brandName"
+                    label="Tên hãng"
+                >
+                    <Input placeholder="Nhập tên hãng" />
                 </Form.Item>
 
                 <div className="pd-row">

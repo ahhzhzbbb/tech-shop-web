@@ -94,6 +94,14 @@ const Header = () => {
     }
   };
 
+  const handleCartClick = () => {
+    if (user) {
+      navigate("/cart");
+    } else {
+      setOpenLogin(true);
+    }
+  }
+
   return (
     <>
       <div className="header">
@@ -114,7 +122,7 @@ const Header = () => {
             <HeaderButton icon={<EnvironmentOutlined />} title="Hệ thống" subtitle="Showroom" />
             <HeaderButton icon={<ContainerOutlined />} title="Tra cứu" subtitle="đơn hàng" onClick={handleOrdersClick} />            
             <Badge count={cartCount} size="small" offset={[-6, 8]}>
-              <HeaderButton icon={<ShoppingCartOutlined />} title="Giỏ" subtitle="hàng" to="/cart" />
+              <HeaderButton icon={<ShoppingCartOutlined />} title="Giỏ" subtitle="hàng" onClick={handleCartClick} />
             </Badge>
             {user ? (
               <>

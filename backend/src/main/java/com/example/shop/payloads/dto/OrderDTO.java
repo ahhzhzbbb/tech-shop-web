@@ -18,6 +18,9 @@ public class OrderDTO {
     private Long totalAmount;
     private String status;
     private String notes;
+    private String recipientName;
+    private String recipientPhone;
+    private String shippingAddress;
     private Long userId;
     private List<OrderItemDTO> orderItems;
 }

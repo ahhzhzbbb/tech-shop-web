@@ -31,6 +31,8 @@ public class UserDetailsImpl implements UserDetails {
 
     // Profile fields
     private String phoneNumber;
+    private String fullName;
+    private String address;
     private java.time.LocalDate birth;
     private Boolean gender;
     private String state;
@@ -50,13 +52,16 @@ public class UserDetailsImpl implements UserDetails {
         GrantedAuthority authority =
                 new SimpleGrantedAuthority(user.getRole().getRoleName().name());
 
-        return new UserDetailsImpl(
+        UserDetailsImpl details = new UserDetailsImpl(
                 user.getUserId(),
                 user.getUsername(),
                 user.getPassword(),
                 List.of(authority),
                 user.getPhoneNumber()
         );
+        details.setFullName(user.getFullName());
+        details.setAddress(user.getAddress());
+        return details;
     }
 
 

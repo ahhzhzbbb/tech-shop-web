@@ -22,6 +22,7 @@ public interface ProductService {
             String categoryName,
             Long minPrice,
             Long maxPrice,
+            String brandName,
             String attributesCsv,
             String sortBy,
             String sortDir,

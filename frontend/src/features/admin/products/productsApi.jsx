@@ -31,6 +31,7 @@ export const filterProducts = async ({
     categoryName,
     minPrice,
     maxPrice,
+    brandName,
     sortBy = 'id',
     sortDir = 'desc',
     page = 0,
@@ -41,6 +42,7 @@ export const filterProducts = async ({
     if (categoryName) params.categoryName = categoryName;
     if (minPrice != null) params.minPrice = minPrice;
     if (maxPrice != null) params.maxPrice = maxPrice;
+    if (brandName) params.brandName = brandName;
     const res = await api.get('/api/products/filter', { params });
     return res.data;
 };

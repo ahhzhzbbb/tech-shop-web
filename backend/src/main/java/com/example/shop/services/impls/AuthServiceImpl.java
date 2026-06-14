@@ -65,6 +65,8 @@ public class AuthServiceImpl implements AuthService {
                 userDetails.getUsername(),
                 roles,
                 userDetails.getPhoneNumber());
+        response.setFullName(userDetails.getFullName());
+        response.setAddress(userDetails.getAddress());
 
         return new AuthenticationResult(response, jwtCookie);
     }
@@ -113,8 +115,11 @@ public class AuthServiceImpl implements AuthService {
                 .map(GrantedAuthority::getAuthority)
                 .toList();
 
-        return new UserInfoResponse(userDetails.getId(), userDetails.getUsername(), roles,
+        UserInfoResponse response = new UserInfoResponse(userDetails.getId(), userDetails.getUsername(), roles,
                 userDetails.getPhoneNumber());
+        response.setFullName(userDetails.getFullName());
+        response.setAddress(userDetails.getAddress());
+        return response;
     }
 
     @Transactional
@@ -139,7 +144,10 @@ public class AuthServiceImpl implements AuthService {
                 .map(GrantedAuthority::getAuthority)
                 .toList();
 
-        return new UserInfoResponse(user.getUserId(), user.getUsername(), roles, user.getPhoneNumber());
+        UserInfoResponse response = new UserInfoResponse(user.getUserId(), user.getUsername(), roles, user.getPhoneNumber());
+        response.setFullName(user.getFullName());
+        response.setAddress(user.getAddress());
+        return response;
     }
 
     @Override

@@ -31,6 +31,14 @@ public class Order {
 
     private String notes;
 
+    // Thông tin giao hàng (snapshot tại thời điểm đặt hàng)
+    private String recipientName;
+
+    private String recipientPhone;
+
+    @Column(columnDefinition = "TEXT")
+    private String shippingAddress;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

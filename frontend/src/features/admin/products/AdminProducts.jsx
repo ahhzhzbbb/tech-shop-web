@@ -47,6 +47,8 @@ export default function AdminProducts() {
     const [loading, setLoading] = useState(false);
     const [keyword, setKeyword] = useState("");
     const [debouncedKeyword, setDebouncedKeyword] = useState("");
+    const [brand, setBrand] = useState("");
+    const [debouncedBrand, setDebouncedBrand] = useState("");
     const [categoryId, setCategoryId] = useState("all");
     const [status, setStatus] = useState("all");
     const [stockStatus, setStockStatus] = useState("all");
@@ -91,6 +93,7 @@ export default function AdminProducts() {
             } else {
                 data = await productsApi.filterProducts({
                     categoryId: categoryId !== "all" ? categoryId : undefined,
+                    brandName: debouncedBrand || undefined,
                     page,
                     size: pageSize,
                 });
@@ -102,7 +105,7 @@ export default function AdminProducts() {
         } finally {
             setLoading(false);
         }
-    }, [debouncedKeyword, categoryId, page, pageSize, messageApi]);
+    }, [debouncedKeyword, categoryId, debouncedBrand, page, pageSize, messageApi]);
 
     useEffect(() => {
         fetchMeta();
@@ -120,6 +123,15 @@ export default function AdminProducts() {
         }, 400);
         return () => clearTimeout(timer);
     }, [keyword]);
+
+    // Debounce ô lọc theo hãng
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedBrand(brand.trim());
+            setPage(0);
+        }, 400);
+        return () => clearTimeout(timer);
+    }, [brand]);
 
     // status / stock backend chưa hỗ trợ -> lọc thêm trên trang hiện tại
     const visibleProducts = useMemo(() => {
@@ -270,6 +282,13 @@ export default function AdminProducts() {
             key: "categoryName",
             width: 150,
             render: (value) => <Tag color="blue">{value || "Chưa phân loại"}</Tag>,
+        },
+        {
+            title: "Hãng",
+            dataIndex: "brandName",
+            key: "brandName",
+            width: 120,
+            render: (value) => value || <Text type="secondary">—</Text>,
         },
         {
             title: "Giá bán",
@@ -430,6 +449,14 @@ export default function AdminProducts() {
                         })),
                     ]}
                 />
+                <Input
+                    className="ap-filter"
+                    placeholder="Lọc theo hãng"
+                    allowClear
+                    value={brand}
+                    onChange={(event) => setBrand(event.target.value)}
+                    disabled={!!debouncedKeyword}
+                />
                 <Select
                     className="ap-filter"
                     value={status}
@@ -476,7 +503,7 @@ export default function AdminProducts() {
                     setPage((pag.current || 1) - 1);
                     setPageSize(pag.pageSize || 10);
                 }}
-                scroll={{ x: 1120 }}
+                scroll={{ x: 1240 }}
             />
 
             <ProductDrawer

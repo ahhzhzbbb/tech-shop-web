@@ -10,7 +10,7 @@ import ProductSideBar from "../components/ProductSidebar";
 import ProductGallery from "../components/ProductGallery";
 import ProductHighlights from "../components/ProductHighlights";
 import ProductCard from "../components/ProductCard";
-import "./Product.scss";
+import "./Products.scss";
 import "./ProductDetail.scss";
 
 const RELATED_LIMIT = 20;

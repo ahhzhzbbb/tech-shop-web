@@ -251,7 +251,7 @@ export default function AdminCategories() {
                     rowKey="id"
                     loading={loading}
                     pagination={{
-                        pageSize: 10,
+                        pageSize: 20,
                         showSizeChanger: false,
                         showTotal: (total) => `${total} danh mục`,
                     }}

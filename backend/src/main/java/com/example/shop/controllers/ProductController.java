@@ -84,13 +84,14 @@ public class ProductController {
             @RequestParam(required = false) String categoryName,
             @RequestParam(required = false) Long minPrice,
             @RequestParam(required = false) Long maxPrice,
+            @RequestParam(required = false) String brandName,
             @RequestParam(required = false) String attributes, // format: "attrId:value,attrId2:value2"
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         ProductsResponse response = productService.filterProducts(categoryId, categoryName, minPrice, maxPrice,
-                attributes, sortBy, sortDir, page, size);
+                brandName, attributes, sortBy, sortDir, page, size);
         return ResponseEntity.ok().body(response);
     }
 

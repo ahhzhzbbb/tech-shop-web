@@ -5,6 +5,8 @@ import Products from "../features/products/pages/Products.jsx";
 import ProductDetail from "../features/products/pages/ProductDetail.jsx";
 import UserInfo from "../features/user/pages/UserInfo.jsx";
 import Cart from "../features/cart/pages/Cart.jsx";
+import Checkout from "../features/checkout/pages/Checkout.jsx";
+import CheckoutResult from "../features/checkout/pages/CheckoutResult.jsx";
 import Orders from "../features/order/pages/Orders.jsx"
 import AdminLayout from "../layouts/AdminLayout.jsx";
 import AdminDashboard from "../features/admin/dashboard/pages/AdminDashboard.jsx";
@@ -25,6 +27,9 @@ const AppRoute = () => {
                     <Route path="/products/:category/:id" element={<ProductDetail />} />
                     <Route path="/user" element={<UserInfo />} />
                     <Route path="/cart" element={<Cart />} />
+                    <Route path="/checkout" element={<Checkout />} />
+                    <Route path="/checkout/success" element={<CheckoutResult />} />
+                    <Route path="/checkout/vnpay-return" element={<CheckoutResult />} />
                     <Route path="/orders" element={<Orders />} />
                 </Route>
 

@@ -11,7 +11,7 @@ import {
 
 const useAuthStore = create(
     persist(
-        (set) => ({
+        (set, get) => ({
             user: null,
             token: null,
             loading: false,
@@ -41,7 +41,9 @@ const useAuthStore = create(
                     const user = {
                         id: response?.userId,
                         username: response?.username,
+                        fullName: response?.fullName,
                         phoneNumber: response?.phoneNumber,
+                        address: response?.address,
                         roles: response?.roles ?? [],
                     };
 

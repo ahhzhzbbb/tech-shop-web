@@ -16,6 +16,8 @@ public class UserInfoResponse {
     private List<String> roles;
 
     private String phoneNumber;
+    private String fullName;
+    private String address;
 
     public UserInfoResponse(Long id, String username, String name, List<String> roles) {
         this.userId = id;
@@ -25,6 +27,16 @@ public class UserInfoResponse {
 
     public UserInfoResponse(Long id, String username, List<String> roles, String phoneNumber) {
         this.userId = id;
+        this.username = username;
+        this.roles = roles;
+        this.phoneNumber = phoneNumber;
+    }
+
+    // Giữ tương thích với chỗ gọi login (trước khi thêm fullName/address)
+    public UserInfoResponse(Long userId, String jwtToken, String username,
+                            List<String> roles, String phoneNumber) {
+        this.userId = userId;
+        this.jwtToken = jwtToken;
         this.username = username;
         this.roles = roles;
         this.phoneNumber = phoneNumber;

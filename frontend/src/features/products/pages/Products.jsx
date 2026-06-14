@@ -1,12 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Spin, Alert, Empty, Select, Slider, Button, Pagination } from "antd";
+import { Spin, Alert, Empty, Select, Slider, Button, Input, Pagination } from "antd";
 import { FunnelSimpleIcon } from "@phosphor-icons/react";
 
 import productsService from "../services/products.service";
 import ProductSideBar from "../../products/components/ProductSidebar";
 import ProductCard from "../../products/components/ProductCard";
-import "./Product.scss";
+import "./Products.scss";
 
 const PAGE_SIZE = 12;
 
@@ -19,46 +19,87 @@ const SORT_OPTIONS = [
     { value: "oldest", label: "Cũ nhất" },
 ];
 
+// sortValue (UI) -> tham số server
+const SORT_MAP = {
+    "name-asc": { sortBy: "name", sortDir: "asc" },
+    "name-desc": { sortBy: "name", sortDir: "desc" },
+    "price-asc": { sortBy: "price", sortDir: "asc" },
+    "price-desc": { sortBy: "price", sortDir: "desc" },
+    newest: { sortBy: "id", sortDir: "desc" },
+    oldest: { sortBy: "id", sortDir: "asc" },
+};
+
 const formatCurrency = (amount) =>
     new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" })
         .format(amount || 0)
         .replace("₫", "đ");
 
-const sortProducts = (list, sortValue) => {
-    const sorted = [...list];
-    switch (sortValue) {
-        case "name-asc":
-            return sorted.sort((a, b) => (a.name || "").localeCompare(b.name || "", "vi"));
-        case "name-desc":
-            return sorted.sort((a, b) => (b.name || "").localeCompare(a.name || "", "vi"));
-        case "price-asc":
-            return sorted.sort((a, b) => (a.price || 0) - (b.price || 0));
-        case "price-desc":
-            return sorted.sort((a, b) => (b.price || 0) - (a.price || 0));
-        case "oldest":
-            return sorted.sort((a, b) => (a.id || 0) - (b.id || 0));
-        case "newest":
-        default:
-            return sorted.sort((a, b) => (b.id || 0) - (a.id || 0));
-    }
-};
-
 function Products() {
     const { category } = useParams();
 
-    const [allProducts, setAllProducts] = useState([]);
+    const [products, setProducts] = useState([]);
+    const [total, setTotal] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     const [sortValue, setSortValue] = useState("newest");
     const [showFilter, setShowFilter] = useState(false);
-    // draft: giá trị đang chỉnh trong panel; applied: giá trị thực sự dùng để lọc
+
+    // Khoảng giá min/max của danh mục (lấy từ server)
+    const [priceBounds, setPriceBounds] = useState([0, 0]);
+    // draft: đang chỉnh trong panel; applied: thực sự gửi lên server
     const [draftPriceRange, setDraftPriceRange] = useState([0, 0]);
     const [appliedPriceRange, setAppliedPriceRange] = useState([0, 0]);
-    const [draftBrands, setDraftBrands] = useState([]);
-    const [appliedBrands, setAppliedBrands] = useState([]);
+    const [draftBrand, setDraftBrand] = useState("");
+    const [appliedBrand, setAppliedBrand] = useState("");
+
     const [page, setPage] = useState(1);
 
+    // Lấy khoảng giá min/max của danh mục bằng 2 truy vấn nhỏ (size 1)
+    useEffect(() => {
+        if (!category) return;
+
+        let active = true;
+        (async () => {
+            try {
+                const [asc, desc] = await Promise.all([
+                    productsService.getProductsByCategoryName(category, {
+                        sortBy: "price",
+                        sortDir: "asc",
+                        page: 0,
+                        size: 1,
+                    }),
+                    productsService.getProductsByCategoryName(category, {
+                        sortBy: "price",
+                        sortDir: "desc",
+                        page: 0,
+                        size: 1,
+                    }),
+                ]);
+                if (!active) return;
+                const min = Number(asc.products?.[0]?.price) || 0;
+                const max = Number(desc.products?.[0]?.price) || 0;
+                setPriceBounds([min, max]);
+                setDraftPriceRange([min, max]);
+                setAppliedPriceRange([min, max]);
+                setDraftBrand("");
+                setAppliedBrand("");
+                setPage(1);
+            } catch {
+                if (active) setPriceBounds([0, 0]);
+            }
+        })();
+
+        return () => {
+            active = false;
+        };
+    }, [category]);
+
+    // Có thu hẹp giá so với bounds hay không -> mới gửi minPrice/maxPrice
+    const priceNarrowed =
+        appliedPriceRange[0] > priceBounds[0] || appliedPriceRange[1] < priceBounds[1];
+
+    // Tải danh sách sản phẩm (server-side: category + giá + hãng + sort + phân trang)
     useEffect(() => {
         if (!category) return;
 
@@ -67,17 +108,19 @@ function Products() {
             setLoading(true);
             setError(null);
             try {
+                const { sortBy, sortDir } = SORT_MAP[sortValue] || SORT_MAP.newest;
                 const data = await productsService.getProductsByCategoryName(category, {
-                    page: 0,
-                    size: 1000,
+                    page: page - 1,
+                    size: PAGE_SIZE,
+                    sortBy,
+                    sortDir,
+                    minPrice: priceNarrowed ? appliedPriceRange[0] : undefined,
+                    maxPrice: priceNarrowed ? appliedPriceRange[1] : undefined,
+                    brandName: appliedBrand || undefined,
                 });
                 if (!active) return;
-
-                const items = data?.products || data?.items || [];
-                setAllProducts(items);
-                setDraftBrands([]);
-                setAppliedBrands([]);
-                setPage(1);
+                setProducts(data.products || data.items || []);
+                setTotal(data.pagination?.totalElements || 0);
             } catch (err) {
                 if (!active) return;
                 const msg = err?.response?.data?.message || err?.message || String(err);
@@ -91,70 +134,27 @@ function Products() {
         return () => {
             active = false;
         };
-    }, [category]);
+        // priceNarrowed phụ thuộc appliedPriceRange + priceBounds nên không cần liệt kê riêng
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [category, sortValue, appliedPriceRange, appliedBrand, page]);
 
-    // Khoảng giá min/max lấy động từ dữ liệu của danh mục
-    const priceBounds = useMemo(() => {
-        if (allProducts.length === 0) return [0, 0];
-        const prices = allProducts.map((p) => Number(p.price) || 0);
-        return [Math.min(...prices), Math.max(...prices)];
-    }, [allProducts]);
-
-    // Reset thanh trượt giá mỗi khi danh mục (dữ liệu) thay đổi
-    useEffect(() => {
-        setDraftPriceRange(priceBounds);
-        setAppliedPriceRange(priceBounds);
-    }, [priceBounds]);
-
-    const brandOptions = useMemo(() => {
-        const brands = new Set();
-        allProducts.forEach((p) => {
-            if (p.brandName) brands.add(p.brandName);
-        });
-        return Array.from(brands)
-            .sort((a, b) => a.localeCompare(b, "vi"))
-            .map((brand) => ({ value: brand, label: brand }));
-    }, [allProducts]);
-
-    const filteredProducts = useMemo(() => {
-        const [minPrice, maxPrice] = appliedPriceRange;
-        const filtered = allProducts.filter((product) => {
-            const price = Number(product.price) || 0;
-            if (price < minPrice || price > maxPrice) return false;
-            if (appliedBrands.length > 0 && !appliedBrands.includes(product.brandName)) {
-                return false;
-            }
-            return true;
-        });
-        return sortProducts(filtered, sortValue);
-    }, [allProducts, appliedPriceRange, appliedBrands, sortValue]);
-
-    const pagedProducts = useMemo(() => {
-        const start = (page - 1) * PAGE_SIZE;
-        return filteredProducts.slice(start, start + PAGE_SIZE);
-    }, [filteredProducts, page]);
-
-    // Quay về trang 1 khi điều kiện lọc/sắp xếp thay đổi
+    // Về trang 1 khi đổi sắp xếp / điều kiện lọc
     useEffect(() => {
         setPage(1);
-    }, [sortValue, appliedPriceRange, appliedBrands]);
+    }, [sortValue, appliedPriceRange, appliedBrand]);
 
-    // Đang có lọc khi giá đã thu hẹp so với mặc định hoặc đã chọn thương hiệu
-    const isFilterApplied =
-        appliedBrands.length > 0 ||
-        appliedPriceRange[0] !== priceBounds[0] ||
-        appliedPriceRange[1] !== priceBounds[1];
+    const isFilterApplied = appliedBrand !== "" || priceNarrowed;
 
     const handleApplyFilters = () => {
         setAppliedPriceRange(draftPriceRange);
-        setAppliedBrands(draftBrands);
+        setAppliedBrand(draftBrand.trim());
     };
 
     const handleResetFilters = () => {
         setDraftPriceRange(priceBounds);
-        setDraftBrands([]);
+        setDraftBrand("");
         setAppliedPriceRange(priceBounds);
-        setAppliedBrands([]);
+        setAppliedBrand("");
     };
 
     const renderContent = () => {
@@ -174,7 +174,7 @@ function Products() {
             );
         }
 
-        if (filteredProducts.length === 0) {
+        if (products.length === 0) {
             return (
                 <div className="products__status products__status--empty">
                     <Empty description="Không có sản phẩm phù hợp" />
@@ -185,7 +185,7 @@ function Products() {
         return (
             <>
                 <div className="products__grid">
-                    {pagedProducts.map((product) => (
+                    {products.map((product) => (
                         <ProductCard
                             key={product.id || product._id || product.code}
                             product={product}
@@ -197,10 +197,10 @@ function Products() {
                     <Pagination
                         current={page}
                         pageSize={PAGE_SIZE}
-                        total={filteredProducts.length}
+                        total={total}
                         onChange={setPage}
                         showSizeChanger={false}
-                        showTotal={(total) => `${total} sản phẩm`}
+                        showTotal={(value) => `${value} sản phẩm`}
                     />
                 </div>
             </>
@@ -214,7 +214,7 @@ function Products() {
                 <div className="products__header">
                     <h1 className="products__title">Danh mục: {category}</h1>
                     {!loading && !error && (
-                        <span className="products__count">{filteredProducts.length} sản phẩm</span>
+                        <span className="products__count">{total} sản phẩm</span>
                     )}
                 </div>
 
@@ -265,24 +265,25 @@ function Products() {
 
                             <div className="products__filterGroup">
                                 <label className="products__filterLabel">Thương hiệu</label>
-                                <Select
-                                    mode="multiple"
+                                <Input
                                     allowClear
-                                    placeholder="Tất cả thương hiệu"
-                                    value={draftBrands}
-                                    onChange={setDraftBrands}
-                                    options={brandOptions}
+                                    placeholder="Nhập tên hãng (vd: Logitech)"
+                                    value={draftBrand}
+                                    onChange={(event) => setDraftBrand(event.target.value)}
+                                    onPressEnter={handleApplyFilters}
                                     className="products__brandSelect"
-                                    maxTagCount="responsive"
                                 />
                             </div>
 
                             <div className="products__filterActions">
                                 <Button onClick={handleResetFilters}>Đặt lại</Button>
-                                <Button type="primary" onClick={() => {
-                                    handleApplyFilters();
-                                    setShowFilter(false);
-                                }}>
+                                <Button
+                                    type="primary"
+                                    onClick={() => {
+                                        handleApplyFilters();
+                                        setShowFilter(false);
+                                    }}
+                                >
                                     Áp dụng
                                 </Button>
                             </div>

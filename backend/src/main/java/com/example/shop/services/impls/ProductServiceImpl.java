@@ -175,7 +175,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     @Override
     public ProductsResponse filterProducts(Long categoryId, String categoryName, Long minPrice, Long maxPrice,
-            String attributesCsv, String sortBy, String sortDir, int page, int size) {
+            String brandName, String attributesCsv, String sortBy, String sortDir, int page, int size) {
         Long resolvedCategoryId;
         if (categoryName != null && (categoryId == null)) {
             Category category = categoryRepository.findByNameIgnoreCase(categoryName)
@@ -199,6 +199,11 @@ public class ProductServiceImpl implements ProductService {
 
             if (maxPrice != null) {
                 predicate = cb.and(predicate, cb.le(root.get("price"), maxPrice));
+            }
+
+            if (brandName != null && !brandName.trim().isEmpty()) {
+                predicate = cb.and(predicate,
+                        cb.like(cb.lower(root.get("brandName")), "%" + brandName.trim().toLowerCase() + "%"));
             }
 
             if (attributesCsv != null && !attributesCsv.trim().isEmpty()) {

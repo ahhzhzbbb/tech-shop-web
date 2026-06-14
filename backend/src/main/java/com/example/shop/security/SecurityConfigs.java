@@ -78,6 +78,8 @@ public class SecurityConfigs {
                                         "/api/products",
                                         "/api/products/**",
                                         "/api/product/**",
+                                        "/api/promotions",
+                                        "/api/promotion/**",
                                         "/api/attributes",
                                         "/api/attributes/**",
                                         "/api/attribute/**"

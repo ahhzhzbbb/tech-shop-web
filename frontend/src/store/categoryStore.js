@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import categoryApi from "../features/admin/category/categoryApi";
 
 // Store dùng chung danh sách danh mục, tránh gọi API lặp lại ở nhiều nơi

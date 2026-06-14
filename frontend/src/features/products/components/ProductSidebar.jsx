@@ -118,23 +118,26 @@ export default function ProductSideBar({
     );
 
     // Nội dung flyout hiển thị khi hover vào "Phụ kiện"
-    const accessoryOptions = (
-        <div className="psb-options">
-            {optionCategories.length > 0 ? (
-                optionCategories.map((c) => (
-                    <button
-                        key={c.id}
-                        type="button"
-                        className="psb-options__item"
-                        onClick={() => navigate(`/products/${c.name}`)}
-                    >
-                        {c.name}
-                    </button>
-                ))
-            ) : (
-                <span className="psb-options__empty">Chưa có danh mục</span>
-            )}
-        </div>
+    const accessoryOptions = useMemo(
+        () => (
+            <div className="psb-options">
+                {optionCategories.length > 0 ? (
+                    optionCategories.map((c) => (
+                        <button
+                            key={c.id}
+                            type="button"
+                            className="psb-options__item"
+                            onClick={() => navigate(`/products/${c.name}`)}
+                        >
+                            {c.name}
+                        </button>
+                    ))
+                ) : (
+                    <span className="psb-options__empty">Chưa có danh mục</span>
+                )}
+            </div>
+        ),
+        [optionCategories, navigate]
     );
 
     const roles = useAuthStore((state) => state.user?.roles);
@@ -186,7 +189,7 @@ export default function ProductSideBar({
 
                     return gi === 0 ? [groupItem] : [{ type: "divider" }, groupItem];
                 }),
-        [optionCategories, accessoryOptions, isAdmin]
+        [accessoryOptions, isAdmin]
     );
 
     const handleSelect = ({ key }) => {
@@ -198,7 +201,7 @@ export default function ProductSideBar({
 
         if (key === "Trang chủ") {
             navigate("/");
-        } else if (key === "admin") {
+        } else if (key === "Quản lý") {
             navigate("/admin");
         } else {
             navigate(`/products/${key}`);

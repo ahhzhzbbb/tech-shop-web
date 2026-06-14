@@ -399,12 +399,15 @@ public class ProductServiceImpl implements ProductService {
     private ProductDTO convertToDTO(Product product) {
         List<ProductAttributeValueDTO> attributes = product.getAttributeValues()
                 .stream()
+                .filter(value -> value.getAttribute() != null)
                 .map(value -> new ProductAttributeValueDTO(
                         value.getId(),
                         value.getAttribute().getId(),
                         value.getAttribute().getName(),
                         value.getValue()))
                 .toList();
+
+        Category category = product.getCategory();
 
         return new ProductDTO(
                 product.getId(),
@@ -417,8 +420,8 @@ public class ProductServiceImpl implements ProductService {
                 product.getAverageScore(),
                 product.getBrandName(),
                 product.getImages(),
-                product.getCategory().getId(),
-                product.getCategory().getName(),
+                category != null ? category.getId() : null,
+                category != null ? category.getName() : null,
                 attributes);
     }
 }

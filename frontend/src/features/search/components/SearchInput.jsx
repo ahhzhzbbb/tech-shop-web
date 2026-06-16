@@ -3,7 +3,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import { Input, Spin } from "antd";
 import { useNavigate } from "react-router-dom";
 import { searchProducts } from "../../products/services/products.service";
-import { getAllProductPromotion } from "../../home/services/promotion.service";
+import usePromotionStore from "../../../store/promotionStore";
 import "./SearchInput.scss";
 
 // Helper to format currency
@@ -19,23 +19,17 @@ const SearchInput = () => {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [promotions, setPromotions] = useState([]);
 
   const containerRef = useRef(null);
   const navigate = useNavigate();
 
+  const fetchPromotions = usePromotionStore((s) => s.fetchPromotions);
+  const promotions = usePromotionStore((s) => s.promotions);
+
   // Load all promotions on mount
   useEffect(() => {
-    const fetchPromotions = async () => {
-      try {
-        const data = await getAllProductPromotion();
-        setPromotions(data?.promotionItems || []);
-      } catch (err) {
-        console.error("Lỗi khi tải thông tin khuyến mãi:", err);
-      }
-    };
     fetchPromotions();
-  }, []);
+  }, [fetchPromotions]);
 
   // Debounce keyword input
   useEffect(() => {
@@ -91,7 +85,7 @@ const SearchInput = () => {
   }, []);
 
   const getProductPromo = (productId) => {
-    return promotions.find((p) => p.productId === productId);
+    return promotions.find((p) => String(p.productId) === String(productId));
   };
 
   const getSalePrice = (product) => {

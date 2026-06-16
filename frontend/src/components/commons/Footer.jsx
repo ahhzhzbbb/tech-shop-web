@@ -138,7 +138,7 @@ const Footer = () => {
                   <img src="https://th.bing.com/th/id/OIP.kyLKiccpv-QRkzV9nvv9KAHaEK?w=308&h=180&c=7&r=0&o=7&pid=1.7&rm=3" alt="MasterCard" />
                 </span>
                 <span className="footer__badge footer__badge--img">
-                  <img src="https://th.bing.com/th/id/OIP.ygZGQKeZ0aBwHS7e7wbJVgHaDA?w=346&h=142&c=7&r=0&o=7&pid=1.7&rm=3" alt="ZaloPay" />
+                  <img src="https://tse1.mm.bing.net/th/id/OIP.U4frfNbAF0UkeZ5Ii62SPQHaB_?r=0&w=750&h=202&rs=1&pid=ImgDetMain&o=7&rm=3" alt="ZaloPay" />
                 </span>
                 <span className="footer__badge footer__badge--cash">💵 Tiền mặt</span>
                 <span className="footer__badge footer__badge--installment">Trả góp <strong>0%</strong></span>

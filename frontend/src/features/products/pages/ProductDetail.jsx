@@ -10,6 +10,7 @@ import ProductSideBar from "../components/ProductSidebar";
 import ProductGallery from "../components/ProductGallery";
 import ProductHighlights from "../components/ProductHighlights";
 import ProductCard from "../components/ProductCard";
+import usePromotionStore from "../../../store/promotionStore";
 import "./Products.scss";
 import "./ProductDetail.scss";
 
@@ -30,6 +31,13 @@ function ProductDetail() {
     const [adding, setAdding] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
     const setCartCount = useCartStore((s) => s.setCount);
+
+    const fetchPromotions = usePromotionStore((s) => s.fetchPromotions);
+    const promotions = usePromotionStore((s) => s.promotions);
+
+    useEffect(() => {
+        fetchPromotions();
+    }, [fetchPromotions]);
 
     useEffect(() => {
         if (!id) return;
@@ -173,7 +181,27 @@ function ProductDetail() {
                             </div>
                         )}
 
-                        <div className="product-detail__price">{formatCurrency(product.price)}</div>
+                        {(() => {
+                            const promo = promotions.find((p) => String(p.productId) === String(product.id));
+                            const hasPromo = promo && promo.discountPercent > 0;
+                            const oldPrice = product.price;
+                            const newPrice = hasPromo ? Math.round((product.price * (100 - promo.discountPercent)) / 100) : product.price;
+                            const discountPercent = hasPromo ? promo.discountPercent : 0;
+
+                            return (
+                                <div className="product-detail__price-row">
+                                    <div className="product-detail__price">{formatCurrency(newPrice)}</div>
+                                    {hasPromo && (
+                                        <>
+                                            <div className="product-detail__old-price">{formatCurrency(oldPrice)}</div>
+                                            <div className="product-detail__discount">
+                                                -{discountPercent}%
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
+                            );
+                        })()}
 
                         <div className="product-detail__stock">
                             {inStock ? (

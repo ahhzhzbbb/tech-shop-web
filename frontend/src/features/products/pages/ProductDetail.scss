@@ -72,6 +72,28 @@
     color: #e11d48;
 }
 
+.product-detail__old-price {
+    font-size: 1.1rem;
+    color: #9ca3af;
+    text-decoration: line-through;
+}
+
+.product-detail__price-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.product-detail__discount {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #e11d48;
+    border: 1px solid #e11d48;
+    border-radius: 4px;
+    padding: 2px 8px;
+    background-color: #fff1f2;
+}
+
 .product-detail__buy {
     display: flex;
     align-items: center;

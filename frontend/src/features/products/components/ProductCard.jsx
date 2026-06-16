@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     GiftFilled,
     StarFilled,
 } from '@ant-design/icons';
+import usePromotionStore from '../../../store/promotionStore';
 import './ProductCard.scss';
 
 // Helper to format currency
@@ -15,14 +16,22 @@ const formatCurrency = (amount) => {
 
 const ProductCard = ({ product, categoryName }) => {
     const navigate = useNavigate();
+    const fetchPromotions = usePromotionStore((s) => s.fetchPromotions);
+    const promotions = usePromotionStore((s) => s.promotions);
+
+    useEffect(() => {
+        fetchPromotions();
+    }, [fetchPromotions]);
 
     if (!product) return null;
 
-    const { id, name, thumbnail, price, salePrice, discount, averageScore, reviewsCount, attributes } = product;
+    const { id, name, thumbnail, price, averageScore, reviewsCount, attributes } = product;
 
+    const promo = promotions.find((p) => String(p.productId) === String(id));
+    const hasPromo = promo && promo.discountPercent > 0;
     const oldPrice = price;
-    const newPrice = salePrice || price;
-    const discountPercent = discount || (oldPrice > newPrice ? Math.round(((oldPrice - newPrice) / oldPrice) * 100) : 0);
+    const newPrice = hasPromo ? Math.round((price * (100 - promo.discountPercent)) / 100) : price;
+    const discountPercent = hasPromo ? promo.discountPercent : 0;
 
     const category = categoryName || product.categoryName;
 

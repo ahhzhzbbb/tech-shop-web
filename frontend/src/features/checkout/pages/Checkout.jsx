@@ -263,7 +263,12 @@ function Checkout() {
                         >
                             Đặt hàng
                         </Button>
-                        <Button type="link" block onClick={() => navigate("/cart")}>
+                        <Button
+                            type="link"
+                            block
+                            onClick={() => navigate("/cart")}
+                            className="checkout-page__back"
+                        >
                             Quay lại giỏ hàng
                         </Button>
                     </div>

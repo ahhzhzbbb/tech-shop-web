@@ -6,6 +6,9 @@ import { ShoppingCartSimpleIcon } from "@phosphor-icons/react";
 import productsService from "../services/products.service";
 import cartService from "../../cart/service/cart.service";
 import useCartStore from "../../../store/cartStore";
+import useAuthStore from "../../../store/authStore";
+import LoginModal from "../../auth/component/LoginModal";
+import RegisterModal from "../../auth/component/RegisterModal";
 import ProductSideBar from "../components/ProductSidebar";
 import ProductGallery from "../components/ProductGallery";
 import ProductHighlights from "../components/ProductHighlights";
@@ -29,8 +32,11 @@ function ProductDetail() {
     const [error, setError] = useState(null);
     const [related, setRelated] = useState([]);
     const [adding, setAdding] = useState(false);
+    const [openLogin, setOpenLogin] = useState(false);
+    const [openRegister, setOpenRegister] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
     const setCartCount = useCartStore((s) => s.setCount);
+    const user = useAuthStore((s) => s.user);
 
     useEffect(() => {
         if (!id) return;
@@ -105,6 +111,11 @@ function ProductDetail() {
 
     const handleAddToCart = async () => {
         if (!product?.id) return;
+        // Chưa đăng nhập -> mở modal đăng nhập, không thêm vào giỏ
+        if (!user) {
+            setOpenLogin(true);
+            return;
+        }
         setAdding(true);
         try {
             const data = await cartService.addToCart(product.id, 1);
@@ -229,6 +240,23 @@ function ProductDetail() {
             {contextHolder}
             <ProductSideBar />
             <div className="product-detail">{renderDetail()}</div>
+
+            <LoginModal
+                open={openLogin}
+                onCancel={() => setOpenLogin(false)}
+                onOpenRegister={() => {
+                    setOpenLogin(false);
+                    setOpenRegister(true);
+                }}
+            />
+            <RegisterModal
+                open={openRegister}
+                onCancel={() => setOpenRegister(false)}
+                onOpenLogin={() => {
+                    setOpenRegister(false);
+                    setOpenLogin(true);
+                }}
+            />
         </div>
     );
 }

@@ -64,6 +64,7 @@ function CheckoutResult() {
         <div className="checkout-page">
             <CheckoutSteps currentStep={4} />
             <Result
+                className={`checkout-result${success ? " checkout-result--success" : ""}`}
                 status={success ? "success" : "error"}
                 title={success ? "Đặt hàng thành công!" : "Thanh toán thất bại"}
                 subTitle={
@@ -74,10 +75,19 @@ function CheckoutResult() {
                         : errMsg
                 }
                 extra={[
-                    <Button type="primary" key="orders" onClick={() => navigate("/orders")}>
+                    <Button
+                        type="primary"
+                        key="orders"
+                        className="checkout-result__primary"
+                        onClick={() => navigate("/orders")}
+                    >
                         Xem đơn hàng của tôi
                     </Button>,
-                    <Button key="home" onClick={() => navigate("/")}>
+                    <Button
+                        key="home"
+                        className="checkout-result__secondary"
+                        onClick={() => navigate("/")}
+                    >
                         Tiếp tục mua sắm
                     </Button>,
                 ]}

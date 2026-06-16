@@ -140,9 +140,8 @@ $bg-btn: #f5f5f5;
     transition: border-color 0.15s, color 0.15s, background 0.15s;
 
     &:hover {
-      border-color: $primary;
-      color: $primary;
-      background: lighten($primary, 48%);
+      border-color: $primary !important;
+      color: $primary !important;
     }
   }
 }

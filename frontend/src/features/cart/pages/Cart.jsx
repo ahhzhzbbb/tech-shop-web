@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Spin, Alert, Empty, Popconfirm, message } from "antd";
+import { Spin, Alert, Button, Empty, Popconfirm, message } from "antd";
 import { Trash } from "@phosphor-icons/react";
 
 import CheckoutSteps from "../../../components/ui/CheckoutStep";
@@ -53,7 +53,7 @@ function Cart() {
             (cart?.items || []).map((it) => ({
                 id: it.id, // cartItemId, dùng cho update/remove
                 name: it.productName,
-                image: it.imageUrl,
+                image: it.thumbnail,
                 price: it.price,
                 quantity: it.quantity,
             })),
@@ -113,7 +113,7 @@ function Cart() {
         if (loading) {
             return (
                 <div className="cart-page__status">
-                    <Spin tip="Đang tải giỏ hàng..." />
+                    <Spin description="Đang tải giỏ hàng..." />
                 </div>
             );
         }
@@ -130,9 +130,9 @@ function Cart() {
             return (
                 <div className="cart-page__status">
                     <Empty description="Giỏ hàng của bạn đang trống">
-                        <button className="cart-page__empty-btn" onClick={handleContinue}>
+                        <Button className="cart-page__empty-btn" onClick={handleContinue}>
                             Tiếp tục mua hàng
-                        </button>
+                        </Button>
                     </Empty>
                 </div>
             );

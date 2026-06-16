@@ -1,4 +1,5 @@
 // === OrderDetail Tokens ===
+@use "sass:color";
 $primary: #E30019;
 $border: #e5e7eb;
 $text: #333;
@@ -346,7 +347,7 @@ $radius: 8px;
         transition: color 0.2s ease;
 
         &:hover {
-            color: darken($primary, 12%);
+            color: color.adjust($primary, $lightness: -12%);
             text-decoration: underline;
         }
     }

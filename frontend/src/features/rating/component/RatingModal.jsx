@@ -64,6 +64,7 @@ const RatingModal = ({ open, product, onClose, onSubmitted }) => {
             onCancel={resetAndClose}
             confirmLoading={submitting}
             okButtonProps={{ className: 'rating-modal__ok-btn' }}
+            cancelButtonProps={{ className: 'rating-modal__cancel-btn' }}
             destroyOnClose
         >
             {product?.productName && (

@@ -50,22 +50,24 @@ export default function ProductDrawer({
     const fetchCategories = useCategoryStore((s) => s.fetchCategories);
     const [attributes, setAttributes] = useState([]);
     const [attrLoading, setAttrLoading] = useState(false);
-    const [imageUrls, setImageUrls] = useState([""]);
+    const [imageUrls, setImageUrls] = useState([{ id: 1, url: "" }]);
+    const [nextImageId, setNextImageId] = useState(2);
 
     const addImageUrl = useCallback(() => {
-        setImageUrls((prev) => [...prev, ""]);
-    }, []);
-
-    const removeImageUrl = useCallback((index) => {
-        setImageUrls((prev) => prev.filter((_, i) => i !== index));
-    }, []);
-
-    const changeImageUrl = useCallback((index, value) => {
-        setImageUrls((prev) => {
-            const next = [...prev];
-            next[index] = value;
-            return next;
+        setNextImageId((prev) => {
+            setImageUrls((urls) => [...urls, { id: prev, url: "" }]);
+            return prev + 1;
         });
+    }, []);
+
+    const removeImageUrl = useCallback((id) => {
+        setImageUrls((prev) => prev.filter((item) => item.id !== id));
+    }, []);
+
+    const changeImageUrl = useCallback((id, value) => {
+        setImageUrls((prev) =>
+            prev.map((item) => (item.id === id ? { ...item, url: value } : item))
+        );
     }, []);
 
     // Khuyến mãi hiện tại của sản phẩm (null = chưa có)
@@ -111,13 +113,15 @@ export default function ProductDrawer({
                 status: editingItem.status ?? "ACTIVE",
                 description: editingItem.description,
             });
-            setImageUrls(parsedImages.length > 0 ? parsedImages : [""]);
+            setImageUrls(parsedImages.length > 0 ? parsedImages.map((url, i) => ({ id: i, url })) : [{ id: 1, url: "" }]);
+            setNextImageId(parsedImages.length > 0 ? parsedImages.length + 1 : 2);
         } else {
             form.resetFields();
             form.setFieldsValue({ status: "ACTIVE", quantity: 0, promoEnabled: false });
             setAttributes([]);
             setExistingPromo(null);
-            setImageUrls([""]);
+            setImageUrls([{ id: 1, url: "" }]);
+            setNextImageId(2);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open, editingItem, fetchCategories]);
@@ -204,8 +208,8 @@ export default function ProductDrawer({
                 }))
                 .filter((av) => av.value != null && `${av.value}`.trim() !== "");
 
-            const validImageUrls = imageUrls.filter((u) => u.trim() !== "");
-            const imagesJson = validImageUrls.length > 0 ? JSON.stringify(validImageUrls) : null;
+            const validImageUrls = imageUrls.map((u) => u.url.trim()).filter(Boolean);
+            const imagesJson = JSON.stringify(validImageUrls);
 
             const promotion = {
                 enabled: !!promoOn,
@@ -314,19 +318,19 @@ export default function ProductDrawer({
 
                 <div className="pd-images-section">
                     <label className="pd-images-label">Album ảnh sản phẩm (URL)</label>
-                    {imageUrls.map((url, idx) => (
-                        <div key={idx} className="pd-image-row">
+                    {imageUrls.map((item) => (
+                        <div key={item.id} className="pd-image-row">
                             <Input
-                                value={url}
-                                onChange={(e) => changeImageUrl(idx, e.target.value)}
+                                value={item.url}
+                                onChange={(e) => changeImageUrl(item.id, e.target.value)}
                                 placeholder="https://..."
                                 className="pd-image-input"
                             />
                             <div className="pd-image-row-actions">
-                                {url.trim() && (
+                                {item.url.trim() && (
                                     <Image
-                                        src={url}
-                                        alt={`Ảnh ${idx + 1}`}
+                                        src={item.url}
+                                        alt={`Ảnh ${item.id}`}
                                         width={36}
                                         height={36}
                                         className="pd-image-preview"
@@ -340,7 +344,7 @@ export default function ProductDrawer({
                                         danger
                                         size="small"
                                         icon={<DeleteOutlined />}
-                                        onClick={() => removeImageUrl(idx)}
+                                        onClick={() => removeImageUrl(item.id)}
                                     />
                                 )}
                             </div>

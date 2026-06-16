@@ -58,12 +58,14 @@ const OrderTable = ({ orders = [] }) => {
     if (selectedOrder) {
         return (
             <div className="order-table-wrapper">
-                <button
-                    className="order-table__back-btn"
-                    onClick={() => setSelectedOrder(null)}
-                >
-                    <ArrowLeftOutlined /> Quay lại danh sách
-                </button>
+                <div className="order-table__back-btn-container" style={{ display: 'flex', justifyContent: 'center', width: '100%', marginTop: '32px', marginBottom: '32px' }}>
+                    <button
+                        className="order-table__back-btn"
+                        onClick={() => setSelectedOrder(null)}
+                    >
+                        <ArrowLeftOutlined /> Quay lại danh sách
+                    </button>
+                </div>
                 <OrderDetail order={selectedOrder} />
             </div>
         );

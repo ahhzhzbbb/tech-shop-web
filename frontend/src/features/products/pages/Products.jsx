@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { Spin, Alert, Empty, Select, Slider, Button, Input, Pagination } from "antd";
 import { FunnelSimpleIcon } from "@phosphor-icons/react";
 
@@ -36,6 +36,9 @@ const formatCurrency = (amount) =>
 
 function Products() {
     const { category } = useParams();
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const searchQuery = queryParams.get("q");
 
     const [products, setProducts] = useState([]);
     const [total, setTotal] = useState(0);
@@ -58,6 +61,15 @@ function Products() {
     // Lấy khoảng giá min/max của danh mục bằng 2 truy vấn nhỏ (size 1)
     useEffect(() => {
         if (!category) return;
+        if (category === "tim-kiem") {
+            setPriceBounds([0, 0]);
+            setDraftPriceRange([0, 0]);
+            setAppliedPriceRange([0, 0]);
+            setDraftBrand("");
+            setAppliedBrand("");
+            setPage(1);
+            return;
+        }
 
         let active = true;
         (async () => {
@@ -108,16 +120,25 @@ function Products() {
             setLoading(true);
             setError(null);
             try {
-                const { sortBy, sortDir } = SORT_MAP[sortValue] || SORT_MAP.newest;
-                const data = await productsService.getProductsByCategoryName(category, {
-                    page: page - 1,
-                    size: PAGE_SIZE,
-                    sortBy,
-                    sortDir,
-                    minPrice: priceNarrowed ? appliedPriceRange[0] : undefined,
-                    maxPrice: priceNarrowed ? appliedPriceRange[1] : undefined,
-                    brandName: appliedBrand || undefined,
-                });
+                let data;
+                if (category === "tim-kiem") {
+                    if (searchQuery) {
+                        data = await productsService.searchProducts(searchQuery, page - 1, PAGE_SIZE);
+                    } else {
+                        data = { products: [], pagination: { totalElements: 0 } };
+                    }
+                } else {
+                    const { sortBy, sortDir } = SORT_MAP[sortValue] || SORT_MAP.newest;
+                    data = await productsService.getProductsByCategoryName(category, {
+                        page: page - 1,
+                        size: PAGE_SIZE,
+                        sortBy,
+                        sortDir,
+                        minPrice: priceNarrowed ? appliedPriceRange[0] : undefined,
+                        maxPrice: priceNarrowed ? appliedPriceRange[1] : undefined,
+                        brandName: appliedBrand || undefined,
+                    });
+                }
                 if (!active) return;
                 setProducts(data.products || data.items || []);
                 setTotal(data.pagination?.totalElements || 0);
@@ -136,7 +157,7 @@ function Products() {
         };
         // priceNarrowed phụ thuộc appliedPriceRange + priceBounds nên không cần liệt kê riêng
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [category, sortValue, appliedPriceRange, appliedBrand, page]);
+    }, [category, searchQuery, sortValue, appliedPriceRange, appliedBrand, page]);
 
     // Về trang 1 khi đổi sắp xếp / điều kiện lọc
     useEffect(() => {
@@ -212,7 +233,9 @@ function Products() {
             <ProductSideBar />
             <div className="products__main">
                 <div className="products__header">
-                    <h1 className="products__title">Danh mục: {category}</h1>
+                    <h1 className="products__title">
+                        {category === "tim-kiem" ? `Kết quả tìm kiếm cho: "${searchQuery}"` : `Danh mục: ${category}`}
+                    </h1>
                     {!loading && !error && (
                         <span className="products__count">{total} sản phẩm</span>
                     )}

@@ -12,12 +12,19 @@ $radius: 8px;
 }
 
 // === Back button ===
+.order-table__back-btn-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 24px;
+}
+
 .order-table__back-btn {
     display: inline-flex;
     align-items: center;
     gap: 6px;
     padding: 8px 16px;
-    margin-bottom: 16px;
     font-size: 14px;
     font-weight: 500;
     color: $text;

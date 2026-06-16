@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Result, Button, Spin } from "antd";
 
 import CheckoutSteps from "../../../components/ui/CheckoutStep";
-import paymentService from "../services/payment.service";
+import paymentService from "../services/payment.service.jsx";
 import useCartStore from "../../../store/cartStore";
 import "./Checkout.scss";
 

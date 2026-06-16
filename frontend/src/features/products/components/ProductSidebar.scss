@@ -11,6 +11,7 @@ $hot-bg: #fff7e6;
 $hot-text: #ad6800;
 
 $sidebar-width: 240px;
+$header-height: 64px; // chiều cao header sticky
 $radius-lg: 0px;
 $radius-md: 0px;
 $radius-badge: 10px;
@@ -25,6 +26,15 @@ $transition: 0.2s ease;
   transition:
     width $transition,
     opacity $transition;
+
+  // Cố định khi cuộn dọc: dính ngay dưới header, cao hết màn hình.
+  // Vì là sticky nên khi cuộn tới footer, sidebar tự dừng ở mép trên footer.
+  position: sticky;
+  top: $header-height;
+  align-self: flex-start;
+  height: calc(100vh - #{$header-height});
+  display: flex;
+  flex-direction: column;
 }
 
 // =========================================
@@ -40,6 +50,10 @@ $transition: 0.2s ease;
   user-select: none;
   display: flex;
   flex-direction: column;
+
+  // Lấp đầy chiều cao wrapper (= chiều cao màn hình)
+  flex: 1;
+  min-height: 0;
 }
 
 // =========================================
@@ -69,6 +83,11 @@ $transition: 0.2s ease;
   border-inline-end: none !important;
   width: $sidebar-width;
   font-size: 14px;
+
+  // Cuộn riêng vùng menu khi danh sách dài hơn màn hình; header giữ nguyên
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 
   // =========================
   // Group Title
@@ -299,9 +318,15 @@ $transition: 0.2s ease;
 // FORCE bỏ bo góc toàn bộ sidebar
 .psb-wrapper,
 .psb-inner,
-.psb-menu,
-.psb-menu.ant-menu,
 .psb-promo {
   border-radius: 0 !important;
   overflow: hidden;
+}
+
+// Menu chỉ bỏ bo góc, vẫn cho cuộn dọc (không ép overflow: hidden)
+.psb-menu,
+.psb-menu.ant-menu {
+  border-radius: 0 !important;
+  overflow-x: hidden;
+  overflow-y: auto;
 }

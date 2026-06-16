@@ -10,6 +10,7 @@ import ProductSideBar from "../components/ProductSidebar";
 import ProductGallery from "../components/ProductGallery";
 import ProductHighlights from "../components/ProductHighlights";
 import ProductCard from "../components/ProductCard";
+import ProductRatings from "../../rating/component/ProductRatings";
 import "./Products.scss";
 import "./ProductDetail.scss";
 
@@ -150,6 +151,7 @@ function ProductDetail() {
                 <div className="product-detail__top">
                     <div className="product-detail__gallery">
                         <ProductGallery images={images} />
+                        <ProductRatings productId={product.id} />
                     </div>
 
                     <div className="product-detail__info">

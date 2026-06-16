@@ -14,7 +14,8 @@ $radius: 8px;
 // === Back button ===
 .order-table__back-btn-container {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
     width: 100%;
     margin-top: 20px;
     margin-bottom: 24px;
@@ -276,7 +277,7 @@ $radius: 8px;
         transition: all 0.2s;
 
         &:hover {
-            color: $primary;
+            color: $primary !important;
             border-color: $primary;
             background: #fff5f5;
         }

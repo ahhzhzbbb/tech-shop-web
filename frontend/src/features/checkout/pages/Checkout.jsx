@@ -5,8 +5,8 @@ import { CreditCard, Money } from "@phosphor-icons/react";
 
 import CheckoutSteps from "../../../components/ui/CheckoutStep";
 import cartService from "../../cart/service/cart.service";
-import orderService from "../../order/services/order.service";
-import paymentService from "../services/payment.service";
+import orderService from "../../order/services/order.service.jsx";
+import paymentService from "../services/payment.service.jsx";
 import useAuthStore from "../../../store/authStore";
 import useCartStore from "../../../store/cartStore";
 import "./Checkout.scss";

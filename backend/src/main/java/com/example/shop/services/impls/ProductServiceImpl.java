@@ -108,7 +108,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         if (productRequest.getImages() != null) {
-            product.setImages(product.getImages());
+            product.setImages(productRequest.getImages());
         }
 
         if (productRequest.getCategoryId() != null) {

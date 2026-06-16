@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import {
     Drawer,
     Form,
@@ -12,7 +12,9 @@ import {
     Empty,
     Divider,
     Typography,
+    Image,
 } from "antd";
+import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import categoryApi from "../category/categoryApi";
 import promotionApi from "../products/promotionApi";
 import useCategoryStore from "../../../store/categoryStore";
@@ -48,6 +50,23 @@ export default function ProductDrawer({
     const fetchCategories = useCategoryStore((s) => s.fetchCategories);
     const [attributes, setAttributes] = useState([]);
     const [attrLoading, setAttrLoading] = useState(false);
+    const [imageUrls, setImageUrls] = useState([""]);
+
+    const addImageUrl = useCallback(() => {
+        setImageUrls((prev) => [...prev, ""]);
+    }, []);
+
+    const removeImageUrl = useCallback((index) => {
+        setImageUrls((prev) => prev.filter((_, i) => i !== index));
+    }, []);
+
+    const changeImageUrl = useCallback((index, value) => {
+        setImageUrls((prev) => {
+            const next = [...prev];
+            next[index] = value;
+            return next;
+        });
+    }, []);
 
     // Khuyến mãi hiện tại của sản phẩm (null = chưa có)
     const [existingPromo, setExistingPromo] = useState(null);
@@ -73,6 +92,15 @@ export default function ProductDrawer({
         fetchCategories();
 
         if (isEditing) {
+            let parsedImages = [];
+            try {
+                const raw = editingItem.images;
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed)) parsedImages = parsed.filter(Boolean);
+                }
+            } catch { /* ignore */ }
+
             form.setFieldsValue({
                 name: editingItem.name,
                 brandName: editingItem.brandName,
@@ -83,11 +111,13 @@ export default function ProductDrawer({
                 status: editingItem.status ?? "ACTIVE",
                 description: editingItem.description,
             });
+            setImageUrls(parsedImages.length > 0 ? parsedImages : [""]);
         } else {
             form.resetFields();
             form.setFieldsValue({ status: "ACTIVE", quantity: 0, promoEnabled: false });
             setAttributes([]);
             setExistingPromo(null);
+            setImageUrls([""]);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open, editingItem, fetchCategories]);
@@ -167,7 +197,6 @@ export default function ProductDrawer({
                 ...rest
             } = values;
 
-            // Chỉ gửi những thuộc tính có giá trị
             const attributeValues = attributes
                 .map((attr) => ({
                     attributeId: attr.id,
@@ -175,7 +204,9 @@ export default function ProductDrawer({
                 }))
                 .filter((av) => av.value != null && `${av.value}`.trim() !== "");
 
-            // Ý định khuyến mãi để AdminProducts gọi create/update/delete tương ứng
+            const validImageUrls = imageUrls.filter((u) => u.trim() !== "");
+            const imagesJson = validImageUrls.length > 0 ? JSON.stringify(validImageUrls) : null;
+
             const promotion = {
                 enabled: !!promoOn,
                 discountPercent: promoOn ? discountPercent : null,
@@ -183,9 +214,9 @@ export default function ProductDrawer({
                 existingDiscountPercent: existingPromo?.discountPercent ?? null,
             };
 
-            await onSubmit({ ...rest, attributeValues }, promotion);
+            await onSubmit({ ...rest, images: imagesJson, attributeValues }, promotion);
         } catch (err) {
-            if (err?.errorFields) return; // lỗi validate -> giữ drawer mở
+            if (err?.errorFields) return;
             throw err;
         }
     };
@@ -280,6 +311,50 @@ export default function ProductDrawer({
                 <Form.Item name="thumbnail" label="Ảnh sản phẩm (URL)">
                     <Input placeholder="https://..." />
                 </Form.Item>
+
+                <div className="pd-images-section">
+                    <label className="pd-images-label">Album ảnh sản phẩm (URL)</label>
+                    {imageUrls.map((url, idx) => (
+                        <div key={idx} className="pd-image-row">
+                            <Input
+                                value={url}
+                                onChange={(e) => changeImageUrl(idx, e.target.value)}
+                                placeholder="https://..."
+                                className="pd-image-input"
+                            />
+                            <div className="pd-image-row-actions">
+                                {url.trim() && (
+                                    <Image
+                                        src={url}
+                                        alt={`Ảnh ${idx + 1}`}
+                                        width={36}
+                                        height={36}
+                                        className="pd-image-preview"
+                                        preview={false}
+                                        fallback="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzYiIGhlaWdodD0iMzYiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjM2IiBoZWlnaHQ9IjM2IiBmaWxsPSIjZjBmMGYwIi8+PHRleHQgeD0iMTgiIHk9IjIwIiBmb250LXNpemU9IjgiIGZpbGw9IiNjY2MiIHRleHQtYW5jaG9yPSJtaWRkbGUiPsOgxYLEgiA8L3RleHQ+PC9zdmc+"
+                                    />
+                                )}
+                                {imageUrls.length > 1 && (
+                                    <Button
+                                        type="text"
+                                        danger
+                                        size="small"
+                                        icon={<DeleteOutlined />}
+                                        onClick={() => removeImageUrl(idx)}
+                                    />
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                    <Button
+                        type="dashed"
+                        icon={<PlusOutlined />}
+                        onClick={addImageUrl}
+                        className="pd-image-add-btn"
+                    >
+                        Thêm ảnh
+                    </Button>
+                </div>
 
                 <Form.Item name="description" label="Mô tả">
                     <TextArea rows={3} placeholder="Mô tả ngắn về sản phẩm..." />

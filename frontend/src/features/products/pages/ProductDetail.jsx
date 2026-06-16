@@ -83,10 +83,15 @@ function ProductDetail() {
         };
     }, [relatedCategory, id]);
 
-    const images = useMemo(
-        () => (product?.imageUrl ? [product.imageUrl] : []),
-        [product]
-    );
+    const images = useMemo(() => {
+        if (!product?.images) return product?.thumbnail ? [product.thumbnail] : [];
+        try {
+            const parsed = JSON.parse(product.images);
+            return Array.isArray(parsed) && parsed.length > 0 ? parsed : (product.thumbnail ? [product.thumbnail] : []);
+        } catch {
+            return product.thumbnail ? [product.thumbnail] : [];
+        }
+    }, [product]);
 
     const specs = useMemo(
         () =>

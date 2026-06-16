@@ -68,3 +68,43 @@ $text-muted: #8c8c8c;
         background: #b0011a !important;
     }
 }
+
+.pd-images-section {
+    margin-bottom: 24px;
+}
+
+.pd-images-label {
+    display: block;
+    font-weight: 500;
+    color: $text-main;
+    margin-bottom: 8px;
+}
+
+.pd-image-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.pd-image-input {
+    flex: 1;
+}
+
+.pd-image-row-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.pd-image-preview {
+    border-radius: 4px;
+    object-fit: cover;
+    border: 1px solid #f0f0f0;
+}
+
+.pd-image-add-btn {
+    width: 100%;
+    border-radius: 8px !important;
+}

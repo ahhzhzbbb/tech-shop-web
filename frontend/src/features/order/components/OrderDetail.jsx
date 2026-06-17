@@ -8,7 +8,9 @@ import {
     SyncOutlined,
     CarFilled,
     CloseCircleFilled,
+    StarOutlined,
 } from '@ant-design/icons';
+import RatingModal from '../../rating/component/RatingModal';
 import './OrderDetail.scss';
 
 /**
@@ -74,10 +76,14 @@ const formatDate = (dateStr) => {
  *   { id, orderDate, totalAmount, status, notes, userId, orderItems: [{ id, quantity, price, productId, productName }] }
  */
 const OrderDetail = ({ order }) => {
+    const [ratingProduct, setRatingProduct] = useState(null);
+
     if (!order) return null;
 
     const statusInfo = STATUS_MAP[order.status] || STATUS_MAP.new;
     const isCancelled = order.status === 'cancelled';
+    // Chỉ cho phép đánh giá sản phẩm khi đơn hàng đã hoàn thành
+    const canRate = order.status === 'completed';
 
     // Tính step hiện tại cho progress
     const currentStepIndex = STEPS.indexOf(order.status);
@@ -166,6 +172,9 @@ const OrderDetail = ({ order }) => {
                             <th className="order-detail__th order-detail__th--price">Đơn giá</th>
                             <th className="order-detail__th order-detail__th--qty">Số lượng</th>
                             <th className="order-detail__th order-detail__th--subtotal">Thành tiền</th>
+                            {canRate && (
+                                <th className="order-detail__th order-detail__th--rate">Đánh giá</th>
+                            )}
                         </tr>
                     </thead>
                     <tbody>
@@ -178,6 +187,21 @@ const OrderDetail = ({ order }) => {
                                 <td className="order-detail__td order-detail__td--subtotal">
                                     {formatPrice(item.price * item.quantity)}
                                 </td>
+                                {canRate && (
+                                    <td className="order-detail__td order-detail__td--rate">
+                                        <button
+                                            className="order-detail__rate-btn"
+                                            onClick={() =>
+                                                setRatingProduct({
+                                                    productId: item.productId,
+                                                    productName: item.productName,
+                                                })
+                                            }
+                                        >
+                                            <StarOutlined /> Đánh giá
+                                        </button>
+                                    </td>
+                                )}
                             </tr>
                         ))}
                     </tbody>
@@ -199,6 +223,13 @@ const OrderDetail = ({ order }) => {
                     <span className="order-detail__total-price">{formatPrice(order.totalAmount)}</span>
                 </div>
             </div>
+
+            {/* === RATING MODAL === */}
+            <RatingModal
+                open={!!ratingProduct}
+                product={ratingProduct}
+                onClose={() => setRatingProduct(null)}
+            />
         </div>
     );
 };

@@ -122,8 +122,8 @@ $text-muted:    #888;
     transition: border-color 0.2s, color 0.2s;
 
     &:hover {
-      border-color: $primary;
-      color: $primary;
+      border-color: $primary !important;
+      color: $primary !important;
     }
   }
 }

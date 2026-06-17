@@ -67,7 +67,12 @@ const categories = [
     }
 ];
 
-const DEFAULT_CATEGORY_NAME = ["Laptop", "PC", "Chuột", "Bàn phím", "Màn hình", "Tai nghe", "RAM", "CPU", "Card đồ họa", "Tản nhiệt"];
+const DEFAULT_CATEGORY_NAME = ["Laptop", "PC", "Chuột", "Bàn phím", "Màn hình", "Tai nghe", "RAM", "CPU", "Card đồ họa", "Tản nhiệt", "SSD"];
+
+// Nhãn của mục "Phụ kiện" (mục cha không điều hướng, chỉ mở danh mục con)
+const ACCESSORY_LABEL = categories
+    .flatMap((group) => group.items)
+    .find((item) => item.id === "accessory")?.label;
 
 // =========================================
 // Icon map
@@ -167,7 +172,7 @@ export default function ProductSideBar({
                             label:
                                 item.id === "accessory" ? (
                                     <Popover
-                                        trigger="hover"
+                                        trigger={["hover", "click"]}
                                         placement="rightTop"
                                         overlayClassName="psb-options-popover"
                                         content={accessoryOptions}
@@ -193,8 +198,8 @@ export default function ProductSideBar({
     );
 
     const handleSelect = ({ key }) => {
-        // Nhấn vào "Phụ kiện" không điều hướng, chỉ dùng để hover xem danh mục con
-        if (key === "accessory") return;
+        // "Phụ kiện" là mục cha: không điều hướng, chỉ mở danh mục con (hover/click)
+        if (key === ACCESSORY_LABEL) return;
 
         setSelectedKeys([key]);
         onSelect?.(key);

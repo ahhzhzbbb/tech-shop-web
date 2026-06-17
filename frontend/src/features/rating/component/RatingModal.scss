@@ -1,0 +1,95 @@
+@use "sass:color";
+$primary: #e30019;
+
+// rootClassName được gắn lên phần tử gốc của Modal (.ant-modal-root)
+.rating-modal {
+    .ant-modal-content {
+        border-top: 4px solid $primary;
+    }
+
+    .ant-modal-header {
+        margin-bottom: 16px;
+    }
+
+    &__title {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        color: $primary;
+
+        &-icon {
+            color: $primary;
+        }
+    }
+
+    &__product-name {
+        margin: 0 0 16px;
+        padding: 10px 14px;
+        font-size: 15px;
+        font-weight: 500;
+        color: $primary;
+        background: #fff5f5;
+        border: 1px solid lighten($primary, 45%);
+        border-radius: 8px;
+    }
+
+    &__stars {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+
+        .ant-rate {
+            font-size: 28px;
+        }
+    }
+
+    &__score-label {
+        font-size: 14px;
+        font-weight: 500;
+        color: $primary;
+        min-width: 70px;
+    }
+
+    // Bọc textarea + bộ đếm ký tự: chừa khoảng trống bên dưới để bộ đếm
+    // (định vị absolute mặc định của antd) không đè lên nút footer
+    &__comment {
+        position: relative;
+        margin-bottom: 28px;
+
+        .ant-input {
+            &:hover,
+            &:focus,
+            &-focused {
+                border-color: $primary;
+                box-shadow: 0 0 0 2px rgba($primary, 0.1);
+            }
+        }
+
+        // Giữ vị trí mặc định (góc dưới phải, bên dưới textarea)
+        .ant-input-data-count {
+            bottom: -22px;
+            color: #999;
+        }
+    }
+
+    // Nút "Gửi đánh giá" tông đỏ
+    &__ok-btn {
+        background: $primary;
+        border-color: $primary;
+
+        &:hover,
+        &:focus {
+            background: color.adjust($primary, $lightness: 8%) !important;
+            border-color: $primary !important;
+        }
+    }
+
+    &__cancel-btn {
+        &:hover, &:focus {
+            color: $primary !important;
+            border-color: $primary !important;
+        }
+    }
+}

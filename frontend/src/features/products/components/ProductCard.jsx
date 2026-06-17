@@ -35,6 +35,9 @@ const ProductCard = ({ product, categoryName }) => {
 
     const category = categoryName || product.categoryName;
 
+    // Chỉ hiển thị điểm khi sản phẩm thực sự có đánh giá
+    const hasRating = averageScore != null && Number(averageScore) > 0;
+
     const handleClick = () => {
         if (id == null) return;
         navigate(`/products/${encodeURIComponent(category)}/${id}`);
@@ -98,9 +101,17 @@ const ProductCard = ({ product, categoryName }) => {
 
                 {/* Rating Section */}
                 <div className="product-card__rating">
-                    <span className="rating-score">{averageScore?.toFixed(1)}</span>
-                    <StarFilled className="rating-star" />
-                    <span className="rating-count">({reviewsCount} đánh giá)</span>
+                    {hasRating ? (
+                        <>
+                            <span className="rating-score">{Number(averageScore).toFixed(1)}</span>
+                            <StarFilled className="rating-star" />
+                            {reviewsCount > 0 && (
+                                <span className="rating-count">({reviewsCount} đánh giá)</span>
+                            )}
+                        </>
+                    ) : (
+                        <span className="rating-empty">Chưa có đánh giá</span>
+                    )}
                 </div>
             </div>
         </div>

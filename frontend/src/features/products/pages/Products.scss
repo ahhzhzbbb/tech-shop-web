@@ -33,6 +33,27 @@
     white-space: nowrap;
 }
 
+.products__list {
+    &:not(:first-of-type) {
+        margin-top: 36px;
+        padding-top: 28px;
+        border-top: 1px solid #e5e7eb;
+    }
+}
+
+.products__listHeader {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.products__listTitle {
+    font-size: 1.2rem;
+    margin: 0;
+    color: #111827;
+}
+
 .products__status {
     padding: 28px 12px;
     display: flex;

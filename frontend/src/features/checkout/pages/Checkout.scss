@@ -1,14 +1,37 @@
+$primary:       #D0021B;
+$primary-dark:  #a80016;
+$primary-light: #fce8ea;
+$primary-soft:  #fff5f6;
+$border:        #f0d4d8;
+$text-main:     #1f2937;
+$text-muted:    #6b7280;
+
 .checkout-page {
     max-width: 1100px;
     margin: 0 auto;
     padding: 24px 16px 48px;
+    background: linear-gradient(180deg, $primary-soft 0%, #fff 220px);
 }
 
 .checkout-page__title {
     font-size: 1.6rem;
-    font-weight: 600;
-    color: #111827;
+    font-weight: 700;
+    color: $primary;
     margin: 24px 0 16px;
+    position: relative;
+    padding-left: 14px;
+
+    &::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 5px;
+        height: 24px;
+        background: $primary;
+        border-radius: 3px;
+    }
 }
 
 .checkout-page__status {
@@ -32,19 +55,49 @@
 
 .checkout-card {
     background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 20px;
+    border: 1px solid $border;
+    border-radius: 14px;
+    padding: 22px;
     margin-bottom: 20px;
+    box-shadow: 0 6px 18px rgba($primary, 0.06);
 }
 
 .checkout-card__title {
     font-size: 1.05rem;
-    font-weight: 600;
-    color: #111827;
+    font-weight: 700;
+    color: $text-main;
     margin: 0 0 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid $primary-light;
 }
 
+/* Form fields */
+.checkout-page__form {
+    .ant-form-item-label > label {
+        font-weight: 600;
+        color: $text-main;
+    }
+
+    .ant-input,
+    .ant-input-affix-wrapper,
+    textarea.ant-input {
+        border-radius: 8px;
+        border-color: #e5e7eb;
+
+        &:hover {
+            border-color: $primary;
+        }
+
+        &:focus,
+        &.ant-input-focused,
+        &.ant-input-affix-wrapper-focused {
+            border-color: $primary;
+            box-shadow: 0 0 0 2px rgba($primary, 0.12);
+        }
+    }
+}
+
+/* Payment methods */
 .checkout-methods {
     display: flex;
     flex-direction: column;
@@ -56,11 +109,30 @@
         align-items: center;
         gap: 8px;
         height: auto;
-        padding: 12px 16px;
-        border-radius: 8px;
+        padding: 14px 16px;
+        border-radius: 10px;
+        border: 1.5px solid #e5e7eb;
+        color: $text-main;
+        transition: all 0.2s;
 
         &::before {
             display: none;
+        }
+
+        &:hover {
+            color: $primary;
+            border-color: $primary;
+        }
+
+        &.ant-radio-button-wrapper-checked {
+            background: $primary-light;
+            border-color: $primary;
+            color: $primary;
+            font-weight: 600;
+
+            &:hover {
+                color: $primary;
+            }
         }
     }
 }
@@ -69,6 +141,10 @@
 .checkout-page__summary {
     position: sticky;
     top: 16px;
+
+    .checkout-card {
+        border-top: 4px solid $primary;
+    }
 }
 
 .checkout-summary__items {
@@ -77,6 +153,15 @@
     gap: 12px;
     max-height: 280px;
     overflow-y: auto;
+    padding-right: 4px;
+
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: $primary-light;
+        border-radius: 3px;
+    }
 }
 
 .checkout-summary__item {
@@ -90,7 +175,7 @@
         height: 48px;
         object-fit: cover;
         border-radius: 8px;
-        border: 1px solid #f0f0f0;
+        border: 1px solid $border;
     }
 }
 
@@ -102,7 +187,7 @@
 
 .checkout-summary__item-name {
     font-size: 0.86rem;
-    color: #111827;
+    color: $text-main;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -110,19 +195,19 @@
 
 .checkout-summary__item-qty {
     font-size: 0.78rem;
-    color: #6b7280;
+    color: $text-muted;
 }
 
 .checkout-summary__item-price {
     font-size: 0.86rem;
-    font-weight: 500;
-    color: #111827;
+    font-weight: 600;
+    color: $primary;
     white-space: nowrap;
 }
 
 .checkout-summary__divider {
     height: 1px;
-    background: #e5e7eb;
+    background: $primary-light;
     margin: 16px 0;
 }
 
@@ -136,6 +221,7 @@
 
 .checkout-summary__free {
     color: #16a34a;
+    font-weight: 500;
 }
 
 .checkout-summary__total {
@@ -143,15 +229,98 @@
     justify-content: space-between;
     align-items: center;
     margin: 12px 0 16px;
-    font-weight: 600;
-    color: #111827;
+    padding-top: 12px;
+    border-top: 1px dashed $border;
+    font-weight: 700;
+    color: $text-main;
 }
 
 .checkout-summary__total-value {
-    font-size: 1.2rem;
-    color: #dc2626;
+    font-size: 1.3rem;
+    color: $primary;
+}
+
+.checkout-page__submit,
+.checkout-page__back {
+    height: 46px;
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: 10px;
 }
 
 .checkout-page__submit {
     margin-top: 4px;
+    background: $primary;
+    border-color: $primary;
+    box-shadow: 0 6px 14px rgba($primary, 0.25);
+
+    &:hover,
+    &:focus {
+        background: $primary-dark !important;
+        border-color: $primary-dark !important;
+    }
+}
+
+.checkout-page__back {
+    margin-top: 12px;
+    background: #fff;
+    color: $text-muted;
+
+    &:hover,
+    &:focus {
+        color: $primary !important;
+        background: $primary-soft !important;
+    }
+}
+
+/* Trang kết quả đặt hàng */
+.checkout-result {
+    background: #fff;
+    border: 1px solid $border;
+    border-radius: 14px;
+    margin-top: 16px;
+    box-shadow: 0 6px 18px rgba($primary, 0.06);
+
+    .ant-result-title {
+        color: $text-main;
+        font-weight: 700;
+    }
+
+    // Dấu tick thành công -> màu đỏ
+    &--success .ant-result-icon .anticon {
+        color: $primary;
+    }
+}
+
+.checkout-result__primary {
+    height: 44px;
+    padding: 0 22px;
+    font-weight: 600;
+    border-radius: 10px;
+    background: $primary;
+    border-color: $primary;
+    box-shadow: 0 6px 14px rgba($primary, 0.25);
+
+    &:hover,
+    &:focus {
+        background: $primary-dark !important;
+        border-color: $primary-dark !important;
+    }
+}
+
+.checkout-result__secondary {
+    height: 44px;
+    padding: 0 22px;
+    font-weight: 600;
+    border-radius: 10px;
+    background: #fff;
+    color: $primary;
+    border-color: $primary;
+
+    &:hover,
+    &:focus {
+        color: $primary-dark !important;
+        border-color: $primary-dark !important;
+        background: $primary-soft !important;
+    }
 }

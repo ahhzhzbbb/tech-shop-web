@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuthContext } from '../../../context/AuthContext';
 import OrderManagement from '../components/OrderManagement';
-import { getOrdersByUserId } from '../services/order.service';
+import { getOrdersByUserId } from '../services/order.service.jsx';
 import LoginModal from '../../auth/component/LoginModal.jsx';
 import RegisterModal from '../../auth/component/RegisterModal.jsx';
 import { Button, Card, Spin, message } from 'antd';

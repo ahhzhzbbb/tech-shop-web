@@ -1,4 +1,5 @@
 import { Minus, Plus, Trash } from "@phosphor-icons/react";
+import { Button } from 'antd';
 import "./CartItem.scss";
 
 const CartItem = ({ item, onQuantityChange, onRemove }) => {
@@ -51,14 +52,14 @@ const CartItem = ({ item, onQuantityChange, onRemove }) => {
           <span className="cart-item__total">{formattedTotal}</span>
           <span className="cart-item__unit-price">{formattedPrice} / sp</span>
         </div>
-        <button
+        <Button
           className="cart-item__remove"
           onClick={() => onRemove(id)}
           aria-label="Xoá sản phẩm"
         >
           <Trash size={16} />
           <span>Xoá</span>
-        </button>
+        </Button>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { Spin, Alert, Empty, Select, Slider, Button, Input, Pagination } from "antd";
 import { FunnelSimpleIcon } from "@phosphor-icons/react";
@@ -29,113 +29,69 @@ const SORT_MAP = {
     oldest: { sortBy: "id", sortDir: "asc" },
 };
 
+// Danh mục "ảo" trên sidebar -> gồm nhiều danh mục thật ở backend,
+// mỗi danh mục thật hiển thị thành 1 danh sách riêng (phân trang server-side độc lập)
+const VIRTUAL_CATEGORIES = {
+    "Thiết bị nhớ": ["RAM", "SSD"],
+};
+
+// Trả về danh sách danh mục thật tương ứng (1 phần tử nếu không phải danh mục ảo)
+const resolveCategories = (categoryName) =>
+    VIRTUAL_CATEGORIES[categoryName] || [categoryName];
+
 const formatCurrency = (amount) =>
     new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" })
         .format(amount || 0)
         .replace("₫", "đ");
 
-function Products() {
-    const { category } = useParams();
-    const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
-    const searchQuery = queryParams.get("q");
-
+/**
+ * Một danh sách sản phẩm độc lập (1 danh mục hoặc kết quả tìm kiếm),
+ * tự quản lý phân trang server-side của riêng nó.
+ */
+function ProductList({
+    title,
+    categoryName,
+    searchQuery,
+    sortValue,
+    priceNarrowed,
+    appliedPriceRange,
+    appliedBrand,
+}) {
     const [products, setProducts] = useState([]);
     const [total, setTotal] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
-    const [sortValue, setSortValue] = useState("newest");
-    const [showFilter, setShowFilter] = useState(false);
-
-    // Khoảng giá min/max của danh mục (lấy từ server)
-    const [priceBounds, setPriceBounds] = useState([0, 0]);
-    // draft: đang chỉnh trong panel; applied: thực sự gửi lên server
-    const [draftPriceRange, setDraftPriceRange] = useState([0, 0]);
-    const [appliedPriceRange, setAppliedPriceRange] = useState([0, 0]);
-    const [draftBrand, setDraftBrand] = useState("");
-    const [appliedBrand, setAppliedBrand] = useState("");
-
     const [page, setPage] = useState(1);
 
-    // Lấy khoảng giá min/max của danh mục bằng 2 truy vấn nhỏ (size 1)
+    const isSearch = searchQuery !== undefined;
+    const minPrice = priceNarrowed ? appliedPriceRange[0] : undefined;
+    const maxPrice = priceNarrowed ? appliedPriceRange[1] : undefined;
+
+    // Về trang 1 khi đổi danh mục / từ khoá / sắp xếp / bộ lọc
     useEffect(() => {
-        if (!category) return;
-        if (category === "tim-kiem") {
-            setPriceBounds([0, 0]);
-            setDraftPriceRange([0, 0]);
-            setAppliedPriceRange([0, 0]);
-            setDraftBrand("");
-            setAppliedBrand("");
-            setPage(1);
-            return;
-        }
+        setPage(1);
+    }, [categoryName, searchQuery, sortValue, minPrice, maxPrice, appliedBrand]);
 
-        let active = true;
-        (async () => {
-            try {
-                const [asc, desc] = await Promise.all([
-                    productsService.getProductsByCategoryName(category, {
-                        sortBy: "price",
-                        sortDir: "asc",
-                        page: 0,
-                        size: 1,
-                    }),
-                    productsService.getProductsByCategoryName(category, {
-                        sortBy: "price",
-                        sortDir: "desc",
-                        page: 0,
-                        size: 1,
-                    }),
-                ]);
-                if (!active) return;
-                const min = Number(asc.products?.[0]?.price) || 0;
-                const max = Number(desc.products?.[0]?.price) || 0;
-                setPriceBounds([min, max]);
-                setDraftPriceRange([min, max]);
-                setAppliedPriceRange([min, max]);
-                setDraftBrand("");
-                setAppliedBrand("");
-                setPage(1);
-            } catch {
-                if (active) setPriceBounds([0, 0]);
-            }
-        })();
-
-        return () => {
-            active = false;
-        };
-    }, [category]);
-
-    // Có thu hẹp giá so với bounds hay không -> mới gửi minPrice/maxPrice
-    const priceNarrowed =
-        appliedPriceRange[0] > priceBounds[0] || appliedPriceRange[1] < priceBounds[1];
-
-    // Tải danh sách sản phẩm (server-side: category + giá + hãng + sort + phân trang)
     useEffect(() => {
-        if (!category) return;
-
         let active = true;
         const fetchProducts = async () => {
             setLoading(true);
             setError(null);
             try {
                 let data;
-                if (category === "tim-kiem") {
-                    if (searchQuery) {
-                        data = await productsService.searchProducts(searchQuery, page - 1, PAGE_SIZE);
-                    } else {
-                        data = { products: [], pagination: { totalElements: 0 } };
-                    }
+                if (isSearch) {
+                    data = searchQuery
+                        ? await productsService.searchProducts(searchQuery, page - 1, PAGE_SIZE)
+                        : { products: [], pagination: { totalElements: 0 } };
                 } else {
                     const { sortBy, sortDir } = SORT_MAP[sortValue] || SORT_MAP.newest;
-                    data = await productsService.getProductsByCategoryName(category, {
+                    data = await productsService.getProductsByCategoryName(categoryName, {
                         page: page - 1,
                         size: PAGE_SIZE,
                         sortBy,
                         sortDir,
-                        minPrice: priceNarrowed ? appliedPriceRange[0] : undefined,
-                        maxPrice: priceNarrowed ? appliedPriceRange[1] : undefined,
+                        minPrice,
+                        maxPrice,
                         brandName: appliedBrand || undefined,
                     });
                 }
@@ -155,14 +111,137 @@ function Products() {
         return () => {
             active = false;
         };
-        // priceNarrowed phụ thuộc appliedPriceRange + priceBounds nên không cần liệt kê riêng
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [category, searchQuery, sortValue, appliedPriceRange, appliedBrand, page]);
+    }, [categoryName, searchQuery, sortValue, minPrice, maxPrice, appliedBrand, page]);
 
-    // Về trang 1 khi đổi sắp xếp / điều kiện lọc
+    return (
+        <section className="products__list">
+            {title && (
+                <div className="products__listHeader">
+                    <h2 className="products__listTitle">{title}</h2>
+                    {!loading && !error && (
+                        <span className="products__count">{total} sản phẩm</span>
+                    )}
+                </div>
+            )}
+
+            {loading ? (
+                <div className="products__status products__status--loading">
+                    <Spin tip="Đang tải sản phẩm..." />
+                </div>
+            ) : error ? (
+                <div className="products__status products__status--error">
+                    <Alert message="Lỗi khi tải sản phẩm" description={error} type="error" showIcon />
+                </div>
+            ) : products.length === 0 ? (
+                <div className="products__status products__status--empty">
+                    <Empty description="Không có sản phẩm phù hợp" />
+                </div>
+            ) : (
+                <>
+                    <div className="products__grid">
+                        {products.map((product) => (
+                            <ProductCard
+                                key={product.id || product._id || product.code}
+                                product={product}
+                                categoryName={categoryName}
+                            />
+                        ))}
+                    </div>
+                    <div className="products__pagination">
+                        <Pagination
+                            current={page}
+                            pageSize={PAGE_SIZE}
+                            total={total}
+                            onChange={setPage}
+                            showSizeChanger={false}
+                            showTotal={(value) => `${value} sản phẩm`}
+                        />
+                    </div>
+                </>
+            )}
+        </section>
+    );
+}
+
+function Products() {
+    const { category } = useParams();
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const searchQuery = queryParams.get("q");
+    const isSearch = category === "tim-kiem";
+
+    // Danh mục ảo (vd: "Thiết bị nhớ") -> nhiều danh mục thật, mỗi cái 1 danh sách riêng
+    const realCategories = useMemo(() => resolveCategories(category), [category]);
+    const isVirtualCategory = realCategories.length > 1;
+
+    const [sortValue, setSortValue] = useState("newest");
+    const [showFilter, setShowFilter] = useState(false);
+
+    // Khoảng giá min/max của danh mục (lấy từ server)
+    const [priceBounds, setPriceBounds] = useState([0, 0]);
+    // draft: đang chỉnh trong panel; applied: thực sự gửi lên server
+    const [draftPriceRange, setDraftPriceRange] = useState([0, 0]);
+    const [appliedPriceRange, setAppliedPriceRange] = useState([0, 0]);
+    const [draftBrand, setDraftBrand] = useState("");
+    const [appliedBrand, setAppliedBrand] = useState("");
+
+    // Lấy khoảng giá min/max của danh mục bằng 2 truy vấn nhỏ (size 1) cho mỗi danh mục thật
     useEffect(() => {
-        setPage(1);
-    }, [sortValue, appliedPriceRange, appliedBrand]);
+        if (!category || isSearch) {
+            setPriceBounds([0, 0]);
+            setDraftPriceRange([0, 0]);
+            setAppliedPriceRange([0, 0]);
+            setDraftBrand("");
+            setAppliedBrand("");
+            return;
+        }
+
+        let active = true;
+        (async () => {
+            try {
+                const pairs = await Promise.all(
+                    realCategories.flatMap((c) => [
+                        productsService.getProductsByCategoryName(c, {
+                            sortBy: "price",
+                            sortDir: "asc",
+                            page: 0,
+                            size: 1,
+                        }),
+                        productsService.getProductsByCategoryName(c, {
+                            sortBy: "price",
+                            sortDir: "desc",
+                            page: 0,
+                            size: 1,
+                        }),
+                    ])
+                );
+                if (!active) return;
+                const prices = pairs
+                    .map((res) => Number(res.products?.[0]?.price))
+                    .filter((p) => Number.isFinite(p));
+                const min = prices.length ? Math.min(...prices) : 0;
+                const max = prices.length ? Math.max(...prices) : 0;
+                setPriceBounds([min, max]);
+                setDraftPriceRange([min, max]);
+                setAppliedPriceRange([min, max]);
+                setDraftBrand("");
+                setAppliedBrand("");
+            } catch {
+                if (active) setPriceBounds([0, 0]);
+            }
+        })();
+
+        return () => {
+            active = false;
+        };
+        // realCategories chỉ đổi khi category đổi
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [category, isSearch]);
+
+    // Có thu hẹp giá so với bounds hay không -> mới gửi minPrice/maxPrice
+    const priceNarrowed =
+        appliedPriceRange[0] > priceBounds[0] || appliedPriceRange[1] < priceBounds[1];
 
     const isFilterApplied = appliedBrand !== "" || priceNarrowed;
 
@@ -178,143 +257,106 @@ function Products() {
         setAppliedBrand("");
     };
 
-    const renderContent = () => {
-        if (loading) {
-            return (
-                <div className="products__status products__status--loading">
-                    <Spin tip="Đang tải sản phẩm..." />
-                </div>
-            );
-        }
-
-        if (error) {
-            return (
-                <div className="products__status products__status--error">
-                    <Alert message="Lỗi khi tải sản phẩm" description={error} type="error" showIcon />
-                </div>
-            );
-        }
-
-        if (products.length === 0) {
-            return (
-                <div className="products__status products__status--empty">
-                    <Empty description="Không có sản phẩm phù hợp" />
-                </div>
-            );
-        }
-
-        return (
-            <>
-                <div className="products__grid">
-                    {products.map((product) => (
-                        <ProductCard
-                            key={product.id || product._id || product.code}
-                            product={product}
-                            categoryName={category}
-                        />
-                    ))}
-                </div>
-                <div className="products__pagination">
-                    <Pagination
-                        current={page}
-                        pageSize={PAGE_SIZE}
-                        total={total}
-                        onChange={setPage}
-                        showSizeChanger={false}
-                        showTotal={(value) => `${value} sản phẩm`}
-                    />
-                </div>
-            </>
-        );
-    };
-
     return (
         <div className="productLayout">
             <ProductSideBar />
             <div className="products__main">
                 <div className="products__header">
                     <h1 className="products__title">
-                        {category === "tim-kiem" ? `Kết quả tìm kiếm cho: "${searchQuery}"` : `Danh mục: ${category}`}
+                        {isSearch ? `Kết quả tìm kiếm cho: "${searchQuery}"` : `Danh mục: ${category}`}
                     </h1>
-                    {!loading && !error && (
-                        <span className="products__count">{total} sản phẩm</span>
-                    )}
                 </div>
 
-                <div className="products__controls">
-                    <div className="products__controlsBar">
-                        <div className="products__filterButtons">
-                            <Button
-                                className={`products__filterBtn${showFilter ? " is-active" : ""}`}
-                                icon={<FunnelSimpleIcon size={16} weight="bold" />}
-                                onClick={() => setShowFilter((prev) => !prev)}
-                            >
-                                Bộ lọc
-                            </Button>
-                            <Button onClick={handleResetFilters} disabled={!isFilterApplied}>
-                                Xoá lọc
-                            </Button>
-                        </div>
-
-                        <div className="products__sort">
-                            <span className="products__sortLabel">Sắp xếp:</span>
-                            <Select
-                                value={sortValue}
-                                onChange={setSortValue}
-                                options={SORT_OPTIONS}
-                                className="products__sortSelect"
-                            />
-                        </div>
-                    </div>
-
-                    {showFilter && (
-                        <div className="products__filterPanel">
-                            <div className="products__filterGroup">
-                                <label className="products__filterLabel">Khoảng giá</label>
-                                <Slider
-                                    range
-                                    min={priceBounds[0]}
-                                    max={priceBounds[1]}
-                                    value={draftPriceRange}
-                                    onChange={setDraftPriceRange}
-                                    tooltip={{ formatter: (value) => formatCurrency(value) }}
-                                    disabled={priceBounds[0] === priceBounds[1]}
-                                />
-                                <div className="products__priceLabels">
-                                    <span>{formatCurrency(draftPriceRange[0])}</span>
-                                    <span>{formatCurrency(draftPriceRange[1])}</span>
-                                </div>
-                            </div>
-
-                            <div className="products__filterGroup">
-                                <label className="products__filterLabel">Thương hiệu</label>
-                                <Input
-                                    allowClear
-                                    placeholder="Nhập tên hãng (vd: Logitech)"
-                                    value={draftBrand}
-                                    onChange={(event) => setDraftBrand(event.target.value)}
-                                    onPressEnter={handleApplyFilters}
-                                    className="products__brandSelect"
-                                />
-                            </div>
-
-                            <div className="products__filterActions">
-                                <Button onClick={handleResetFilters}>Đặt lại</Button>
+                {!isSearch && (
+                    <div className="products__controls">
+                        <div className="products__controlsBar">
+                            <div className="products__filterButtons">
                                 <Button
-                                    type="primary"
-                                    onClick={() => {
-                                        handleApplyFilters();
-                                        setShowFilter(false);
-                                    }}
+                                    className={`products__filterBtn${showFilter ? " is-active" : ""}`}
+                                    icon={<FunnelSimpleIcon size={16} weight="bold" />}
+                                    onClick={() => setShowFilter((prev) => !prev)}
                                 >
-                                    Áp dụng
+                                    Bộ lọc
+                                </Button>
+                                <Button onClick={handleResetFilters} disabled={!isFilterApplied}>
+                                    Xoá lọc
                                 </Button>
                             </div>
-                        </div>
-                    )}
-                </div>
 
-                {renderContent()}
+                            <div className="products__sort">
+                                <span className="products__sortLabel">Sắp xếp:</span>
+                                <Select
+                                    value={sortValue}
+                                    onChange={setSortValue}
+                                    options={SORT_OPTIONS}
+                                    className="products__sortSelect"
+                                />
+                            </div>
+                        </div>
+
+                        {showFilter && (
+                            <div className="products__filterPanel">
+                                <div className="products__filterGroup">
+                                    <label className="products__filterLabel">Khoảng giá</label>
+                                    <Slider
+                                        range
+                                        min={priceBounds[0]}
+                                        max={priceBounds[1]}
+                                        value={draftPriceRange}
+                                        onChange={setDraftPriceRange}
+                                        tooltip={{ formatter: (value) => formatCurrency(value) }}
+                                        disabled={priceBounds[0] === priceBounds[1]}
+                                    />
+                                    <div className="products__priceLabels">
+                                        <span>{formatCurrency(draftPriceRange[0])}</span>
+                                        <span>{formatCurrency(draftPriceRange[1])}</span>
+                                    </div>
+                                </div>
+
+                                <div className="products__filterGroup">
+                                    <label className="products__filterLabel">Thương hiệu</label>
+                                    <Input
+                                        allowClear
+                                        placeholder="Nhập tên hãng (vd: Logitech)"
+                                        value={draftBrand}
+                                        onChange={(event) => setDraftBrand(event.target.value)}
+                                        onPressEnter={handleApplyFilters}
+                                        className="products__brandSelect"
+                                    />
+                                </div>
+
+                                <div className="products__filterActions">
+                                    <Button onClick={handleResetFilters}>Đặt lại</Button>
+                                    <Button
+                                        type="primary"
+                                        onClick={() => {
+                                            handleApplyFilters();
+                                            setShowFilter(false);
+                                        }}
+                                    >
+                                        Áp dụng
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {isSearch ? (
+                    <ProductList searchQuery={searchQuery} />
+                ) : (
+                    realCategories.map((c) => (
+                        <ProductList
+                            key={c}
+                            categoryName={c}
+                            title={isVirtualCategory ? c : undefined}
+                            sortValue={sortValue}
+                            priceNarrowed={priceNarrowed}
+                            appliedPriceRange={appliedPriceRange}
+                            appliedBrand={appliedBrand}
+                        />
+                    ))
+                )}
             </div>
         </div>
     );

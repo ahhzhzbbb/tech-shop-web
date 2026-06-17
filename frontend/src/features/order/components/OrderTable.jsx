@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
     EyeOutlined,
     ClockCircleFilled,
@@ -7,8 +8,10 @@ import {
     CheckCircleFilled,
     CloseCircleFilled,
     ArrowLeftOutlined,
+    ArrowRightOutlined,
     ShoppingOutlined,
 } from '@ant-design/icons';
+import { Button } from 'antd';
 import OrderDetail from './OrderDetail';
 import './OrderTable.scss';
 
@@ -53,18 +56,25 @@ const formatDate = (dateStr) => {
  */
 const OrderTable = ({ orders = [] }) => {
     const [selectedOrder, setSelectedOrder] = useState(null);
+    const navigate = useNavigate();
 
     // Nếu đang xem chi tiết 1 đơn
     if (selectedOrder) {
         return (
             <div className="order-table-wrapper">
-                <div className="order-table__back-btn-container" style={{ display: 'flex', justifyContent: 'center', width: '100%', marginTop: '32px', marginBottom: '32px' }}>
-                    <button
+                <div className="order-table__back-btn-container">
+                    <Button
                         className="order-table__back-btn"
                         onClick={() => setSelectedOrder(null)}
                     >
                         <ArrowLeftOutlined /> Quay lại danh sách
-                    </button>
+                    </Button>
+                    <Button
+                        className="order-table__back-btn"
+                        onClick={() => navigate('/')}
+                    >
+                        Tiếp tục mua sắm <ArrowRightOutlined />
+                    </Button>
                 </div>
                 <OrderDetail order={selectedOrder} />
             </div>
@@ -141,7 +151,7 @@ const OrderTable = ({ orders = [] }) => {
                                             </span>
                                         </td>
                                         <td className="order-table__td order-table__td--action">
-                                            <button
+                                            <Button
                                                 className="order-table__view-btn"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
@@ -150,7 +160,7 @@ const OrderTable = ({ orders = [] }) => {
                                                 title="Xem chi tiết"
                                             >
                                                 <EyeOutlined />
-                                            </button>
+                                            </Button>
                                         </td>
                                     </tr>
                                 );

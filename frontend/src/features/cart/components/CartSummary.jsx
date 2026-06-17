@@ -1,4 +1,5 @@
 import { ShoppingCart, ArrowLeft } from "@phosphor-icons/react";
+import { Button } from 'antd';
 import "./CartSummary.scss";
 
 const CartSummary = ({
@@ -46,10 +47,10 @@ const CartSummary = ({
           Mua ngay
         </button>
 
-        <button className="order-summary__btn-continue" onClick={onContinue}>
+        <Button className="order-summary__btn-continue" onClick={onContinue}>
           <ArrowLeft size={16} />
           Tiếp tục mua hàng
-        </button>
+        </Button>
       </div>
     </div>
   );

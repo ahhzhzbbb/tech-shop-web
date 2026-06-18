@@ -12,6 +12,8 @@ import com.example.shop.services.OrderService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -29,6 +31,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
+    @CacheEvict(value = "orders", allEntries = true)
     public OrderDTO createOrder(OrderRequest orderRequest) {
         User user = userRepository.findById(orderRequest.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", orderRequest.getUserId()));
@@ -67,6 +70,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Cacheable(value = "orders", key = "'all'")
     public OrdersResponse getAllOrders() {
         List<Order> orders = orderRepository.findAll();
         List<OrderDTO> orderList = orders.stream()
@@ -78,6 +82,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Cacheable(value = "orders", key = "#orderId")
     public OrderDTO getOrderById(Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order", "id", orderId));
@@ -85,6 +90,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Cacheable(value = "orders", key = "'user-' + #userId")
     public List<OrderDTO> getOrdersByUserId(Long userId) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
@@ -97,6 +103,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
+    @CacheEvict(value = "orders", allEntries = true)
     public OrderDTO updateOrder(Long orderId, OrderRequest orderRequest) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order", "id", orderId));
@@ -135,6 +142,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
+    @CacheEvict(value = "orders", allEntries = true)
     public OrderDTO deleteOrder(Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order", "id", orderId));

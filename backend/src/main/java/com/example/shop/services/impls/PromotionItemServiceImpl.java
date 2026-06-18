@@ -11,6 +11,8 @@ import com.example.shop.repositories.PromotionItemRepository;
 import com.example.shop.services.PromotionItemService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +26,7 @@ public class PromotionItemServiceImpl implements PromotionItemService {
     private final ModelMapper modelMapper;
 
     @Override
+    @CacheEvict(value = "promotions", allEntries = true)
     public PromotionItemDTO createPromotionItem(PromotionItemRequest request) {
         
         // Check if product exists
@@ -47,6 +50,7 @@ public class PromotionItemServiceImpl implements PromotionItemService {
     }
 
     @Override
+    @Cacheable(value = "promotions", key = "'all'")
     public PromotionItemsResponse getAllPromotionItems() {
 
         List<PromotionItem> promotionItems = promotionItemRepository.findAll();
@@ -63,6 +67,7 @@ public class PromotionItemServiceImpl implements PromotionItemService {
     }
 
     @Override
+    @Cacheable(value = "promotions", key = "#promotionItemId")
     public PromotionItemDTO getPromotionItemById(Long promotionItemId) {
 
         PromotionItem promotionItem = promotionItemRepository.findById(promotionItemId)
@@ -72,6 +77,7 @@ public class PromotionItemServiceImpl implements PromotionItemService {
     }
 
     @Override
+    @CacheEvict(value = "promotions", allEntries = true)
     public PromotionItemDTO updatePromotionItem(Long promotionItemId, PromotionItemRequest request) {
 
         PromotionItem promotionItem = promotionItemRepository.findById(promotionItemId)
@@ -99,6 +105,7 @@ public class PromotionItemServiceImpl implements PromotionItemService {
     }
 
     @Override
+    @CacheEvict(value = "promotions", allEntries = true)
     public PromotionItemDTO deletePromotionItem(Long promotionItemId) {
 
         PromotionItem promotionItem = promotionItemRepository.findById(promotionItemId)

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
     LaptopIcon,
@@ -12,11 +12,15 @@ import {
     GraphicsCardIcon,
     FanIcon,
     Tag,
+    CaretRightIcon,
+    CaretLeftIcon,
+    FireIcon,
 } from "@phosphor-icons/react";
 import { Empty, Spin, Typography, message } from "antd";
 import ProductSideBar from "../../products/components/ProductSidebar";
 import ProductCard from "../../products/components/ProductCard";
 import productsService from "../../products/services/products.service";
+import { getAllProductPromotion } from "../services/promotion.service";
 import useCategoryStore from "../../../store/categoryStore";
 import "./HomePage.scss";
 
@@ -35,7 +39,10 @@ const CATEGORY_ICONS = {
     "Tản nhiệt": FanIcon,
 };
 
-const FEATURED_CATEGORIES = ["Laptop", "PC", "Chuột", "Bàn phím", "Màn hình", "Tai nghe", "Thiết bị nhớ", "CPU", "Card đồ họa", "Tản nhiệt"];
+const FEATURED_CATEGORIES = [
+    "Laptop", "PC", "Chuột", "Bàn phím", "Màn hình", "Tai nghe",
+    "Thiết bị nhớ", "CPU", "Card đồ họa", "Tản nhiệt",
+];
 
 const getErrorText = (error, fallback) =>
     error?.response?.data?.message || error?.response?.data || fallback;
@@ -43,8 +50,10 @@ const getErrorText = (error, fallback) =>
 function HomePage() {
     const navigate = useNavigate();
     const [productsByCategory, setProductsByCategory] = useState({});
+    const [promoProducts, setPromoProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
+    const scrollRefs = useRef({});
 
     const categories = useCategoryStore((s) => s.categories);
     const fetchCategories = useCategoryStore((s) => s.fetchCategories);
@@ -59,25 +68,48 @@ function HomePage() {
             const activeCats = categories.filter((c) => c.active !== false);
             const targetCats = activeCats.length > 0 ? activeCats : FEATURED_CATEGORIES.map((name) => ({ name }));
 
-            const results = await Promise.allSettled(
-                targetCats.slice(0, 8).map(async (cat) => {
+            const [promoData, ...catResults] = await Promise.all([
+                getAllProductPromotion().catch(() => ({ promotionItems: [] })),
+                ...targetCats.slice(0, 8).map(async (cat) => {
                     const data = await productsService.getProductsByCategoryName(cat.name, {
                         page: 0,
-                        size: 8,
+                        size: 20,
                         sortBy: "id",
                         sortDir: "desc",
                     });
                     return { category: cat.name, products: data?.products || data?.items || [] };
-                })
-            );
+                }),
+            ]);
+
+            const promoItems = promoData?.promotionItems || [];
+            const promoIds = new Set(promoItems.map((p) => p.productId));
+            const discountMap = {};
+            promoItems.forEach((p) => { discountMap[p.productId] = p.discountPercent; });
 
             const grouped = {};
-            results.forEach((result) => {
-                if (result.status === "fulfilled" && result.value.products.length > 0) {
-                    grouped[result.value.category] = result.value.products;
+            const promos = [];
+
+            catResults.forEach((result) => {
+                if (result?.status === "rejected") return;
+                const catData = result;
+                if (catData?.products?.length > 0) {
+                    grouped[catData.category] = catData.products;
+
+                    catData.products.forEach((product) => {
+                        if (promoIds.has(product.id)) {
+                            const discount = discountMap[product.id];
+                            promos.push({
+                                ...product,
+                                discount,
+                                salePrice: Math.round((product.price * (100 - discount)) / 100),
+                            });
+                        }
+                    });
                 }
             });
+
             setProductsByCategory(grouped);
+            setPromoProducts(promos);
         } catch (error) {
             messageApi.error(getErrorText(error, "Không thể tải sản phẩm."));
         } finally {
@@ -85,14 +117,10 @@ function HomePage() {
         }
     }, [categories, messageApi]);
 
-    useEffect(() => {
-        fetchCategories();
-    }, [fetchCategories]);
+    useEffect(() => { fetchCategories(); }, [fetchCategories]);
 
     useEffect(() => {
-        if (categories.length > 0) {
-            fetchProducts();
-        }
+        if (categories.length > 0) fetchProducts();
     }, [categories.length, fetchProducts]);
 
     const categoryCards = useMemo(() => {
@@ -113,6 +141,15 @@ function HomePage() {
             products,
         }));
     }, [productsByCategory]);
+
+    const handleScroll = useCallback((sectionId, direction) => {
+        const container = scrollRefs.current[sectionId];
+        if (container) {
+            container.scrollBy({ left: direction * 480, behavior: "smooth" });
+        }
+    }, []);
+
+    const PROMO_SECTION_ID = "__promos__";
 
     return (
         <div className="homepage-layout">
@@ -160,19 +197,70 @@ function HomePage() {
                         </section>
                     )}
 
-                    {productSections.map((section) => (
-                        <section className="homepage-section" key={section.id}>
-                            <div className="homepage-section__header">
-                                <Text strong className="homepage-section__title">
-                                    {section.title}
-                                </Text>
+                    {promoProducts.length > 0 && (
+                        <section className="homepage-row homepage-row--promo">
+                            <div className="homepage-row__header homepage-row__header--promo">
+                                <div className="homepage-row__title-group">
+                                    <FireIcon size={22} weight="fill" className="homepage-row__promo-icon" />
+                                    <h3 className="homepage-row__title homepage-row__title--promo">
+                                        Deal nóng - Khuyến mãi đặc biệt
+                                    </h3>
+                                </div>
+                                <div className="homepage-row__nav">
+                                    <button
+                                        className="homepage-row__arrow"
+                                        onClick={() => handleScroll(PROMO_SECTION_ID, -1)}
+                                    >
+                                        <CaretLeftIcon size={18} weight="bold" />
+                                    </button>
+                                    <button
+                                        className="homepage-row__arrow"
+                                        onClick={() => handleScroll(PROMO_SECTION_ID, 1)}
+                                    >
+                                        <CaretRightIcon size={18} weight="bold" />
+                                    </button>
+                                </div>
                             </div>
-                            <div className="homepage-section__grid">
+                            <div
+                                className="homepage-row__scroll"
+                                ref={(el) => { scrollRefs.current[PROMO_SECTION_ID] = el; }}
+                            >
+                                {promoProducts.map((product) => (
+                                    <div key={product.id} className="homepage-row__item">
+                                        <ProductCard product={product} />
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+                    )}
+
+                    {productSections.map((section) => (
+                        <section className="homepage-row" key={section.id}>
+                            <div className="homepage-row__header">
+                                <h3 className="homepage-row__title">{section.title}</h3>
+                                <div className="homepage-row__nav">
+                                    <button
+                                        className="homepage-row__arrow"
+                                        onClick={() => handleScroll(section.id, -1)}
+                                    >
+                                        <CaretLeftIcon size={18} weight="bold" />
+                                    </button>
+                                    <button
+                                        className="homepage-row__arrow"
+                                        onClick={() => handleScroll(section.id, 1)}
+                                    >
+                                        <CaretRightIcon size={18} weight="bold" />
+                                    </button>
+                                </div>
+                            </div>
+                            <div
+                                className="homepage-row__scroll"
+                                ref={(el) => { scrollRefs.current[section.id] = el; }}
+                            >
                                 {section.products.map((product) => (
-                                    <ProductCard
-                                        product={product}
-                                        key={product.id || product._id || product.code}
-                                    />
+                                    <div key={product.id || product._id || product.code} className="homepage-row__item">
+                                        <ProductCard product={product} />
+                                    </div>
                                 ))}
                             </div>
                         </section>
@@ -180,10 +268,7 @@ function HomePage() {
 
                     {!loading && Object.keys(productsByCategory).length === 0 && (
                         <div className="homepage-empty">
-                            <Empty
-                                image={Empty.PRESENTED_IMAGE_SIMPLE}
-                                description="Chưa có sản phẩm nào"
-                            />
+                            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Chưa có sản phẩm nào" />
                         </div>
                     )}
                 </Spin>

@@ -1,7 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
-import { Spin, Alert, Empty, Rate, Tag, InputNumber, Button, message } from "antd";
-import { ShoppingCartSimpleIcon } from "@phosphor-icons/react";
+import { Spin, Alert, Empty, Rate, Tag, Button, Divider, message } from "antd";
+import {
+    ShoppingCartSimpleIcon,
+    StarIcon,
+    PackageIcon,
+    ShieldCheckIcon,
+    TruckIcon,
+} from "@phosphor-icons/react";
+import { EditOutlined } from "@ant-design/icons";
 
 import productsService from "../services/products.service";
 import cartService from "../../cart/service/cart.service";
@@ -14,10 +21,11 @@ import ProductGallery from "../components/ProductGallery";
 import ProductHighlights from "../components/ProductHighlights";
 import ProductCard from "../components/ProductCard";
 import ProductRatings from "../../rating/component/ProductRatings";
+import RatingModal from "../../rating/component/RatingModal";
 import "./Products.scss";
 import "./ProductDetail.scss";
 
-const RELATED_LIMIT = 20;
+const RELATED_LIMIT = 12;
 
 const formatCurrency = (amount) =>
     new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" })
@@ -34,13 +42,14 @@ function ProductDetail() {
     const [adding, setAdding] = useState(false);
     const [openLogin, setOpenLogin] = useState(false);
     const [openRegister, setOpenRegister] = useState(false);
+    const [ratingModalOpen, setRatingModalOpen] = useState(false);
+    const [refreshRatingsKey, setRefreshRatingsKey] = useState(0);
     const [messageApi, contextHolder] = message.useMessage();
     const setCartCount = useCartStore((s) => s.setCount);
     const user = useAuthStore((s) => s.user);
 
     useEffect(() => {
         if (!id) return;
-
         let active = true;
         const fetchProduct = async () => {
             setLoading(true);
@@ -57,18 +66,13 @@ function ProductDetail() {
                 if (active) setLoading(false);
             }
         };
-
         fetchProduct();
-        return () => {
-            active = false;
-        };
+        return () => { active = false; };
     }, [id]);
 
-    // Sản phẩm cùng danh mục (loại bỏ sản phẩm hiện tại)
     const relatedCategory = product?.categoryName || category;
     useEffect(() => {
         if (!relatedCategory) return;
-
         let active = true;
         const fetchRelated = async () => {
             try {
@@ -83,11 +87,8 @@ function ProductDetail() {
                 if (active) setRelated([]);
             }
         };
-
         fetchRelated();
-        return () => {
-            active = false;
-        };
+        return () => { active = false; };
     }, [relatedCategory, id]);
 
     const images = useMemo(() => {
@@ -101,34 +102,42 @@ function ProductDetail() {
     }, [product]);
 
     const specs = useMemo(
-        () =>
-            (product?.attributes || []).map((attr) => ({
-                label: attr.attributeName,
-                value: attr.value,
-            })),
+        () => (product?.attributes || []).map((attr) => ({ label: attr.attributeName, value: attr.value })),
         [product]
     );
 
     const handleAddToCart = async () => {
         if (!product?.id) return;
-        // Chưa đăng nhập -> mở modal đăng nhập, không thêm vào giỏ
-        if (!user) {
-            setOpenLogin(true);
-            return;
-        }
+        if (!user) { setOpenLogin(true); return; }
         setAdding(true);
         try {
             const data = await cartService.addToCart(product.id, 1);
             setCartCount(data?.totalItems);
-            messageApi.success(`Đã thêm sản phẩm vào giỏ hàng.`);
+            messageApi.success("Đã thêm sản phẩm vào giỏ hàng.");
         } catch (err) {
-            messageApi.error(
-                err?.response?.data?.message || err?.message || "Thêm vào giỏ hàng thất bại."
-            );
+            messageApi.error(err?.response?.data?.message || err?.message || "Thêm vào giỏ hàng thất bại.");
         } finally {
             setAdding(false);
         }
     };
+
+    const handleOpenRating = () => {
+        if (!user) { setOpenLogin(true); return; }
+        setRatingModalOpen(true);
+    };
+
+    const handleRatingSubmitted = useCallback(() => {
+        setRefreshRatingsKey((k) => k + 1);
+        setRatingModalOpen(false);
+    }, []);
+
+    const handleScrollRelated = useCallback((direction) => {
+        const container = document.querySelector(".product-detail__related-scroll");
+        if (container) {
+            const scrollAmount = 260;
+            container.scrollBy({ left: direction * scrollAmount, behavior: "smooth" });
+        }
+    }, []);
 
     const renderDetail = () => {
         if (loading) {
@@ -138,7 +147,6 @@ function ProductDetail() {
                 </div>
             );
         }
-
         if (error) {
             return (
                 <div className="product-detail__status">
@@ -146,7 +154,6 @@ function ProductDetail() {
                 </div>
             );
         }
-
         if (!product) {
             return (
                 <div className="product-detail__status">
@@ -162,13 +169,20 @@ function ProductDetail() {
                 <div className="product-detail__top">
                     <div className="product-detail__gallery">
                         <ProductGallery images={images} />
-                        <ProductRatings productId={product.id} />
                     </div>
 
                     <div className="product-detail__info">
+                        <div className="product-detail__breadcrumb">
+                            <span>Trang chủ</span>
+                            <span className="product-detail__breadcrumb-sep">/</span>
+                            <span>{product.categoryName || category}</span>
+                            <span className="product-detail__breadcrumb-sep">/</span>
+                            <span className="product-detail__breadcrumb-current">{product.name}</span>
+                        </div>
+
                         <h1 className="product-detail__name">{product.name}</h1>
 
-                        <div className="product-detail__meta">
+                        <div className="product-detail__meta-row">
                             {product.brandName && (
                                 <span className="product-detail__brand">
                                     Thương hiệu: <strong>{product.brandName}</strong>
@@ -177,26 +191,30 @@ function ProductDetail() {
                             {product.categoryName && <Tag color="blue">{product.categoryName}</Tag>}
                         </div>
 
-                        {product.averageScore != null && (
-                            <div className="product-detail__rating">
-                                <Rate disabled allowHalf value={product.averageScore} />
+                        <div className="product-detail__rating-row">
+                            <div className="product-detail__rating-stars">
+                                <Rate disabled allowHalf value={product.averageScore || 0} />
                                 <span className="product-detail__score">
-                                    {Number(product.averageScore).toFixed(1)}
+                                    {product.averageScore ? Number(product.averageScore).toFixed(1) : "Chưa có đánh giá"}
                                 </span>
                             </div>
-                        )}
-
-                        <div className="product-detail__price">{formatCurrency(product.price)}</div>
-
-                        <div className="product-detail__stock">
-                            {inStock ? (
-                                <Tag color="green">Còn hàng ({product.quantity})</Tag>
-                            ) : (
-                                <Tag color="red">Hết hàng</Tag>
-                            )}
+                            <button className="product-detail__write-review" onClick={handleOpenRating}>
+                                <EditOutlined /> Viết đánh giá
+                            </button>
                         </div>
 
-                        <div className="product-detail__buy">
+                        <div className="product-detail__price-block">
+                            <span className="product-detail__price">{formatCurrency(product.price)}</span>
+                            <span className={`product-detail__stock-tag ${inStock ? "in-stock" : "out-stock"}`}>
+                                {inStock ? (
+                                    <><PackageIcon size={14} weight="fill" /> Còn hàng</>
+                                ) : (
+                                    "Hết hàng"
+                                )}
+                            </span>
+                        </div>
+
+                        <div className="product-detail__actions">
                             <Button
                                 type="primary"
                                 size="large"
@@ -204,29 +222,70 @@ function ProductDetail() {
                                 onClick={handleAddToCart}
                                 loading={adding}
                                 disabled={!inStock}
+                                className="product-detail__btn-cart"
                             >
                                 Thêm vào giỏ hàng
                             </Button>
                         </div>
 
+                        <div className="product-detail__perks">
+                            <div className="product-detail__perk">
+                                <TruckIcon size={20} weight="duotone" />
+                                <span>Miễn phí giao hàng</span>
+                            </div>
+                            <div className="product-detail__perk">
+                                <ShieldCheckIcon size={20} weight="duotone" />
+                                <span>Bảo hành chính hãng</span>
+                            </div>
+                            <div className="product-detail__perk">
+                                <PackageIcon size={20} weight="duotone" />
+                                <span>Đổi trả 30 ngày</span>
+                            </div>
+                        </div>
+
                         {product.description && (
-                            <p className="product-detail__description">{product.description}</p>
+                            <div className="product-detail__description-block">
+                                <h3 className="product-detail__section-title">Mô tả sản phẩm</h3>
+                                <p className="product-detail__description">{product.description}</p>
+                            </div>
                         )}
 
-                        <ProductHighlights specs={specs} />
+                        {specs.length > 0 && <ProductHighlights specs={specs} />}
                     </div>
+                </div>
+
+                <div className="product-detail__reviews-section">
+                    <div className="product-detail__section-header">
+                        <StarIcon size={22} weight="fill" className="product-detail__section-icon" />
+                        <h3 className="product-detail__section-title">Đánh giá sản phẩm</h3>
+                    </div>
+                    <ProductRatings productId={product.id} refreshKey={refreshRatingsKey} />
                 </div>
 
                 {related.length > 0 && (
                     <section className="product-detail__related">
-                        <h2 className="product-detail__related-title">Sản phẩm tương tự</h2>
-                        <div className="products__grid">
+                        <div className="product-detail__related-header">
+                            <h2 className="product-detail__related-title">Sản phẩm tương tự</h2>
+                            <div className="product-detail__related-arrows">
+                                <button
+                                    className="product-detail__arrow-btn"
+                                    onClick={() => handleScrollRelated(-1)}
+                                >
+                                    &#8249;
+                                </button>
+                                <button
+                                    className="product-detail__arrow-btn"
+                                    onClick={() => handleScrollRelated(1)}
+                                >
+                                    &#8250;
+                                </button>
+                            </div>
+                        </div>
+                        <div className="product-detail__related-scroll">
                             {related.map((item) => (
-                                <ProductCard
-                                    key={item.id || item._id || item.code}
-                                    product={item}
-                                    categoryName={relatedCategory}
-                                />
+                                <div key={item.id || item._id || item.code} className="product-detail__related-item">
+                                    <ProductCard product={item} categoryName={relatedCategory} />
+                                </div>
                             ))}
                         </div>
                     </section>
@@ -244,19 +303,21 @@ function ProductDetail() {
             <LoginModal
                 open={openLogin}
                 onCancel={() => setOpenLogin(false)}
-                onOpenRegister={() => {
-                    setOpenLogin(false);
-                    setOpenRegister(true);
-                }}
+                onOpenRegister={() => { setOpenLogin(false); setOpenRegister(true); }}
             />
             <RegisterModal
                 open={openRegister}
                 onCancel={() => setOpenRegister(false)}
-                onOpenLogin={() => {
-                    setOpenRegister(false);
-                    setOpenLogin(true);
-                }}
+                onOpenLogin={() => { setOpenRegister(false); setOpenLogin(true); }}
             />
+            {product && (
+                <RatingModal
+                    open={ratingModalOpen}
+                    product={{ productId: product.id, productName: product.name }}
+                    onClose={() => setRatingModalOpen(false)}
+                    onSubmitted={handleRatingSubmitted}
+                />
+            )}
         </div>
     );
 }

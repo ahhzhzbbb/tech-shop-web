@@ -57,6 +57,13 @@ function ProductDetail() {
     }, [fetchPromotions]);
 
     useEffect(() => {
+        const timer = setTimeout(() => {
+            window.dispatchEvent(new Event('resize'));
+        }, 300);
+        return () => clearTimeout(timer);
+    }, [promotions, related]);
+
+    useEffect(() => {
         if (!id) return;
         let active = true;
         const fetchProduct = async () => {
@@ -176,7 +183,10 @@ function ProductDetail() {
             <>
                 <div className="product-detail__top">
                     <div className="product-detail__gallery">
-                        <ProductGallery images={images} />
+                        <ProductGallery 
+                            images={images} 
+                            key={`${product.id}_${related.length > 0 ? 'y' : 'n'}_${promotions.length > 0 ? 'y' : 'n'}`} 
+                        />
                     </div>
 
                     <div className="product-detail__info">

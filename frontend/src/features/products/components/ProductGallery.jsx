@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Carousel } from 'antd';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import './ProductGallery.scss';
@@ -6,6 +6,13 @@ import './ProductGallery.scss';
 const ProductGallery = ({ images = [] }) => {
     const carouselRef = useRef(null);
     const [currentIndex, setCurrentIndex] = useState(0);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            window.dispatchEvent(new Event('resize'));
+        }, 150);
+        return () => clearTimeout(timer);
+    }, [images]);
 
     const handleBeforeChange = (from, to) => {
         setCurrentIndex(to);
@@ -49,7 +56,9 @@ const ProductGallery = ({ images = [] }) => {
                 >
                     {images.map((img, idx) => (
                         <div key={idx} className="product-gallery__slide">
-                            <img src={img} alt={`Product ${idx}`} />
+                            <div className="product-gallery__image-container">
+                                <img src={img} alt={`Product ${idx}`} />
+                            </div>
                         </div>
                     ))}
                 </Carousel>

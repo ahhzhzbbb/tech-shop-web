@@ -10,6 +10,8 @@ $radius: 12px;
 .product-detail {
     flex: 1;
     min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
     padding: 24px 48px 48px 16px;
 }
 

@@ -45,9 +45,30 @@
     gap: 8px;
     margin-left: auto;
   }
+
+  // Hamburger button – ẩn trên desktop
+  &_burger {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.15);
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 20px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.2s;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.25);
+    }
+  }
 }
 
-// ===== Responsive =====
+// ===== Responsive: Tablet (≤1024px) =====
 @media (max-width: 1024px) {
   .header {
     height: auto;
@@ -63,5 +84,79 @@
       flex: 100%;
       margin-top: 10px;
     }
+  }
+}
+
+// ===== Responsive: Mobile (≤768px) =====
+@media (max-width: 768px) {
+  .header {
+    padding: 8px 0;
+
+    .header_container {
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    &_left {
+      .header_logo {
+        height: 36px;
+      }
+    }
+
+    &_center {
+      order: 3;
+      margin-top: 8px;
+    }
+
+    // Hiện hamburger trên mobile
+    &_burger {
+      display: flex;
+      margin-left: auto;
+    }
+
+    // Ẩn right menu mặc định, chỉ hiện khi toggle
+    &_right {
+      display: none;
+      order: 4;
+      width: 100%;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 4px;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+
+      &--open {
+        display: flex;
+      }
+
+      // Override badge để hiển thị đúng trên mobile
+      .ant-badge {
+        width: 100%;
+
+        .header-button {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+
+.desktop-only-user {
+  display: block;
+}
+.mobile-only-user {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desktop-only-user {
+    display: none;
+  }
+  .mobile-only-user {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
   }
 }

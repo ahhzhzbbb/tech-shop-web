@@ -330,3 +330,23 @@ $transition: 0.2s ease;
   overflow-x: hidden;
   overflow-y: auto;
 }
+
+// ===== Responsive: Tablet =====
+@media (max-width: 1024px) {
+  .psb-wrapper {
+    width: 200px;
+  }
+  .psb-inner {
+    width: 200px;
+  }
+  .psb-menu.ant-menu {
+    width: 200px;
+  }
+}
+
+// ===== Responsive: Mobile =====
+@media (max-width: 768px) {
+  .psb-wrapper {
+    display: none;
+  }
+}

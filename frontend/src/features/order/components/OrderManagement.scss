@@ -56,8 +56,11 @@ $bg-light: #f9fafb;
         }
 
         &--active {
-            color: $text;
+            color: $primary;
+            background-color: #FFF1F0;
             border-bottom-color: $primary;
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
         }
     }
 

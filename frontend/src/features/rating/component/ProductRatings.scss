@@ -106,3 +106,24 @@
         font-size: 14px;
     }
 }
+
+@media (max-width: 768px) {
+  .product-ratings {
+    padding: 16px;
+    margin-top: 24px;
+
+    &__head {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    &__title {
+      font-size: 18px;
+    }
+
+    &__item {
+      padding: 12px 0;
+    }
+  }
+}

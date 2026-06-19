@@ -109,3 +109,25 @@
     }
   }
 }
+
+// ===== Responsive: Mobile =====
+@media (max-width: 768px) {
+  .dropdown-button {
+    width: 100%;
+    justify-content: flex-start;
+    height: 38px !important;
+    padding: 4px 12px !important;
+
+    .db-content {
+      flex-direction: row;
+      gap: 4px;
+
+      .db-title {
+        font-size: 13px;
+      }
+      .db-subtitle {
+        font-size: 13px;
+      }
+    }
+  }
+}

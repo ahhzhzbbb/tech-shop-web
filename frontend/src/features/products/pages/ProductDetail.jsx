@@ -197,6 +197,12 @@ function ProductDetail() {
                                 </span>
                             )}
                             {product.categoryName && <Tag color="blue">{product.categoryName}</Tag>}
+                            <span className="product-detail__meta-divider">|</span>
+                            {inStock ? (
+                                <Tag color="green">Còn hàng ({product.quantity})</Tag>
+                            ) : (
+                                <Tag color="red">Hết hàng</Tag>
+                            )}
                         </div>
 
                         <div className="product-detail__rating-row">
@@ -219,42 +225,32 @@ function ProductDetail() {
                             const discountPercent = hasPromo ? promo.discountPercent : 0;
 
                             return (
-                                <div className="product-detail__price-block">
-                                    <span className="product-detail__price">{formatCurrency(newPrice)}</span>
-                                    {hasPromo && (
-                                        <>
-                                            <span className="product-detail__old-price" style={{ textDecoration: 'line-through', color: '#9ca3af', marginLeft: '8px', fontSize: '0.9em' }}>
-                                                {formatCurrency(oldPrice)}
-                                            </span>
-                                            <Tag color="red" style={{ marginLeft: '8px' }}>
-                                                -{discountPercent}%
-                                            </Tag>
-                                        </>
-                                    )}
-                                    <span className={`product-detail__stock-tag ${inStock ? "in-stock" : "out-stock"}`} style={{ marginLeft: 'auto' }}>
-                                        {inStock ? (
-                                            <><PackageIcon size={14} weight="fill" /> Còn hàng</>
-                                        ) : (
-                                            "Hết hàng"
+                                <div className="product-detail__price-action">
+                                    <div className="product-detail__price-group">
+                                        <div className="product-detail__price">{formatCurrency(newPrice)}</div>
+                                        {hasPromo && (
+                                            <>
+                                                <div className="product-detail__old-price">{formatCurrency(oldPrice)}</div>
+                                                <div className="product-detail__discount">
+                                                    -{discountPercent}%
+                                                </div>
+                                            </>
                                         )}
-                                    </span>
+                                    </div>
+                                    <Button
+                                        type="primary"
+                                        size="large"
+                                        icon={<ShoppingCartSimpleIcon size={18} weight="fill" />}
+                                        onClick={handleAddToCart}
+                                        loading={adding}
+                                        disabled={!inStock}
+                                        className="product-detail__add-btn"
+                                    >
+                                        Thêm vào giỏ hàng
+                                    </Button>
                                 </div>
                             );
                         })()}
-
-                        <div className="product-detail__actions">
-                            <Button
-                                type="primary"
-                                size="large"
-                                icon={<ShoppingCartSimpleIcon size={18} weight="fill" />}
-                                onClick={handleAddToCart}
-                                loading={adding}
-                                disabled={!inStock}
-                                className="product-detail__btn-cart"
-                            >
-                                Thêm vào giỏ hàng
-                            </Button>
-                        </div>
 
                         <div className="product-detail__perks">
                             <div className="product-detail__perk">
@@ -270,7 +266,6 @@ function ProductDetail() {
                                 <span>Đổi trả 30 ngày</span>
                             </div>
                         </div>
-
                         {product.description && (
                             <div className="product-detail__description-block">
                                 <h3 className="product-detail__section-title">Mô tả sản phẩm</h3>

@@ -98,3 +98,54 @@ $text-done:       #D0021B;
     }
   }
 }
+
+@media (max-width: 768px) {
+  .checkout-steps {
+    padding: 16px 12px;
+
+    &__circle {
+      width: 36px;
+      height: 36px;
+
+      svg {
+        width: 16px !important;
+        height: 16px !important;
+      }
+    }
+
+    &__line {
+      margin-bottom: 18px;
+    }
+
+    &__label {
+      font-size: 11px;
+      max-width: 80px;
+      white-space: normal;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .checkout-steps {
+    padding: 12px 6px;
+
+    &__circle {
+      width: 30px;
+      height: 30px;
+
+      svg {
+        width: 14px !important;
+        height: 14px !important;
+      }
+    }
+
+    &__line {
+      margin-bottom: 15px;
+    }
+
+    &__label {
+      font-size: 9px;
+      max-width: 60px;
+    }
+  }
+}

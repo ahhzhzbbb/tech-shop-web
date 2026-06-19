@@ -299,26 +299,36 @@ $border:        #f0d4d8;
     }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
     .homepage-content {
-        padding: 12px;
+        padding: 14px;
     }
 
     .homepage-hero {
-        min-height: 140px;
+        min-height: 160px;
 
         &__overlay {
-            padding: 20px 16px;
+            padding: 24px 16px;
         }
 
         &__title {
-            font-size: 18px !important;
+            font-size: 20px !important;
         }
     }
 
     .homepage-categories {
         &__grid {
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        &__card {
+            padding: 14px 8px;
+            gap: 8px;
+        }
+
+        &__card-label {
+            font-size: 12px;
         }
     }
 
@@ -326,3 +336,45 @@ $border:        #f0d4d8;
         flex: 0 0 160px;
     }
 }
+
+@media (max-width: 480px) {
+    .homepage-content {
+        padding: 10px;
+    }
+
+    .homepage-hero {
+        min-height: 120px;
+
+        &__overlay {
+            padding: 16px 12px;
+        }
+
+        &__title {
+            font-size: 16px !important;
+        }
+
+        &__subtitle {
+            font-size: 12px;
+        }
+    }
+
+    .homepage-categories {
+        &__grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        &__card {
+            padding: 12px 6px;
+        }
+    }
+
+    .homepage-section {
+        &__grid {
+            grid-template-columns: repeat(2, 1fr);
+            padding: 8px;
+            gap: 8px;
+        }
+    }
+}
+

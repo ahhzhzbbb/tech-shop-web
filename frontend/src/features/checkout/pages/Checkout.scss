@@ -324,3 +324,37 @@ $text-muted:    #6b7280;
         background: $primary-soft !important;
     }
 }
+
+// ===== Responsive: Mobile =====
+@media (max-width: 768px) {
+    .checkout-page {
+        padding: 16px 10px 32px;
+    }
+
+    .checkout-page__title {
+        font-size: 1.3rem;
+        margin: 16px 0 12px;
+    }
+
+    .checkout-card {
+        padding: 16px;
+        border-radius: 10px;
+        margin-bottom: 14px;
+    }
+
+    .checkout-page__summary {
+        position: static;
+    }
+
+    .checkout-page__submit,
+    .checkout-page__back {
+        height: 42px;
+        font-size: 0.95rem;
+    }
+
+    .checkout-methods {
+        .checkout-method {
+            padding: 12px 14px;
+        }
+    }
+}

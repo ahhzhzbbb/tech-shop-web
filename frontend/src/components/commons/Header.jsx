@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Badge, Button, Popconfirm, message } from "antd";
-import { ShoppingCartOutlined, ContainerOutlined, EnvironmentOutlined, UserOutlined, MenuOutlined, PhoneOutlined, LogoutOutlined } from '@ant-design/icons';
+import { ShoppingCartOutlined, ContainerOutlined, EnvironmentOutlined, UserOutlined, MenuOutlined, CloseOutlined, PhoneOutlined, LogoutOutlined } from '@ant-design/icons';
 
 import logo from "../../assets/logo_shop.png"
 import shopName from "../../assets/shop_name.png"
@@ -21,8 +21,15 @@ const Header = () => {
   const { user } = useAuthContext();
   const navigate = useNavigate();
   const { logout, loading: logoutLoading } = useLogout();
+  const location = useLocation();
   const [openRegister, setOpenRegister] = useState(false);
   const [openLogin, setOpenLogin] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Đóng mobile menu khi chuyển trang
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
 
   const cartCount = useCartStore((s) => s.count);
   const refreshCart = useCartStore((s) => s.refresh);
@@ -47,7 +54,27 @@ const Header = () => {
     }
   };
 
-  const items = [
+  const roles = user?.roles;
+  const normalizedRoles = Array.isArray(roles) ? roles : roles ? [roles] : [];
+  const isAdmin = normalizedRoles.some((role) => ["ROLE_ADMIN", "ADMIN", "admin"].includes(role));
+
+  const items = [];
+  if (isAdmin) {
+    items.push({
+      key: 'adminPanel',
+      label: (
+        <Button
+          type="text"
+          style={{ width: '100%', textAlign: 'left', fontWeight: 'bold', color: '#E30019' }}
+          onClick={() => navigate('/admin')}
+        >
+          Trang quản trị (Admin)
+        </Button>
+      ),
+    });
+  }
+
+  items.push(
     {
       key: 'userInfo',
       label: (
@@ -81,8 +108,8 @@ const Header = () => {
           </Button>
         </Popconfirm>
       ),
-    },
-  ]
+    }
+  );
 
   const handleOrdersClick = () => {
     console.log("handleOrdersClick triggered, current user:", user);
@@ -117,16 +144,52 @@ const Header = () => {
             <SearchInput />
           </div>
 
-          <div className="header_right">
+          <button
+            className="header_burger"
+            onClick={() => setMobileMenuOpen((v) => !v)}
+            aria-label="Menu"
+          >
+            {mobileMenuOpen ? <CloseOutlined /> : <MenuOutlined />}
+          </button>
+
+          <div className={`header_right${mobileMenuOpen ? ' header_right--open' : ''}`}>
             <HeaderButton icon={<PhoneOutlined />} title="Hotline" subtitle="1900.5301" />
             <HeaderButton icon={<EnvironmentOutlined />} title="Hệ thống" subtitle="Showroom" />
-            <HeaderButton icon={<ContainerOutlined />} title="Tra cứu" subtitle="đơn hàng" onClick={handleOrdersClick} />            
+            <HeaderButton icon={<ContainerOutlined />} title="Tra cứu" subtitle="đơn hàng" onClick={handleOrdersClick} />
             <Badge count={cartCount} size="small" offset={[-6, 8]}>
               <HeaderButton icon={<ShoppingCartOutlined />} title="Giỏ" subtitle="hàng" onClick={handleCartClick} />
             </Badge>
             {user ? (
               <>
-                <Dropdown icon={<UserOutlined />} title="Tài khoản" subtitle={user.username} menu={{ items }} variant="dark" />
+                <span className="desktop-only-user">
+                  <Dropdown icon={<UserOutlined />} title="Tài khoản" subtitle={user.username} menu={{ items }} variant="dark" />
+                </span>
+
+                <span className="mobile-only-user">
+                  {isAdmin && (
+                    <HeaderButton
+                      icon={<UserOutlined />}
+                      title="Trang quản trị (Admin)"
+                      subtitle=""
+                      variant="dark"
+                      onClick={() => navigate('/admin')}
+                    />
+                  )}
+                  <HeaderButton
+                    icon={<UserOutlined />}
+                    title="Thông tin tài khoản"
+                    subtitle=""
+                    variant="dark"
+                    onClick={() => navigate('/user')}
+                  />
+                  <HeaderButton
+                    icon={<LogoutOutlined />}
+                    title="Đăng xuất"
+                    subtitle=""
+                    variant="dark"
+                    onClick={handleLogout}
+                  />
+                </span>
               </>
             ) : (
               <>

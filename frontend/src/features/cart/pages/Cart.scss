@@ -110,3 +110,19 @@ $primary: #e30019;
         position: static;
     }
 }
+
+@media (max-width: 768px) {
+    .cart-page {
+        padding: 16px 10px 32px;
+    }
+
+    .cart-page__title {
+        font-size: 1.3rem;
+        margin: 16px 0 12px;
+    }
+
+    .cart-page__items {
+        padding: 6px 10px;
+        border-radius: 8px;
+    }
+}

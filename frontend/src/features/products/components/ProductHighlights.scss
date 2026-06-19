@@ -98,3 +98,27 @@
         }
     }
 }
+
+@media (max-width: 640px) {
+  .product-highlights {
+    &__row {
+      display: flex;
+      flex-direction: column;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    
+    &__label {
+      width: 100%;
+      border-right: none;
+      border-bottom: 1px solid #f3f4f6;
+      padding: 8px 12px;
+      font-size: 13px;
+    }
+    
+    &__value {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 13px;
+    }
+  }
+}

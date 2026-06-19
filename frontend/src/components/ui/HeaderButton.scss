@@ -68,3 +68,30 @@
     }
   }
 }
+
+// ===== Responsive: Mobile =====
+@media (max-width: 768px) {
+  .header-button {
+    width: 100%;
+    justify-content: flex-start;
+    height: 38px !important;
+    padding: 4px 12px !important;
+    border-radius: 6px !important;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.08) !important;
+    }
+
+    .hb-content {
+      flex-direction: row;
+      gap: 4px;
+
+      .hb-title {
+        font-size: 13px;
+      }
+      .hb-subtitle {
+        font-size: 13px;
+      }
+    }
+  }
+}

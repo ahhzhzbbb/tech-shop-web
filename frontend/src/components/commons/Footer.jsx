@@ -130,24 +130,11 @@ const Footer = () => {
             <div className="footer__badge-group">
               <h4 className="footer__heading">CÁCH THỨC THANH TOÁN</h4>
               <div className="footer__badge-list">
-                <span className="footer__badge footer__badge--banking">🏦 Internet Banking</span>
                 <span className="footer__badge footer__badge--img">
-                  <img src="https://th.bing.com/th/id/ODF.Dv1k0m5_D3wHpb6C8UVy6A?w=32&h=32&qlt=90&pcl=fffffc&o=6&pid=1.2" alt="JCB" />
-                </span>
-                <span className="footer__badge footer__badge--img">
-                  <img src="https://th.bing.com/th/id/OIP.kyLKiccpv-QRkzV9nvv9KAHaEK?w=308&h=180&c=7&r=0&o=7&pid=1.7&rm=3" alt="MasterCard" />
-                </span>
-                <span className="footer__badge footer__badge--img">
-                  <img src="https://th.bing.com/th/id/OIP.ygZGQKeZ0aBwHS7e7wbJVgHaDA?w=346&h=142&c=7&r=0&o=7&pid=1.7&rm=3" alt="ZaloPay" />
+                  <img src="https://th.bing.com/th/id/OIP.Pd06I865XvZVrLs8n1FI0AHaBY?r=0&o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3" alt="VNPay" />
                 </span>
                 <span className="footer__badge footer__badge--cash">💵 Tiền mặt</span>
                 <span className="footer__badge footer__badge--installment">Trả góp <strong>0%</strong></span>
-                <span className="footer__badge footer__badge--img">
-                  <img src="https://th.bing.com/th/id/OIP.ygZGQKeZ0aBwHS7e7wbJVgHaDA?w=346&h=142&c=7&r=0&o=7&pid=1.7&rm=3" alt="VISA" />
-                </span>
-                <span className="footer__badge footer__badge--img">
-                  <img src="https://th.bing.com/th/id/OIP.-DhgkiQDEdoru7CJdZrwEAHaHa?w=177&h=180&c=7&r=0&o=7&pid=1.7&rm=3" alt="MoMo" />
-                </span>
               </div>
             </div>
           </div>

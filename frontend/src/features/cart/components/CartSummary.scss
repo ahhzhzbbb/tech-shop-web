@@ -127,3 +127,33 @@ $text-muted:    #888;
     }
   }
 }
+
+@media (max-width: 768px) {
+  .order-summary {
+    padding: 16px;
+    border-radius: 8px;
+
+    &__title {
+      margin-bottom: 12px;
+      font-size: 15px;
+    }
+
+    &__total {
+      margin-bottom: 16px;
+    }
+
+    &__total-value {
+      font-size: 20px;
+    }
+
+    &__btn-checkout {
+      height: 40px;
+      font-size: 14px;
+    }
+
+    &__btn-continue {
+      height: 36px;
+      font-size: 13px;
+    }
+  }
+}

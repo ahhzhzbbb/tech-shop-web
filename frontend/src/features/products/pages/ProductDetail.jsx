@@ -20,6 +20,7 @@ import ProductSideBar from "../components/ProductSidebar";
 import ProductGallery from "../components/ProductGallery";
 import ProductHighlights from "../components/ProductHighlights";
 import ProductCard from "../components/ProductCard";
+import usePromotionStore from "../../../store/promotionStore";
 import ProductRatings from "../../rating/component/ProductRatings";
 import RatingModal from "../../rating/component/RatingModal";
 import "./Products.scss";
@@ -47,6 +48,20 @@ function ProductDetail() {
     const [messageApi, contextHolder] = message.useMessage();
     const setCartCount = useCartStore((s) => s.setCount);
     const user = useAuthStore((s) => s.user);
+
+    const fetchPromotions = usePromotionStore((s) => s.fetchPromotions);
+    const promotions = usePromotionStore((s) => s.promotions);
+
+    useEffect(() => {
+        fetchPromotions();
+    }, [fetchPromotions]);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            window.dispatchEvent(new Event('resize'));
+        }, 300);
+        return () => clearTimeout(timer);
+    }, [promotions, related]);
 
     useEffect(() => {
         if (!id) return;
@@ -168,7 +183,10 @@ function ProductDetail() {
             <>
                 <div className="product-detail__top">
                     <div className="product-detail__gallery">
-                        <ProductGallery images={images} />
+                        <ProductGallery 
+                            images={images} 
+                            key={`${product.id}_${related.length > 0 ? 'y' : 'n'}_${promotions.length > 0 ? 'y' : 'n'}`} 
+                        />
                     </div>
 
                     <div className="product-detail__info">
@@ -189,6 +207,12 @@ function ProductDetail() {
                                 </span>
                             )}
                             {product.categoryName && <Tag color="blue">{product.categoryName}</Tag>}
+                            <span className="product-detail__meta-divider">|</span>
+                            {inStock ? (
+                                <Tag color="green">Còn hàng ({product.quantity})</Tag>
+                            ) : (
+                                <Tag color="red">Hết hàng</Tag>
+                            )}
                         </div>
 
                         <div className="product-detail__rating-row">
@@ -203,30 +227,40 @@ function ProductDetail() {
                             </button>
                         </div>
 
-                        <div className="product-detail__price-block">
-                            <span className="product-detail__price">{formatCurrency(product.price)}</span>
-                            <span className={`product-detail__stock-tag ${inStock ? "in-stock" : "out-stock"}`}>
-                                {inStock ? (
-                                    <><PackageIcon size={14} weight="fill" /> Còn hàng</>
-                                ) : (
-                                    "Hết hàng"
-                                )}
-                            </span>
-                        </div>
+                        {(() => {
+                            const promo = promotions.find((p) => String(p.productId) === String(product.id));
+                            const hasPromo = promo && promo.discountPercent > 0;
+                            const oldPrice = product.price;
+                            const newPrice = hasPromo ? Math.round((product.price * (100 - promo.discountPercent)) / 100) : product.price;
+                            const discountPercent = hasPromo ? promo.discountPercent : 0;
 
-                        <div className="product-detail__actions">
-                            <Button
-                                type="primary"
-                                size="large"
-                                icon={<ShoppingCartSimpleIcon size={18} weight="fill" />}
-                                onClick={handleAddToCart}
-                                loading={adding}
-                                disabled={!inStock}
-                                className="product-detail__btn-cart"
-                            >
-                                Thêm vào giỏ hàng
-                            </Button>
-                        </div>
+                            return (
+                                <div className="product-detail__price-action">
+                                    <div className="product-detail__price-group">
+                                        <div className="product-detail__price">{formatCurrency(newPrice)}</div>
+                                        {hasPromo && (
+                                            <>
+                                                <div className="product-detail__old-price">{formatCurrency(oldPrice)}</div>
+                                                <div className="product-detail__discount">
+                                                    -{discountPercent}%
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
+                                    <Button
+                                        type="primary"
+                                        size="large"
+                                        icon={<ShoppingCartSimpleIcon size={18} weight="fill" />}
+                                        onClick={handleAddToCart}
+                                        loading={adding}
+                                        disabled={!inStock}
+                                        className="product-detail__add-btn"
+                                    >
+                                        Thêm vào giỏ hàng
+                                    </Button>
+                                </div>
+                            );
+                        })()}
 
                         <div className="product-detail__perks">
                             <div className="product-detail__perk">
@@ -242,7 +276,6 @@ function ProductDetail() {
                                 <span>Đổi trả 30 ngày</span>
                             </div>
                         </div>
-
                         {product.description && (
                             <div className="product-detail__description-block">
                                 <h3 className="product-detail__section-title">Mô tả sản phẩm</h3>

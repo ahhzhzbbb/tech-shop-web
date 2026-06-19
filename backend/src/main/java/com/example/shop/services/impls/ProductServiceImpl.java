@@ -17,6 +17,7 @@ import com.example.shop.repositories.ProductRepository;
 import com.example.shop.services.ProductService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,6 +43,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
+    @CacheEvict(value = "products", allEntries = true)
     public ProductDTO createProduct(ProductRequest productRequest) {
         Product newProduct = new Product();
         newProduct.setName(productRequest.getName());
@@ -71,6 +73,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
+    @CacheEvict(value = "products", allEntries = true)
     public ProductDTO updateProduct(Long productId, ProductRequest productRequest) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productId));
@@ -128,6 +131,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
+    @CacheEvict(value = {"products", "product"}, allEntries = true)
     public ProductDTO deleteProduct(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productId));
@@ -140,6 +144,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
+    @Cacheable(value = "product", key = "#productId")
     public ProductDTO getProductById(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productId));
@@ -167,6 +172,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
+    @Cacheable(value = "products", key = "'search-' + #keyword + '-' + #page + '-' + #size")
     public ProductsResponse searchProducts(String keyword, int page, int size) {
         Page<Product> products = productRepository.findByNameContainingIgnoreCase(keyword, createPageable(page, size));
         return toProductsResponse(products);
@@ -314,6 +320,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
+    @CacheEvict(value = {"products", "product"}, allEntries = true)
     public ProductDTO addProductToCategory(Long productId, Long categoryId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productId));
@@ -335,6 +342,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
+    @CacheEvict(value = {"products", "product"}, allEntries = true)
     public ProductDTO removeProductFromCategory(Long productId, Long categoryId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productId));

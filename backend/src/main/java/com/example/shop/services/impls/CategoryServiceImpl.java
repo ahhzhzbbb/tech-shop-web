@@ -10,6 +10,8 @@ import com.example.shop.services.CategoryService;
 import lombok.RequiredArgsConstructor;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +24,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final ModelMapper modelMapper;
 
     @Override
+    @Cacheable(value = "categories", key = "#includeInactive")
     public CategoryResponse getAllCategory(boolean includeInactive) {
 
         List<Category> categories = categoryRepository.findAll();
@@ -51,6 +54,7 @@ public class CategoryServiceImpl implements CategoryService {
 //    }
 
     @Override
+    @CacheEvict(value = "categories", allEntries = true)
     public CategoryDTO createCategory(CategoryRequest request) {
 
         if (categoryRepository.existsByNameIgnoreCase(request.getName())) {
@@ -68,6 +72,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @CacheEvict(value = {"categories", "products"}, allEntries = true)
     public CategoryDTO updateCategory(Long id, CategoryRequest request) {
 
         Category category = categoryRepository.findById(id)
@@ -92,6 +97,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @CacheEvict(value = {"categories", "products"}, allEntries = true)
     public CategoryDTO deleteCategory(Long id) {
 
         Category deletedCategory = categoryRepository.findById(id)

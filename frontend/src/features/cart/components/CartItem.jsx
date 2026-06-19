@@ -15,6 +15,8 @@ const CartItem = ({ item, onQuantityChange, onRemove }) => {
 
   const formattedPrice = price.toLocaleString("vi-VN") + "₫";
   const formattedTotal = (price * quantity).toLocaleString("vi-VN") + "₫";
+  const hasPromo = item.originalPrice && item.originalPrice > price;
+  const formattedOriginalPrice = hasPromo ? item.originalPrice.toLocaleString("vi-VN") + "₫" : "";
 
   return (
     <div className="cart-item">
@@ -50,7 +52,15 @@ const CartItem = ({ item, onQuantityChange, onRemove }) => {
       <div className="cart-item__actions">
         <div className="cart-item__pricing">
           <span className="cart-item__total">{formattedTotal}</span>
-          <span className="cart-item__unit-price">{formattedPrice} / sp</span>
+          <div className="cart-item__unit-row">
+            <span className="cart-item__unit-price">{formattedPrice} / sp</span>
+            {hasPromo && (
+              <>
+                <span className="cart-item__old-price">{formattedOriginalPrice}</span>
+                <span className="cart-item__discount">-{item.discountPercent}%</span>
+              </>
+            )}
+          </div>
         </div>
         <Button
           className="cart-item__remove"

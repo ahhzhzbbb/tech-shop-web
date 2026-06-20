@@ -3,5 +3,7 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
-    overflow-x: hidden;
+    // clip (thay vì hidden): chặn tràn ngang nhưng KHÔNG tạo scroll container,
+    // nhờ vậy không phá vỡ position: sticky của sidebar bên trong.
+    overflow-x: clip;
 }

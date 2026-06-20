@@ -21,13 +21,18 @@ $transition: 0.2s ease;
 // Wrapper
 // =========================================
 .psb-wrapper {
-  // Giữ chỗ cho cột sidebar trong flex row (phần nhìn thấy được fixed bên dưới)
   width: $sidebar-width;
   flex-shrink: 0;
-  align-self: stretch;
   transition:
     width $transition,
     opacity $transition;
+
+  // Dính dưới header khi cuộn, cao hết màn hình. Vì là sticky nên khi cuộn tới
+  // cuối cột (trước footer) sidebar tự dừng, KHÔNG đè lên footer.
+  position: sticky;
+  top: $header-height;
+  align-self: flex-start;
+  height: calc(100vh - #{$header-height});
 }
 
 // =========================================
@@ -35,6 +40,7 @@ $transition: 0.2s ease;
 // =========================================
 .psb-inner {
   width: $sidebar-width;
+  height: 100%;
   background-color: #fff;
   border: 0.5px solid #e5e7eb;
   border-radius: 0 !important;
@@ -43,12 +49,6 @@ $transition: 0.2s ease;
   user-select: none;
   display: flex;
   flex-direction: column;
-
-  // Cố định ngay dưới header, cao hết màn hình, không trôi khi cuộn dọc.
-  // left: auto -> giữ đúng vị trí ngang của cột (không cần hardcode).
-  position: fixed;
-  top: $header-height;
-  bottom: 0;
   min-height: 0;
 }
 
@@ -338,6 +338,16 @@ $transition: 0.2s ease;
   }
   .psb-menu.ant-menu {
     width: 200px;
+  }
+}
+
+// ===== Responsive: layout 1 cột (sidebar nằm trên cùng) =====
+// Khi productLayout chuyển sang cột dọc, bỏ sticky + chiều cao 100vh để
+// sidebar không chiếm trọn màn hình.
+@media (max-width: 900px) {
+  .psb-wrapper {
+    position: static;
+    height: auto;
   }
 }
 

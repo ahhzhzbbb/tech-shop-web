@@ -278,7 +278,11 @@ function Products() {
                                 >
                                     Bộ lọc
                                 </Button>
-                                <Button onClick={handleResetFilters} disabled={!isFilterApplied}>
+                                <Button
+                                    className="products__clearBtn"
+                                    onClick={handleResetFilters}
+                                    disabled={!isFilterApplied}
+                                >
                                     Xoá lọc
                                 </Button>
                             </div>
@@ -290,6 +294,7 @@ function Products() {
                                     onChange={setSortValue}
                                     options={SORT_OPTIONS}
                                     className="products__sortSelect"
+                                    popupClassName="products__sortDropdown"
                                 />
                             </div>
                         </div>
@@ -300,6 +305,7 @@ function Products() {
                                     <label className="products__filterLabel">Khoảng giá</label>
                                     <Slider
                                         range
+                                        className="products__priceSlider"
                                         min={priceBounds[0]}
                                         max={priceBounds[1]}
                                         value={draftPriceRange}
@@ -326,13 +332,19 @@ function Products() {
                                 </div>
 
                                 <div className="products__filterActions">
-                                    <Button onClick={handleResetFilters}>Đặt lại</Button>
+                                    <Button
+                                        onClick={handleResetFilters}
+                                        className="products__filterReset"
+                                    >
+                                        Đặt lại
+                                    </Button>
                                     <Button
                                         type="primary"
                                         onClick={() => {
                                             handleApplyFilters();
                                             setShowFilter(false);
                                         }}
+                                        className="products__filterApply"
                                     >
                                         Áp dụng
                                     </Button>

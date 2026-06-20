@@ -12,17 +12,19 @@ import { EditOutlined } from "@ant-design/icons";
 
 import productsService from "../services/products.service";
 import cartService from "../../cart/service/cart.service";
+
 import useCartStore from "../../../store/cartStore";
 import useAuthStore from "../../../store/authStore";
+import usePromotionStore from "../../../store/promotionStore";
+
 import LoginModal from "../../auth/component/LoginModal";
 import RegisterModal from "../../auth/component/RegisterModal";
 import ProductSideBar from "../components/ProductSidebar";
 import ProductGallery from "../components/ProductGallery";
 import ProductHighlights from "../components/ProductHighlights";
 import ProductCard from "../components/ProductCard";
-import usePromotionStore from "../../../store/promotionStore";
 import ProductRatings from "../../rating/component/ProductRatings";
-import RatingModal from "../../rating/component/RatingModal";
+
 import "./Products.scss";
 import "./ProductDetail.scss";
 
@@ -43,8 +45,6 @@ function ProductDetail() {
     const [adding, setAdding] = useState(false);
     const [openLogin, setOpenLogin] = useState(false);
     const [openRegister, setOpenRegister] = useState(false);
-    const [ratingModalOpen, setRatingModalOpen] = useState(false);
-    const [refreshRatingsKey, setRefreshRatingsKey] = useState(0);
     const [messageApi, contextHolder] = message.useMessage();
     const setCartCount = useCartStore((s) => s.setCount);
     const user = useAuthStore((s) => s.user);
@@ -136,16 +136,6 @@ function ProductDetail() {
         }
     };
 
-    const handleOpenRating = () => {
-        if (!user) { setOpenLogin(true); return; }
-        setRatingModalOpen(true);
-    };
-
-    const handleRatingSubmitted = useCallback(() => {
-        setRefreshRatingsKey((k) => k + 1);
-        setRatingModalOpen(false);
-    }, []);
-
     const handleScrollRelated = useCallback((direction) => {
         const container = document.querySelector(".product-detail__related-scroll");
         if (container) {
@@ -187,6 +177,8 @@ function ProductDetail() {
                             images={images} 
                             key={`${product.id}_${related.length > 0 ? 'y' : 'n'}_${promotions.length > 0 ? 'y' : 'n'}`} 
                         />
+
+                        <ProductRatings productId={product.id} />
                     </div>
 
                     <div className="product-detail__info">
@@ -215,18 +207,6 @@ function ProductDetail() {
                             )}
                         </div>
 
-                        <div className="product-detail__rating-row">
-                            <div className="product-detail__rating-stars">
-                                <Rate disabled allowHalf value={product.averageScore || 0} />
-                                <span className="product-detail__score">
-                                    {product.averageScore ? Number(product.averageScore).toFixed(1) : "Chưa có đánh giá"}
-                                </span>
-                            </div>
-                            <button className="product-detail__write-review" onClick={handleOpenRating}>
-                                <EditOutlined /> Viết đánh giá
-                            </button>
-                        </div>
-
                         {(() => {
                             const promo = promotions.find((p) => String(p.productId) === String(product.id));
                             const hasPromo = promo && promo.discountPercent > 0;
@@ -245,12 +225,12 @@ function ProductDetail() {
                                     <div className="product-detail__price-group">
                                         <div className="product-detail__price">{formatCurrency(newPrice)}</div>
                                         {hasPromo && (
-                                            <>
+                                            <div className="product-detail__price-promo">
                                                 <div className="product-detail__old-price">{formatCurrency(oldPrice)}</div>
                                                 <div className="product-detail__discount">
                                                     -{discountPercent}%
                                                 </div>
-                                            </>
+                                            </div>
                                         )}
                                     </div>
                                     <Button
@@ -291,14 +271,6 @@ function ProductDetail() {
 
                         {specs.length > 0 && <ProductHighlights specs={specs} />}
                     </div>
-                </div>
-
-                <div className="product-detail__reviews-section">
-                    <div className="product-detail__section-header">
-                        <StarIcon size={22} weight="fill" className="product-detail__section-icon" />
-                        <h3 className="product-detail__section-title">Đánh giá sản phẩm</h3>
-                    </div>
-                    <ProductRatings productId={product.id} refreshKey={refreshRatingsKey} />
                 </div>
 
                 {related.length > 0 && (
@@ -349,14 +321,6 @@ function ProductDetail() {
                 onCancel={() => setOpenRegister(false)}
                 onOpenLogin={() => { setOpenRegister(false); setOpenLogin(true); }}
             />
-            {product && (
-                <RatingModal
-                    open={ratingModalOpen}
-                    product={{ productId: product.id, productName: product.name }}
-                    onClose={() => setRatingModalOpen(false)}
-                    onSubmitted={handleRatingSubmitted}
-                />
-            )}
         </div>
     );
 }

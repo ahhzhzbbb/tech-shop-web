@@ -4,8 +4,9 @@ import OrderManagement from '../components/OrderManagement';
 import { getOrdersByUserId } from '../services/order.service.jsx';
 import LoginModal from '../../auth/component/LoginModal.jsx';
 import RegisterModal from '../../auth/component/RegisterModal.jsx';
-import { Button, Card, Spin, message } from 'antd';
-import { ShoppingOutlined, LockOutlined } from '@ant-design/icons';
+import { Button, Card, message } from 'antd';
+import { LockOutlined } from '@ant-design/icons';
+import './Orders.scss';
 
 // Map trạng thái backend sang frontend
 const mapBackendStatusToFrontend = (backendStatus) => {
@@ -89,42 +90,21 @@ function Orders() {
     // Nếu chưa đăng nhập, hiển thị giao diện yêu cầu đăng nhập sang xịn mịn
     if (!user) {
         return (
-            <div style={{ maxWidth: 600, margin: '64px auto', padding: '0 16px' }}>
-                <Card 
-                    bordered={false}
-                    style={{ 
-                        textAlign: 'center', 
-                        boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-                        borderRadius: 12,
-                        padding: '24px 12px'
-                    }}
-                >
-                    <div style={{ 
-                        fontSize: 64, 
-                        color: '#E30019', 
-                        marginBottom: 16 
-                    }}>
+            <div className="orders__login">
+                <Card bordered={false} className="orders__login-card">
+                    <div className="orders__login-icon">
                         <LockOutlined />
                     </div>
-                    <h2 style={{ fontSize: 24, fontWeight: 600, marginBottom: 8, color: '#333' }}>
+                    <h2 className="orders__login-title">
                         Tra cứu đơn hàng của bạn
                     </h2>
-                    <p style={{ color: '#666', fontSize: 15, marginBottom: 24, lineHeight: '1.6' }}>
+                    <p className="orders__login-desc">
                         Vui lòng đăng nhập tài khoản của bạn để có thể xem danh sách đơn hàng đã đặt, theo dõi trạng thái giao hàng và chi tiết các sản phẩm.
                     </p>
-                    <Button 
-                        type="primary" 
+                    <Button
+                        type="primary"
                         size="large"
-                        style={{ 
-                            backgroundColor: '#E30019', 
-                            borderColor: '#E30019',
-                            height: 48,
-                            padding: '0 32px',
-                            fontSize: 16,
-                            fontWeight: 500,
-                            borderRadius: 6,
-                            boxShadow: '0 4px 12px rgba(227, 0, 25, 0.2)'
-                        }}
+                        className="orders__login-btn"
                         onClick={() => setOpenLogin(true)}
                     >
                         Đăng nhập ngay
@@ -153,7 +133,7 @@ function Orders() {
     }
 
     return (
-        <div style={{ maxWidth: 960, margin: '24px auto', padding: '0 16px' }}>
+        <div className="orders">
             <OrderManagement
                 orders={filteredOrders}
                 onTabChange={handleTabChange}

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -75,7 +76,7 @@ public class OrderServiceImpl implements OrderService {
         List<Order> orders = orderRepository.findAll();
         List<OrderDTO> orderList = orders.stream()
                 .map(this::convertToDTO)
-                .toList();
+                .collect(Collectors.toList());
         OrdersResponse response = new OrdersResponse();
         response.setOrders(orderList);
         return response;
@@ -98,7 +99,7 @@ public class OrderServiceImpl implements OrderService {
         List<Order> orders = orderRepository.findByUserUserId(userId);
         return orders.stream()
                 .map(this::convertToDTO)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -171,7 +172,7 @@ public class OrderServiceImpl implements OrderService {
                         item.getProduct().getId(),
                         item.getProduct().getName()
                 ))
-                .toList();
+                .collect(Collectors.toList());
 
         orderDTO.setOrderItems(orderItemDTOs);
         return orderDTO;

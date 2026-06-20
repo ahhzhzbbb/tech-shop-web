@@ -37,9 +37,8 @@ $radius: 8px;
     font-family: inherit;
 
     &:hover {
-        background: $bg-light;
-        color: $primary;
-        border-color: #ddd;
+        color: $primary !important;
+        border-color: $primary !important;
     }
 
     .anticon {

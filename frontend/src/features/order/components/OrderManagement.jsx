@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Input, Tabs } from 'antd';
 import { SearchOutlined, InboxOutlined } from '@ant-design/icons';
 import OrderTable from './OrderTable';
 import './OrderManagement.scss';
@@ -36,12 +37,6 @@ const OrderManagement = ({ orders = [], onSearch, onTabChange, loading = false }
         onSearch?.(searchText);
     };
 
-    const handleKeyDown = (e) => {
-        if (e.key === 'Enter') {
-            handleSearch();
-        }
-    };
-
     // Lọc đơn hàng theo tab
     const filteredOrders = activeTab === 'all'
         ? orders
@@ -51,40 +46,30 @@ const OrderManagement = ({ orders = [], onSearch, onTabChange, loading = false }
         <div className="order-mgmt">
             {/* Header */}
             <div className="order-mgmt__header">
-                <h2 className="order-mgmt__title">Quản lý đơn hàng</h2>
+                <h2 className="order-mgmt__title">Danh sách đơn hàng của bạn</h2>
             </div>
 
             {/* Tabs */}
-            <div className="order-mgmt__tabs">
-                {ORDER_TABS.map(tab => (
-                    <button
-                        key={tab.key}
-                        className={`order-mgmt__tab ${activeTab === tab.key ? 'order-mgmt__tab--active' : ''}`}
-                        onClick={() => handleTabClick(tab.key)}
-                    >
-                        {tab.label}
-                    </button>
-                ))}
-            </div>
+            <Tabs
+                className="order-mgmt__tabs"
+                activeKey={activeTab}
+                onChange={handleTabClick}
+                items={ORDER_TABS.map(tab => ({ key: tab.key, label: tab.label }))}
+            />
 
             {/* Search */}
             <div className="order-mgmt__search">
-                <div className="order-mgmt__search-input">
-                    <SearchOutlined className="order-mgmt__search-icon" />
-                    <input
-                        type="text"
-                        placeholder="Tìm đơn hàng theo Mã đơn hàng"
-                        value={searchText}
-                        onChange={(e) => setSearchText(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                    />
-                </div>
-                <button
-                    className="order-mgmt__search-btn"
-                    onClick={handleSearch}
-                >
-                    Tìm đơn hàng
-                </button>
+                <Input.Search
+                    className="order-mgmt__search-box"
+                    placeholder="Tìm đơn hàng theo Mã đơn hàng"
+                    prefix={<SearchOutlined className="order-mgmt__search-icon" />}
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    onSearch={handleSearch}
+                    enterButton="Tìm đơn hàng"
+                    size="large"
+                    allowClear
+                />
             </div>
 
             {/* Content */}

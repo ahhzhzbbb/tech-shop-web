@@ -30,7 +30,7 @@ $primary: #e30019;
         font-weight: 500;
         color: $primary;
         background: #fff5f5;
-        border: 1px solid lighten($primary, 45%);
+        border-color: color.adjust($primary, $lightness: 45%) !important;
         border-radius: 8px;
     }
 

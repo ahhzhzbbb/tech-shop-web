@@ -141,7 +141,7 @@ const OrderDetail = ({ order }) => {
             <div className="order-detail__info-row">
                 <div className="order-detail__info-card">
                     <div className="order-detail__info-icon">
-                        <CalendarOutlined />
+                        <CalendarOutlined  size={20}/>
                     </div>
                     <div>
                         <span className="order-detail__info-label">Ngày đặt hàng</span>
@@ -150,11 +150,11 @@ const OrderDetail = ({ order }) => {
                 </div>
                 <div className="order-detail__info-card">
                     <div className="order-detail__info-icon">
-                        <FileTextOutlined />
+                        <FileTextOutlined size={20}/>
                     </div>
                     <div>
                         <span className="order-detail__info-label">Ghi chú</span>
-                        <span className="order-detail__info-value">{order.notes || 'Không có ghi chú'}</span>
+                        <span className="order-detail__info-value">{order.notes || '-'}</span>
                     </div>
                 </div>
             </div>

@@ -1,6 +1,6 @@
-import { useState, useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Menu, Popover } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { MoreOutlined, LaptopOutlined, HomeOutlined } from "@ant-design/icons";
 import {
     LaptopIcon,
@@ -105,16 +105,29 @@ const Badge = ({ type, label }) => (
 // ProductSideBar
 // =========================================
 export default function ProductSideBar({
-    defaultSelected = "home",
+    defaultSelected = "Trang chủ",
     onSelect
 }) {
     const navigate = useNavigate();
-    const [selectedKeys, setSelectedKeys] = useState([defaultSelected]);
+    const location = useLocation();
 
     const storeCategories = useCategoryStore((s) => s.categories);
     const fetchCategories = useCategoryStore((s) => s.fetchCategories);
 
     useEffect(() => { fetchCategories(); }, [fetchCategories]);
+
+    // Item được chọn suy ra trực tiếp từ URL -> highlight luôn đúng kể cả khi
+    // component remount lúc chuyển giữa các route (vd: "/" -> "/products/...").
+    const selectedKeys = useMemo(() => {
+        const path = location.pathname;
+        if (path === "/") return [defaultSelected];
+        if (path.startsWith("/admin")) return ["Quản lý"];
+        if (path.startsWith("/products/")) {
+            const segment = path.split("/")[2];
+            if (segment) return [decodeURIComponent(segment)];
+        }
+        return [defaultSelected];
+    }, [location.pathname, defaultSelected]);
 
     // Các danh mục thuộc nhóm "Phụ kiện" (không nằm trong danh mục mặc định)
     const optionCategories = useMemo(
@@ -201,7 +214,7 @@ export default function ProductSideBar({
         // "Phụ kiện" là mục cha: không điều hướng, chỉ mở danh mục con (hover/click)
         if (key === ACCESSORY_LABEL) return;
 
-        setSelectedKeys([key]);
+        // selectedKeys suy ra từ URL, không cần set state ở đây.
         onSelect?.(key);
 
         if (key === "Trang chủ") {

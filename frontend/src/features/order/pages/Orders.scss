@@ -1,0 +1,55 @@
+$primary: #E30019;
+
+.orders {
+    max-width: 960px;
+    margin: 24px auto;
+    padding: 0 16px;
+}
+
+// ===== Yêu cầu đăng nhập (chưa đăng nhập) =====
+.orders__login {
+    max-width: 600px;
+    margin: 64px auto;
+    padding: 0 16px;
+}
+
+.orders__login-card.ant-card {
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+
+    .ant-card-body {
+        padding: 24px 12px;
+    }
+}
+
+.orders__login-icon {
+    font-size: 64px;
+    color: $primary;
+    margin-bottom: 16px;
+}
+
+.orders__login-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.orders__login-desc {
+    color: #666;
+    font-size: 15px;
+    margin-bottom: 24px;
+    line-height: 1.6;
+}
+
+.orders__login-btn.ant-btn {
+    height: 48px;
+    padding: 0 32px;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 6px;
+    background-color: $primary;
+    border-color: $primary;
+    box-shadow: 0 4px 12px rgba(227, 0, 25, 0.2);
+}

@@ -21,20 +21,13 @@ $transition: 0.2s ease;
 // Wrapper
 // =========================================
 .psb-wrapper {
+  // Giữ chỗ cho cột sidebar trong flex row (phần nhìn thấy được fixed bên dưới)
   width: $sidebar-width;
-  overflow: hidden;
+  flex-shrink: 0;
+  align-self: stretch;
   transition:
     width $transition,
     opacity $transition;
-
-  // Cố định khi cuộn dọc: dính ngay dưới header, cao hết màn hình.
-  // Vì là sticky nên khi cuộn tới footer, sidebar tự dừng ở mép trên footer.
-  position: sticky;
-  top: $header-height;
-  align-self: flex-start;
-  height: calc(100vh - #{$header-height});
-  display: flex;
-  flex-direction: column;
 }
 
 // =========================================
@@ -51,8 +44,11 @@ $transition: 0.2s ease;
   display: flex;
   flex-direction: column;
 
-  // Lấp đầy chiều cao wrapper (= chiều cao màn hình)
-  flex: 1;
+  // Cố định ngay dưới header, cao hết màn hình, không trôi khi cuộn dọc.
+  // left: auto -> giữ đúng vị trí ngang của cột (không cần hardcode).
+  position: fixed;
+  top: $header-height;
+  bottom: 0;
   min-height: 0;
 }
 
@@ -62,14 +58,13 @@ $transition: 0.2s ease;
 .psb-header {
   padding: 0 16px 12px;
   border-bottom: 0.5px solid #e5e7eb;
-  margin-bottom: 4px;
 
   &__title {
-    font-size: 11px;
-    font-weight: 500;
+    font-size: 14px;
+    font-weight: 700;
+    color: $primary-deep;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: #6b7280;
     text-align: center;
     display: block;
   }
@@ -93,12 +88,12 @@ $transition: 0.2s ease;
   // Group Title
   // =========================
   .ant-menu-item-group-title {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.07em;
     text-transform: uppercase;
-    color: #9ca3af;
-    padding: 10px 16px 4px;
+    color: $primary-dark;
+    padding: 4px 16px 8px;
     text-align: center;
   }
 
@@ -115,7 +110,9 @@ $transition: 0.2s ease;
   // =========================
   .ant-menu-item,
   .ant-menu-item-only-child {
-    margin: 0 !important;
+    gap: 4px;
+    margin: 0 0 4px 0 !important;
+    width: 100%;
     height: 40px;
     line-height: 40px;
 
@@ -134,7 +131,7 @@ $transition: 0.2s ease;
     text-align: left !important;
 
     &:hover {
-      background-color: #f9fafb !important;
+      background-color: $primary-light !important;
       color: #374151;
     }
   }

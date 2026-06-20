@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Rate, Spin, Empty, Avatar } from 'antd';
+import { Rate, Spin, Empty, Avatar, Button, Modal } from 'antd';
 import { UserOutlined, CommentOutlined } from '@ant-design/icons';
 import { getRatingsByProductId } from '../services/rating.service.jsx';
 import './ProductRatings.scss';
+
+const MAX_VISIBLE = 5;
 
 const formatDate = (dateStr) => {
     if (!dateStr) return '';
@@ -14,6 +16,29 @@ const formatDate = (dateStr) => {
     });
 };
 
+const RatingList = ({ items }) => (
+    <ul className="product-ratings__list">
+        {items.map((rating) => (
+            <li key={rating.id} className="product-ratings__item">
+                <Avatar icon={<UserOutlined />} className="product-ratings__avatar" />
+                <div className="product-ratings__body">
+                    <div className="product-ratings__meta">
+                        <span className="product-ratings__user">
+                            {rating.userFullName || 'Người dùng ẩn danh'}
+                        </span>
+                        <Rate disabled value={rating.score} className="product-ratings__stars" />
+                        <span className="product-ratings__date">{formatDate(rating.createdAt)}</span>
+                    </div>
+
+                    {rating.comment && (
+                        <p className="product-ratings__comment">{rating.comment}</p>
+                    )}
+                </div>
+            </li>
+        ))}
+    </ul>
+);
+
 /**
  * Danh sách đánh giá của một sản phẩm (hiển thị trong trang ProductDetail).
  *
@@ -23,6 +48,7 @@ const formatDate = (dateStr) => {
 const ProductRatings = ({ productId, refreshKey = 0 }) => {
     const [ratings, setRatings] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [modalOpen, setModalOpen] = useState(false);
 
     useEffect(() => {
         if (!productId) return;
@@ -74,28 +100,28 @@ const ProductRatings = ({ productId, refreshKey = 0 }) => {
             ) : ratings.length === 0 ? (
                 <Empty description="Chưa có đánh giá nào cho sản phẩm này" />
             ) : (
-                <ul className="product-ratings__list">
-                    {ratings.map((rating) => (
-                        <li key={rating.id} className="product-ratings__item">
-                            <Avatar icon={<UserOutlined />} className="product-ratings__avatar" />
-                            <div className="product-ratings__body">
-                                <div className="product-ratings__meta">
-                                    <span className="product-ratings__user">
-                                        {rating.userFullName || 'Người dùng ẩn danh'}
-                                    </span>
-                                    <Rate disabled value={rating.score} className="product-ratings__stars" />
-                                    <span className="product-ratings__date">{formatDate(rating.createdAt)}</span>
-                                </div>
-                                
-                                {rating.comment && (
-                                    <p className="product-ratings__comment">{rating.comment}</p>
-                                )}
-                                
-                            </div>
-                        </li>
-                    ))}
-                </ul>
+                <>
+                    <RatingList items={ratings.slice(0, MAX_VISIBLE)} />
+
+                    {ratings.length > MAX_VISIBLE && (
+                        <div className="product-ratings__more">
+                            <Button type="default" onClick={() => setModalOpen(true)}>
+                                Xem thêm {ratings.length - MAX_VISIBLE} đánh giá
+                            </Button>
+                        </div>
+                    )}
+                </>
             )}
+
+            <Modal
+                title={`Tất cả đánh giá (${ratings.length})`}
+                open={modalOpen}
+                onCancel={() => setModalOpen(false)}
+                footer={null}
+                width={720}
+            >
+                <RatingList items={ratings} />
+            </Modal>
         </section>
     );
 };

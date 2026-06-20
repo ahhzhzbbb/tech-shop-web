@@ -1,6 +1,7 @@
 // === OrderDetail Tokens ===
 @use "sass:color";
 $primary: #E30019;
+$primary-dark: #b8000f;
 $border: #e5e7eb;
 $text: #333;
 $text-light: #888;
@@ -207,24 +208,20 @@ $radius: 8px;
     }
 
     &__info-icon {
-        width: 36px;
-        height: 36px;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #fff;
-        border-radius: 8px;
-        border: 1px solid $border;
-        color: $primary;
-        font-size: 16px;
+        color: $primary-dark;
         flex-shrink: 0;
     }
 
     &__info-label {
         display: block;
         font-size: 12px;
+        line-height: 20px;
         color: $text-light;
         margin-bottom: 2px;
+        text-align: left;
     }
 
     &__info-value {

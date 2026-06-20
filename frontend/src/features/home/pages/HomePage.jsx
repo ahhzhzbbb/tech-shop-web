@@ -101,7 +101,11 @@ function HomePage() {
                             promos.push({
                                 ...product,
                                 discount,
-                                salePrice: Math.round((product.price * (100 - discount)) / 100),
+                                salePrice: (() => {
+                                    const raw = (product.price * (100 - discount)) / 100;
+                                    const rounded = Math.round(raw / 10000) * 10000;
+                                    return rounded > 0 ? rounded : Math.round(raw);
+                                })(),
                             });
                         }
                     });

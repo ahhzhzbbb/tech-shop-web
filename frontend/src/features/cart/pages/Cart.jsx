@@ -8,6 +8,7 @@ import CartItem from "../components/CartItem";
 import CartSummary from "../components/CartSummary";
 import cartService from "../service/cart.service";
 import useCartStore from "../../../store/cartStore";
+import usePromotionStore from "../../../store/promotionStore";
 import "./Cart.scss";
 
 function Cart() {
@@ -19,6 +20,13 @@ function Cart() {
     const [mutating, setMutating] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
     const setCartCount = useCartStore((s) => s.setCount);
+
+    const promotions = usePromotionStore((s) => s.promotions);
+    const fetchPromotions = usePromotionStore((s) => s.fetchPromotions);
+
+    useEffect(() => {
+        fetchPromotions();
+    }, [fetchPromotions]);
 
     useEffect(() => {
         let active = true;
@@ -47,20 +55,36 @@ function Cart() {
         };
     }, [setCartCount]);
 
-    // Map CartItemDTO (backend) -> shape mà CartItem mong đợi
-    const items = useMemo(
-        () =>
-            (cart?.items || []).map((it) => ({
-                id: it.id, // cartItemId, dùng cho update/remove
+    // Map CartItemDTO (backend) -> shape mà CartItem mong đợi kèm khuyến mãi
+    const items = useMemo(() => {
+        return (cart?.items || []).map((it) => {
+            const promo = promotions.find((p) => String(p.productId) === String(it.productId));
+            const hasPromo = promo && promo.discountPercent > 0;
+            const originalPrice = it.price;
+            const discountedPrice = hasPromo
+                ? (() => {
+                      const raw = (it.price * (100 - promo.discountPercent)) / 100;
+                      const rounded = Math.round(raw / 10000) * 10000;
+                      return rounded > 0 ? rounded : Math.round(raw);
+                  })()
+                : it.price;
+
+            return {
+                id: it.id,
+                productId: it.productId,
                 name: it.productName,
                 image: it.thumbnail,
-                price: it.price,
+                price: discountedPrice,
+                originalPrice: originalPrice,
+                discountPercent: hasPromo ? promo.discountPercent : 0,
                 quantity: it.quantity,
-            })),
-        [cart]
-    );
+            };
+        });
+    }, [cart, promotions]);
 
-    const subtotal = cart?.amount ?? 0;
+    const subtotal = useMemo(() => {
+        return items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    }, [items]);
 
     const handleQuantityChange = async (cartItemId, quantity) => {
         if (mutating) return;

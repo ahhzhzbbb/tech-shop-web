@@ -11,6 +11,9 @@ $border:        #f0d4d8;
     gap: 24px;
     background-color: #f6f7f9;
     min-height: calc(100vh - 64px);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 
     > .psb-wrapper {
         flex-shrink: 0;
@@ -21,6 +24,9 @@ $border:        #f0d4d8;
     flex: 1;
     min-width: 0;
     padding: 28px 28px 48px 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .homepage-empty {
@@ -268,10 +274,16 @@ $border:        #f0d4d8;
     .homepage-layout {
         flex-direction: column;
         gap: 0;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
     .homepage-content {
         padding: 18px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
     .homepage-hero {

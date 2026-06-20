@@ -91,7 +91,9 @@ const SearchInput = () => {
   const getSalePrice = (product) => {
     const promo = getProductPromo(product.id);
     if (promo && promo.discountPercent > 0) {
-      return Math.round((product.price * (100 - promo.discountPercent)) / 100);
+      const raw = (product.price * (100 - promo.discountPercent)) / 100;
+      const rounded = Math.round(raw / 10000) * 10000;
+      return rounded > 0 ? rounded : Math.round(raw);
     }
     return product.price;
   };

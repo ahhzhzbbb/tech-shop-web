@@ -16,12 +16,7 @@ const formatCurrency = (amount) => {
 
 const ProductCard = ({ product, categoryName }) => {
     const navigate = useNavigate();
-    const fetchPromotions = usePromotionStore((s) => s.fetchPromotions);
     const promotions = usePromotionStore((s) => s.promotions);
-
-    useEffect(() => {
-        fetchPromotions();
-    }, [fetchPromotions]);
 
     if (!product) return null;
 
@@ -30,7 +25,13 @@ const ProductCard = ({ product, categoryName }) => {
     const promo = promotions.find((p) => String(p.productId) === String(id));
     const hasPromo = promo && promo.discountPercent > 0;
     const oldPrice = price;
-    const newPrice = hasPromo ? Math.round((price * (100 - promo.discountPercent)) / 100) : price;
+    const newPrice = hasPromo 
+        ? (() => {
+            const raw = (price * (100 - promo.discountPercent)) / 100;
+            const rounded = Math.round(raw / 10000) * 10000;
+            return rounded > 0 ? rounded : Math.round(raw);
+          })()
+        : price;
     const discountPercent = hasPromo ? promo.discountPercent : 0;
 
     const category = categoryName || product.categoryName;

@@ -231,7 +231,13 @@ function ProductDetail() {
                             const promo = promotions.find((p) => String(p.productId) === String(product.id));
                             const hasPromo = promo && promo.discountPercent > 0;
                             const oldPrice = product.price;
-                            const newPrice = hasPromo ? Math.round((product.price * (100 - promo.discountPercent)) / 100) : product.price;
+                            const newPrice = hasPromo 
+                                ? (() => {
+                                    const raw = (product.price * (100 - promo.discountPercent)) / 100;
+                                    const rounded = Math.round(raw / 10000) * 10000;
+                                    return rounded > 0 ? rounded : Math.round(raw);
+                                  })()
+                                : product.price;
                             const discountPercent = hasPromo ? promo.discountPercent : 0;
 
                             return (

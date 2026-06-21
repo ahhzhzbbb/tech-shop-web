@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { loginApi, logoutApi } from "../features/auth/services/auth.service";
+import { loginApi, logoutApi, getUserProfileApi, updateProfileApi } from "../features/auth/services/auth.service";
 import {
     extractJwtFromLoginResponse,
     setAuthToken,
@@ -66,6 +66,38 @@ const useAuthStore = create(
                     get().clearUser();
                 } finally {
                     set({ loading: false });
+                }
+            },
+
+            fetchProfile: async () => {
+                try {
+                    const data = await getUserProfileApi();
+                    const user = {
+                        id: data?.userId,
+                        username: data?.username,
+                        fullName: data?.fullName,
+                        phoneNumber: data?.phoneNumber,
+                        address: data?.address,
+                        roles: data?.roles ?? [],
+                    };
+                    setStoredUser(user);
+                    set({ user });
+                    return user;
+                } catch (error) {
+                    console.error('Error fetching profile:', error);
+                    throw error;
+                }
+            },
+
+            updateProfile: async ({ phoneNumber, address }) => {
+                try {
+                    await updateProfileApi({ phoneNumber, address });
+                    const user = { ...get().user, phoneNumber, address };
+                    setStoredUser(user);
+                    set({ user });
+                } catch (error) {
+                    console.error('Error updating profile:', error);
+                    throw error;
                 }
             },
         }),

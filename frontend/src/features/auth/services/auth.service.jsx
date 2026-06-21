@@ -14,3 +14,13 @@ export const logoutApi = async () => {
   const response = await api.post('/api/auth/signout', {}, { withCredentials: true });
   return response.data;
 }
+
+export const getUserProfileApi = async () => {
+  const response = await api.get('/api/auth/user', { withCredentials: true });
+  return response.data;
+}
+
+export const updateProfileApi = async (data) => {
+  const response = await api.put('/api/auth/user', data, { withCredentials: true });
+  return response.data;
+}

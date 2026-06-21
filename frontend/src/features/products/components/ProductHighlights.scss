@@ -1,3 +1,7 @@
+$primary: #D0021B;
+$primary-dark: #a80016;
+$primary-light: #fce8ea;
+
 .product-highlights {
     width: 100%;
     border-radius: 4px;
@@ -56,14 +60,14 @@
         background: #f9fafb;
         border: none;
         border-top: 1px solid #e5e7eb;
-        color: #1677ff;
+        color: $primary;
         font-size: 13px;
         font-weight: 500;
         cursor: pointer;
         transition: background 0.2s;
 
         &:hover {
-            background: #f0f5ff;
+            background: $primary-light;
         }
     }
 

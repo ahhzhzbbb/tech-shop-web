@@ -12,7 +12,7 @@ $radius: 12px;
     min-width: 0;
     max-width: 100%;
     overflow: hidden;
-    padding: 24px 48px 48px 16px;
+    padding: 48px 48px 48px 16px;
 }
 
 .product-detail__status {
@@ -34,8 +34,6 @@ $radius: 12px;
     display: flex;
     flex-direction: column;
     gap: 24px;
-    position: sticky;
-    top: 24px;
     min-width: 0;
     max-width: 100%;
     overflow: hidden;
@@ -47,7 +45,7 @@ $radius: 12px;
     gap: 12px;
     background: #fff;
     border-radius: $radius;
-    border: 1px solid #f0f0f0;
+    border: 1px solid #e0e0e0;
     padding: 28px;
 }
 
@@ -161,9 +159,15 @@ $radius: 12px;
 
 .product-detail__price-group {
     display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.product-detail__price-promo {
+    display: flex;
     align-items: center;
     gap: 12px;
-    flex-wrap: wrap;
 }
 
 .product-detail__price {
@@ -173,11 +177,17 @@ $radius: 12px;
 }
 
 .product-detail__add-btn.ant-btn-primary {
+    align-self: flex-start;
+    background-color: $primary;
     height: 44px;
     font-size: 0.95rem;
-    font-weight: 600;
+    font-weight: 500;
     border-radius: 8px;
     padding: 0 24px;
+
+    &:hover {
+        background-color: $primary-dark !important;
+    }
 }
 
 .product-detail__perks {
@@ -185,7 +195,7 @@ $radius: 12px;
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
     padding: 12px 0;
-    border-top: 1px solid #f0f0f0;
+    //border-top: 1px solid #f0f0f0;
 }
 
 .product-detail__perk {
@@ -229,13 +239,6 @@ $radius: 12px;
     border-radius: $radius;
     border: 1px solid #f0f0f0;
     padding: 28px;
-
-    .product-ratings {
-        margin-top: 0;
-        padding: 0;
-        background: transparent;
-        box-shadow: none;
-    }
 }
 
 .product-detail__section-header {

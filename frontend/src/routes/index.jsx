@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import RouteTitle from "../components/ui/RouteTitle.jsx";
 import MainLayout from "../layouts/MainLayout.jsx";
 import HomePage from "../features/home/pages/HomePage.jsx";
 import Products from "../features/products/pages/Products.jsx";
 import ProductDetail from "../features/products/pages/ProductDetail.jsx";
-import UserInfo from "../features/user/pages/UserInfo.jsx";
 import Cart from "../features/cart/pages/Cart.jsx";
 import Checkout from "../features/checkout/pages/Checkout.jsx";
 import CheckoutResult from "../features/checkout/pages/CheckoutResult.jsx";
@@ -19,13 +19,13 @@ import AdminPromotions from "../features/admin/promotions/AdminPromotions.jsx";
 const AppRoute = () => {
     return (
         <BrowserRouter>
+            <RouteTitle />
             <Routes>
                 {/* user */}
                 <Route element={<MainLayout />}>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/products/:category" element={<Products />} />
                     <Route path="/products/:category/:id" element={<ProductDetail />} />
-                    <Route path="/user" element={<UserInfo />} />
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/checkout" element={<Checkout />} />
                     <Route path="/checkout/success" element={<CheckoutResult />} />

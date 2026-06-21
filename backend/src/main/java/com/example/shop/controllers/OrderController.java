@@ -43,7 +43,7 @@ public class OrderController {
     }
 
     @Operation(summary = "Lấy đơn hàng theo ID người dùng", description = "API dùng để lấy tất cả đơn hàng của một người dùng theo ID người dùng")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or #userId == authentication.principal.id")
     @GetMapping("/user/{userId}/orders")
     public ResponseEntity<List<OrderDTO>> getOrdersByUserId(@PathVariable Long userId) {
         List<OrderDTO> response = orderService.getOrdersByUserId(userId);

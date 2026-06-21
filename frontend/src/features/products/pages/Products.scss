@@ -1,3 +1,7 @@
+$primary: #D0021B;
+$primary-dark: #a80016;
+$primary-light: #fce8ea;
+
 .productLayout {
     display: flex;
     flex-direction: row;
@@ -90,10 +94,15 @@
     gap: 6px;
     font-weight: 500;
 
+    &:hover {
+        color: $primary !important;
+        border-color: $primary !important;
+    }
+
     &.is-active {
-        color: #2563eb;
-        border-color: #2563eb;
-        background: #eff6ff;
+        color: $primary;
+        border-color: $primary;
+        background: $primary-light;
     }
 }
 
@@ -153,6 +162,83 @@
     display: flex;
     justify-content: flex-end;
     gap: 12px;
+}
+
+// Thanh trượt khoảng giá: tông đỏ
+.products__priceSlider.ant-slider {
+    // Phần đã chọn (track)
+    .ant-slider-track {
+        background-color: $primary;
+    }
+
+    // Nút kéo (handle) — viền vòng được vẽ bằng box-shadow của ::after trong antd v5
+    .ant-slider-handle::after {
+        box-shadow: 0 0 0 2px $primary;
+    }
+
+    .ant-slider-handle:hover::after,
+    .ant-slider-handle:focus::after,
+    .ant-slider-handle:active::after {
+        box-shadow: 0 0 0 4px $primary;
+    }
+}
+
+// Nút "Đặt lại": nền trắng, viền + chữ đỏ
+.products__filterReset.ant-btn {
+    color: $primary;
+    border-color: $primary;
+    background: #fff;
+
+    &:hover {
+        color: $primary-dark !important;
+        border-color: $primary-dark !important;
+        background: $primary-light !important;
+    }
+}
+
+// Nút "Áp dụng": nền đỏ, chữ trắng
+.products__filterApply.ant-btn-primary {
+    background: $primary;
+    border-color: $primary;
+    color: #fff;
+
+    &:hover {
+        background: $primary-dark !important;
+        border-color: $primary-dark !important;
+    }
+}
+
+// Nút "Xoá lọc": viền + chữ đỏ khi hover (giữ trạng thái disabled mặc định)
+.products__clearBtn.ant-btn:not(:disabled) {
+    &:hover {
+        color: $primary !important;
+        border-color: $primary !important;
+    }
+}
+
+// Ô select "Sắp xếp": viền đỏ khi hover/focus
+.products__sortSelect.ant-select:not(.ant-select-disabled) {
+    &:hover .ant-select,
+    &.ant-select-focused .ant-select-selector {
+        border-color: $primary !important;
+    }
+
+    &.ant-select-focused .ant-select-selector {
+        box-shadow: 0 0 0 2px $primary-light !important;
+    }
+}
+
+// Dropdown của select "Sắp xếp": mục đang chọn / đang hover tông đỏ
+.products__sortDropdown {
+    .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+        background-color: $primary-light;
+        color: $primary;
+        font-weight: 600;
+    }
+
+    .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+        background-color: $primary-light;
+    }
 }
 
 .products__pagination {

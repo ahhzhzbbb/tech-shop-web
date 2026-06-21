@@ -16,8 +16,7 @@ $bg-light: #f9fafb;
     // Header
     // =========================================
     &__header {
-        padding: 20px 24px 16px;
-        border-bottom: 1px solid $border;
+        padding: 16px 0;
     }
 
     &__title {
@@ -30,37 +29,50 @@ $bg-light: #f9fafb;
     // =========================================
     // Tabs
     // =========================================
-    &__tabs {
-        display: flex;
-        border-bottom: 1px solid $border;
-        padding: 0 24px;
-        gap: 0;
-    }
+    &__tabs.ant-tabs {
+        .ant-tabs-nav {
+            margin: 0;
 
-    &__tab {
-        padding: 14px 20px;
-        font-size: 13px;
-        font-weight: 600;
-        color: $text-light;
-        background: none;
-        border: none;
-        border-bottom: 2px solid transparent;
-        cursor: pointer;
-        text-transform: uppercase;
-        letter-spacing: 0.02em;
-        transition: color 0.2s, border-color 0.2s;
-        white-space: nowrap;
-
-        &:hover {
-            color: $text;
+            &::before {
+                border-bottom: 1px solid $border;
+            }
         }
 
-        &--active {
-            color: $primary;
-            background-color: #FFF1F0;
-            border-bottom-color: $primary;
-            border-top-left-radius: 4px;
-            border-top-right-radius: 4px;
+        // Bỏ thanh ink mặc định, dùng border-bottom của tab active
+        .ant-tabs-ink-bar {
+            display: none;
+        }
+
+        .ant-tabs-tab {
+            padding: 14px 20px;
+            margin: 0;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+            border-bottom: 2px solid transparent;
+            transition: background-color 0.25s ease, border-color 0.25s ease;
+
+            .ant-tabs-tab-btn {
+                color: $text-light;
+                transition: color 0.25s ease;
+            }
+
+            &:hover .ant-tabs-tab-btn {
+                color: $text;
+            }
+
+            &.ant-tabs-tab-active {
+                background-color: #FFF1F0;
+                border-bottom-color: $primary;
+                border-top-left-radius: 4px;
+                border-top-right-radius: 4px;
+
+                .ant-tabs-tab-btn {
+                    color: $primary;
+                }
+            }
         }
     }
 
@@ -68,61 +80,26 @@ $bg-light: #f9fafb;
     // Search
     // =========================================
     &__search {
-        display: flex;
-        align-items: center;
-        padding: 16px 24px;
-        gap: 0;
-        border-bottom: 1px solid $border;
-    }
-
-    &__search-input {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 16px;
-        border: 1px solid $border;
-        border-right: none;
-        border-radius: 4px 0 0 4px;
-        background: $bg;
-
-        input {
-            flex: 1;
-            border: none;
-            outline: none;
-            font-size: 14px;
-            color: $text;
-            font-family: inherit;
-            background: transparent;
-
-            &::placeholder {
-                color: #aaa;
-            }
-        }
+        padding: 16px 0;
     }
 
     &__search-icon {
         color: #aaa;
         font-size: 14px;
-        flex-shrink: 0;
     }
 
-    &__search-btn {
-        padding: 10px 20px;
-        font-size: 14px;
-        font-weight: 500;
-        color: #1677ff;
-        background: $bg;
-        border: 1px solid $border;
-        border-left: 1px solid $border;
-        border-radius: 0 4px 4px 0;
-        cursor: pointer;
-        white-space: nowrap;
-        transition: background 0.2s, color 0.2s;
+    // Nút "Tìm đơn hàng" của Input.Search theo tông màu chính (đỏ)
+    &__search-box.ant-input-search {
+        .ant-btn {
+            background: transparent !important;
+            border-color: $primary;
+            color: $primary;
+            font-weight: 500;
 
-        &:hover {
-            background: #f0f5ff;
-            color: #0958d9;
+            &:hover {
+                color: #b8000f;
+                border-color: #b8000f;
+            }
         }
     }
 
@@ -266,18 +243,13 @@ $bg-light: #f9fafb;
 // === Responsive ===
 @media (max-width: 768px) {
     .order-mgmt {
-        &__tabs {
-            overflow-x: auto;
+        &__tabs.ant-tabs {
             padding: 0 16px;
 
-            &::-webkit-scrollbar {
-                display: none;
+            .ant-tabs-tab {
+                padding: 12px 14px;
+                font-size: 12px;
             }
-        }
-
-        &__tab {
-            padding: 12px 14px;
-            font-size: 12px;
         }
 
         &__search {

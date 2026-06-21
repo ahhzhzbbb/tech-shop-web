@@ -251,8 +251,8 @@ export default function AdminCategories() {
                     rowKey="id"
                     loading={loading}
                     pagination={{
-                        pageSize: 20,
                         showSizeChanger: false,
+                        pageSizeOptions: [30, 50, 100],
                         showTotal: (total) => `${total} danh mục`,
                     }}
                     className="ac-table"

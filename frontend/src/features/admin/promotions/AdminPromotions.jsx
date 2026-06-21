@@ -360,9 +360,8 @@ export default function AdminPromotions() {
                     ),
                 }}
                 pagination={{
-                    pageSize: 10,
                     showSizeChanger: true,
-                    pageSizeOptions: [10, 20, 50],
+                    pageSizeOptions: [30, 50, 100],
                     showTotal: (total) => `${formatNumber(total)} khuyến mãi`,
                 }}
                 scroll={{ x: 900 }}

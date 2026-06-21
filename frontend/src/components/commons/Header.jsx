@@ -26,10 +26,13 @@ const Header = () => {
   const [openLogin, setOpenLogin] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Đóng mobile menu khi chuyển trang
-  useEffect(() => {
+  // Đóng mobile menu khi chuyển trang: so sánh pathname với lần render trước
+  // (đặt state ngay trong render thay vì useEffect để tránh cascading renders).
+  const [prevPath, setPrevPath] = useState(location.pathname);
+  if (prevPath !== location.pathname) {
+    setPrevPath(location.pathname);
     setMobileMenuOpen(false);
-  }, [location.pathname]);
+  }
 
   const cartCount = useCartStore((s) => s.count);
   const refreshCart = useCartStore((s) => s.refresh);
@@ -75,18 +78,6 @@ const Header = () => {
   }
 
   items.push(
-    {
-      key: 'userInfo',
-      label: (
-        <Button
-          type="text"
-          style={{ width: '100%', textAlign: 'left' }}
-          onClick={() => navigate('/user')}
-        >
-          Thông tin tài khoản
-        </Button>
-      ),
-    },
     {
       key: 'logout',
       label: (

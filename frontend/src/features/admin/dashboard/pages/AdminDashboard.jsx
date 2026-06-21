@@ -110,7 +110,7 @@ function AdminDashboard() {
             { label: "Sản phẩm", value: formatNumber(products.length), tone: "blue" },
             { label: "Đơn chờ xử lý", value: formatNumber(pendingOrders), tone: "gold" },
             { label: "Sắp hết hàng", value: formatNumber(lowStock), tone: "orange" },
-            { label: "Danh mục active", value: formatNumber(activeCategories), tone: "green" },
+            { label: "Danh mục hoạt động", value: formatNumber(activeCategories), tone: "green" },
             { label: "Khuyến mãi", value: formatNumber(promotions.length), tone: "purple" },
         ];
     }, [categories, orders, products, promotions.length]);

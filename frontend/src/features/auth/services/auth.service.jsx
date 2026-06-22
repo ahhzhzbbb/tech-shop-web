@@ -24,3 +24,8 @@ export const updateProfileApi = async (data) => {
   const response = await api.put('/api/auth/user', data, { withCredentials: true });
   return response.data;
 }
+
+export const changePasswordApi = async (data) => {
+  const response = await api.put('/api/auth/user/password', data, { withCredentials: true });
+  return response.data;
+}

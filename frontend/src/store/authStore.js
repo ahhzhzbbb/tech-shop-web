@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { loginApi, logoutApi, getUserProfileApi, updateProfileApi } from "../features/auth/services/auth.service";
+import { loginApi, logoutApi, getUserProfileApi, updateProfileApi, changePasswordApi } from "../features/auth/services/auth.service";
 import {
     extractJwtFromLoginResponse,
     setAuthToken,
@@ -89,14 +89,23 @@ const useAuthStore = create(
                 }
             },
 
-            updateProfile: async ({ phoneNumber, address }) => {
+            updateProfile: async ({ fullName, phoneNumber, address }) => {
                 try {
-                    await updateProfileApi({ phoneNumber, address });
-                    const user = { ...get().user, phoneNumber, address };
+                    await updateProfileApi({ fullName, phoneNumber, address });
+                    const user = { ...get().user, fullName, phoneNumber, address };
                     setStoredUser(user);
                     set({ user });
                 } catch (error) {
                     console.error('Error updating profile:', error);
+                    throw error;
+                }
+            },
+
+            changePassword: async ({ oldPassword, newPassword }) => {
+                try {
+                    await changePasswordApi({ oldPassword, newPassword });
+                } catch (error) {
+                    console.error('Error changing password:', error);
                     throw error;
                 }
             },

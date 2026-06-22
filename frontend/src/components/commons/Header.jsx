@@ -13,6 +13,7 @@ import { useLogout } from "../../features/auth/hooks/useAuth.jsx";
 
 import RegisterModal from "../../features/auth/component/RegisterModal.jsx";
 import LoginModal from "../../features/auth/component/LoginModal.jsx";
+import ProfileModal from "../../features/user/component/ProfileModal.jsx";
 import SearchInput from "../../features/search/components/SearchInput.jsx";
 import useCartStore from "../../store/cartStore.js";
 import "./Header.scss";
@@ -24,6 +25,7 @@ const Header = () => {
   const location = useLocation();
   const [openRegister, setOpenRegister] = useState(false);
   const [openLogin, setOpenLogin] = useState(false);
+  const [openProfile, setOpenProfile] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Đóng mobile menu khi chuyển trang: so sánh pathname với lần render trước
@@ -62,13 +64,26 @@ const Header = () => {
   const isAdmin = normalizedRoles.some((role) => ["ROLE_ADMIN", "ADMIN", "admin"].includes(role));
 
   const items = [];
+  items.push({
+    key: 'profile',
+    label: (
+      <Button
+        type="text"
+        style={{ width: '100%', textAlign: 'left', color: '#E30019' }}
+        icon={<UserOutlined />}
+        onClick={() => setOpenProfile(true)}
+      >
+        Thông tin tài khoản
+      </Button>
+    ),
+  });
   if (isAdmin) {
     items.push({
       key: 'adminPanel',
       label: (
         <Button
           type="text"
-          style={{ width: '100%', textAlign: 'left', fontWeight: 'bold', color: '#E30019' }}
+          style={{ width: '100%', textAlign: 'left', color: '#E30019' }}
           onClick={() => navigate('/admin')}
         >
           Trang quản trị (Admin)
@@ -171,7 +186,7 @@ const Header = () => {
                     title="Thông tin tài khoản"
                     subtitle=""
                     variant="dark"
-                    onClick={() => navigate('/user')}
+                    onClick={() => setOpenProfile(true)}
                   />
                   <HeaderButton
                     icon={<LogoutOutlined />}
@@ -207,6 +222,11 @@ const Header = () => {
           setOpenLogin(false);
           setOpenRegister(true);
         }}
+      />
+
+      <ProfileModal
+        open={openProfile}
+        onCancel={() => setOpenProfile(false)}
       />
     </>
   );

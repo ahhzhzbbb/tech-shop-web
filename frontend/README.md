@@ -1,95 +1,80 @@
-# React + Vite
+# Tech Shop — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Giao diện website bán đồ công nghệ, xây dựng bằng **React + Vite**.
 
-Currently, two official plugins are available:
+- **Trang web:** https://tech-9de80.web.app
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Công nghệ
 
-## React Compiler
+- React 19, Vite 8
+- Ant Design 6 (`antd`) + icon (`@ant-design/icons`, `@phosphor-icons/react`)
+- React Router 7 (`react-router-dom`)
+- Zustand (state management) + TanStack React Query
+- Axios (gọi API)
+- Sass (SCSS)
+- `qrcode.react` (mã QR thanh toán)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Cấu trúc thư mục
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-
-## Cấu trúc thư mục frontend
+Dự án theo kiến trúc **feature-based** (mỗi tính năng tự gói component / page / service / store).
 
 ```
 frontend/
-├── .env                    # File cấu hình biến môi trường
-├── .gitignore              # File bỏ qua các file không cần commit
-├── eslint.config.js        # Cấu hình ESLint
-├── index.html              # File HTML chính
-├── node_modules/           # Thư mục chứa các package phụ thuộc
-├── package-lock.json       # File khóa phiên bản package
-├── package.json            # File cấu hình dự án và dependencies
-├── public/                 # Thư mục chứa tài nguyên tĩnh
-│   ├── favicon.svg         # Icon trang web
-│   └── icons.svg           # Các icon SVG
-├── README.md               # File hướng dẫn dự án
-├── src/                    # Thư mục nguồn chính
-│   ├── App.css             # CSS cho component App
-│   ├── App.jsx             # Component chính của ứng dụng
-│   ├── assets/             # Thư mục chứa hình ảnh và tài nguyên
-│   ├── components/         # Thư mục chứa các component dùng chung
-│   │   ├── commons/        # Component dùng chung như Header
-│   │   │   └── Header.js   # Component Header
-│   │   └── ui/             # Component giao diện người dùng
-│   ├── features/           # Thư mục chứa các tính năng theo module
-│   │   ├── auth/           # Tính năng xác thực
-│   │   │   ├── component/  # Component cho auth
-│   │   │   │   └── RegisterModal.js  # Modal đăng ký
-│   │   │   ├── hooks/      # Hook cho auth
-│   │   │   ├── pages/      # Trang cho auth
-│   │   │   └── services/   # Service cho auth
-│   │   ├── cart/           # Tính năng giỏ hàng
-│   │   │   ├── components/ # Component cho cart
-│   │   │   ├── pages/      # Trang cho cart
-│   │   │   ├── store/      # State management cho cart
-│   │   │   └── utils/      # Utility cho cart
-│   │   ├── checkout/       # Tính năng thanh toán
-│   │   │   ├── components/ # Component cho checkout
-│   │   │   ├── hooks/      # Hook cho checkout
-│   │   │   ├── pages/      # Trang cho checkout
-│   │   │   └── services/   # Service cho checkout
-│   │   ├── home/           # Trang chủ
-│   │   │   ├── components/ # Component cho home
-│   │   │   ├── pages/      # Trang home
-│   │   │   │   └── HomePage.js  # Trang chủ
-│   │   │   └── services/   # Service cho home
-│   │   ├── order/          # Tính năng đơn hàng
-│   │   │   ├── components/ # Component cho order
-│   │   │   ├── pages/      # Trang cho order
-│   │   │   └── services/   # Service cho order
-│   │   ├── products/       # Tính năng sản phẩm
-│   │   │   ├── components/ # Component cho products
-│   │   │   ├── hooks/      # Hook cho products
-│   │   │   ├── pages/      # Trang sản phẩm
-│   │   │   │   ├── ProductDetail.js  # Trang chi tiết sản phẩm
-│   │   │   │   └── Products.js  # Trang danh sách sản phẩm
-│   │   │   ├── services/   # Service cho products
-│   │   │   └── store/      # State management cho products
-│   │   ├── search/         # Tính năng tìm kiếm
-│   │   │   ├── components/ # Component cho search
-│   │   │   ├── hooks/      # Hook cho search
-│   │   │   └── services/   # Service cho search
-│   │   └── user/           # Tính năng người dùng
-│   │       ├── components/ # Component cho user
-│   │       ├── pages/      # Trang cho user
-│   │       └── services/   # Service cho user
-│   ├── hooks/              # Thư mục chứa custom hooks dùng chung
-│   ├── layouts/            # Thư mục chứa layout của ứng dụng
-│   │   └── MainLayout.js   # Layout chính
-│   ├── main.jsx            # File entry point của React
-│   ├── routes/             # Thư mục chứa cấu hình routing
-│   │   └── index.js        # File cấu hình route
-│   ├── services/           # Thư mục chứa các service API
-│   │   ├── api.js          # Cấu hình API
-│   │   └── axiosInstances.js  # Instance Axios
-│   ├── store/              # Thư mục chứa state management (Redux, Zustand, etc.)
-│   └── utils/              # Thư mục chứa các utility functions
-├── vite.config.js          # Cấu hình Vite
+├── .env                      # Biến môi trường (VITE_API_URL...)
+├── firebase.json             # Cấu hình Firebase Hosting
+├── index.html                # File HTML gốc
+├── vite.config.js            # Cấu hình Vite
+├── eslint.config.js          # Cấu hình ESLint
+├── package.json              # Dependency & scripts
+├── public/                   # Tài nguyên tĩnh (favicon, icons.svg)
+└── src/
+    ├── main.jsx              # Entry point React
+    ├── App.jsx               # Component gốc
+    ├── assets/               # Hình ảnh, logo
+    ├── components/           # Component dùng chung toàn app
+    │   ├── commons/          #   Header... (layout chung)
+    │   └── ui/               #   Component UI tái sử dụng (Dropdown, Step...)
+    ├── context/              # React Context (AuthContext)
+    ├── layouts/              # Layout (MainLayout, AdminLayout)
+    ├── routes/               # Cấu hình định tuyến
+    ├── store/                # Zustand store dùng chung (auth, cart, category...)
+    ├── services/             # Cấu hình API & Axios instance
+    ├── hooks/                # Custom hook dùng chung
+    ├── utils/                # Hàm tiện ích
+    └── features/             # Các tính năng theo module
+        ├── auth/             #   Đăng nhập / đăng ký
+        ├── home/             #   Trang chủ
+        ├── products/         #   Danh sách & chi tiết sản phẩm
+        ├── search/           #   Tìm kiếm
+        ├── cart/             #   Giỏ hàng
+        ├── checkout/         #   Thanh toán (COD, VNPay)
+        ├── order/            #   Đơn hàng
+        ├── rating/           #   Đánh giá sản phẩm
+        ├── user/             #   Thông tin tài khoản
+        └── admin/            #   Trang quản trị (dashboard, sản phẩm,
+                              #   danh mục, đơn hàng, khuyến mãi, thống kê)
 ```
+
+Mỗi thư mục trong `features/` thường gồm: `components/` (hoặc `component/`),
+`pages/`, `services/`, và tuỳ tính năng có thêm `hooks/`, `store/`, `utils/`.
+
+## Chạy ở local
+
+> Yêu cầu: **Node.js** (khuyến nghị 18+).
+
+1. Cài dependency:
+   ```bash
+   cd frontend
+   npm install
+   ```
+2. Cấu hình API trong `.env` (trỏ tới backend local):
+   ```env
+   VITE_API_URL=http://localhost:8080
+   ```
+3. Chạy dev server:
+   ```bash
+   npm run dev
+   ```
+   Frontend chạy ở **http://localhost:5173**.
+
+Các script khác: `npm run build` (đóng gói production vào `dist/`), `npm run preview` (xem thử bản build), `npm run lint`.

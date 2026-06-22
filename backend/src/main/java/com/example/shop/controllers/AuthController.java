@@ -1,5 +1,6 @@
 package com.example.shop.controllers;
 
+import com.example.shop.security.request.ChangePasswordRequest;
 import com.example.shop.security.request.LoginRequest;
 import com.example.shop.security.request.SignupRequest;
 import com.example.shop.security.request.UpdateProfileRequest;
@@ -65,6 +66,16 @@ public class AuthController {
             Authentication authentication,
             @RequestBody UpdateProfileRequest request) {
         return ResponseEntity.ok().body(authService.updateProfile(authentication, request));
+    }
+
+    @Operation(summary = "đổi mật khẩu", description = "API dùng để đổi mật khẩu người dùng hiện tại")
+    /* API dùng để đổi mật khẩu người dùng hiện tại */
+    @PutMapping("/user/password")
+    public ResponseEntity<?> changePassword(
+            Authentication authentication,
+            @RequestBody ChangePasswordRequest request) {
+        authService.changePassword(authentication, request);
+        return ResponseEntity.ok().body(new MessageResponse("Đổi mật khẩu thành công!"));
     }
 
     @Operation(summary = "đăng xuất", description = "API dùng để đăng xuất người dùng")

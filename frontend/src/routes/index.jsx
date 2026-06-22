@@ -8,7 +8,6 @@ import Cart from "../features/cart/pages/Cart.jsx";
 import Checkout from "../features/checkout/pages/Checkout.jsx";
 import CheckoutResult from "../features/checkout/pages/CheckoutResult.jsx";
 import Orders from "../features/order/pages/Orders.jsx";
-import UserProfile from "../features/user/pages/UserProfile.jsx";
 import AdminLayout from "../layouts/AdminLayout.jsx";
 import AdminDashboard from "../features/admin/dashboard/pages/AdminDashboard.jsx";
 import AdminOrders from "../features/admin/orders/AdminOrders.jsx";
@@ -32,7 +31,6 @@ const AppRoute = () => {
                     <Route path="/checkout/success" element={<CheckoutResult />} />
                     <Route path="/checkout/vnpay-return" element={<CheckoutResult />} />
                     <Route path="/orders" element={<Orders />} />
-                    <Route path="/user" element={<UserProfile />} />
                 </Route>
 
                 {/* admin */}

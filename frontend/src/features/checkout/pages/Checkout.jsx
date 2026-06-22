@@ -27,6 +27,7 @@ function Checkout() {
     const [messageApi, contextHolder] = message.useMessage();
 
     const user = useAuthStore((s) => s.user);
+    const fetchProfile = useAuthStore((s) => s.fetchProfile);
     const setCartCount = useCartStore((s) => s.setCount);
 
     const promotions = usePromotionStore((s) => s.promotions);
@@ -67,6 +68,11 @@ function Checkout() {
             active = false;
         };
     }, [navigate, setCartCount, messageApi]);
+
+    // Lấy thông tin mới nhất của user (login response có thể thiếu fullName/phone/address)
+    useEffect(() => {
+        fetchProfile().catch(() => {});
+    }, [fetchProfile]);
 
     // Prefill thông tin người nhận từ store
     useEffect(() => {

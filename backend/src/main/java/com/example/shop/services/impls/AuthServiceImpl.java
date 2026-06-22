@@ -130,6 +130,10 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findById(userDetails.getId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
+        if (request.getFullName() != null) {
+            user.setFullName(request.getFullName());
+        }
+
         if (request.getPhoneNumber() != null) {
             user.setPhoneNumber(request.getPhoneNumber());
         }
@@ -148,6 +152,22 @@ public class AuthServiceImpl implements AuthService {
         response.setFullName(user.getFullName());
         response.setAddress(user.getAddress());
         return response;
+    }
+
+    @Transactional
+    @Override
+    public void changePassword(Authentication authentication, com.example.shop.security.request.ChangePasswordRequest request) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        User user = userRepository.findById(userDetails.getId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!encoder.matches(request.getOldPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Mật khẩu cũ không đúng");
+        }
+
+        user.setPassword(encoder.encode(request.getNewPassword()));
+        userRepository.save(user);
     }
 
     @Override

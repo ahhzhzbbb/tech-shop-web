@@ -39,7 +39,7 @@ const Dropdown = ({ icon, title, subtitle, menu, to, onClick, placement = "botto
             <AntDropdown
                 menu={menu}
                 placement={placement}
-                trigger={['click']}
+                trigger={['hover']}
                 overlayClassName="dropdown-menu-popup"
             >
                 {button}

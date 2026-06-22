@@ -20,5 +20,7 @@ public interface AuthService {
 
     UserInfoResponse updateProfile(Authentication authentication, com.example.shop.security.request.UpdateProfileRequest request);
 
+    void changePassword(Authentication authentication, com.example.shop.security.request.ChangePasswordRequest request);
+
     ResponseCookie logoutUser();
 }

@@ -65,6 +65,8 @@ public class SecurityConfigs {
                         auth
                                 .requestMatchers(
                                         "/api/auth/**",
+                                        "/api/payment/vnpay-callback",
+                                        "/api/payment/vnpay-notify",
                                         "/h2-console/**",
                                         "/swagger-ui/**",
                                         "/v3/api-docs/**",

@@ -2,6 +2,7 @@ package com.example.shop.services.impls;
 
 import com.example.shop.configs.VNPayConfig;
 import com.example.shop.exceptions.ResourceNotFoundException;
+import com.example.shop.exceptions.VNPayException;
 import com.example.shop.models.Order;
 import com.example.shop.models.Payment;
 import com.example.shop.models.PaymentMethod;
@@ -142,7 +143,7 @@ public class PaymentServiceImpl implements PaymentService {
         params.forEach((k,v) ->
                 System.out.println(k + " = " + v));
 
-        // Verify hash
+        // 1. Verify hash -> 97 Invalid Checksum
         String calculatedHash =
                 VNPayUtil.hashAllFields(params,
                         vnPayConfig.getHashSecret());
@@ -151,20 +152,40 @@ public class PaymentServiceImpl implements PaymentService {
         System.out.println("Calculated Hash = " + calculatedHash);
         System.out.println("=====================================");
 
-        if (!calculatedHash.equals(secureHash)) {
+        if (secureHash == null || !calculatedHash.equals(secureHash)) {
             log.warn("Invalid VNPay hash for transaction: {}", transactionId);
-            throw new RuntimeException("Invalid VNPay hash");
+            throw new VNPayException("97", "Invalid Checksum");
         }
-        
+
+        // 2. Tìm payment theo transactionId -> 01 Order not Found
         Payment payment = paymentRepository.findByTransactionId(transactionId)
-                .orElseThrow(() -> new ResourceNotFoundException("Payment", "transactionId", transactionId));
-        
-        // Update payment status based on response code
+                .orElseThrow(() -> new VNPayException("01", "Order not Found"));
+
+        // 3. Đối chiếu số tiền (VNPay gửi vnp_Amount = số tiền * 100) -> 04 Invalid Amount
+        long expectedAmount = payment.getAmount().multiply(new BigDecimal("100")).longValue();
+        long vnpAmount;
+        try {
+            vnpAmount = Long.parseLong(params.getOrDefault("vnp_Amount", ""));
+        } catch (NumberFormatException ex) {
+            vnpAmount = -1;
+        }
+        if (vnpAmount != expectedAmount) {
+            log.warn("VNPay amount mismatch for transaction {}: expected {}, got {}",
+                    transactionId, expectedAmount, params.get("vnp_Amount"));
+            throw new VNPayException("04", "Invalid Amount");
+        }
+
+        // 4. Chống xử lý trùng -> 02 Order already confirmed
+        if (payment.getStatus() == SUCCESS) {
+            throw new VNPayException("02", "Order already confirmed");
+        }
+
+        // 5. Cập nhật trạng thái theo vnp_ResponseCode
         if ("00".equals(responseCode)) {
             payment.setStatus(SUCCESS);
             payment.setPaidAt(LocalDateTime.now());
             payment.setResponseCode(responseCode);
-            
+
             // Update order status
             Order order = payment.getOrder();
             order.setStatus("PAID");

@@ -168,6 +168,7 @@ public class PaymentServiceImpl implements PaymentService {
             // Update order status
             Order order = payment.getOrder();
             order.setStatus("PAID");
+            orderRepository.save(order);
         } else {
             payment.setStatus(FAILED);
             payment.setResponseCode(responseCode);

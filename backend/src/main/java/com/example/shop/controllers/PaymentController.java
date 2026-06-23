@@ -91,15 +91,16 @@ public class PaymentController {
     }
     
     /**
-     * VNPay notify endpoint
+     * VNPay notify endpoint (Nhánh ngầm IPN)
+     * VNPAY gửi dữ liệu dạng Query Params thông qua phương thức GET
      */
-    @PostMapping("/vnpay-notify")
-    public ResponseEntity<Map<String, String>> vnpayNotify(@RequestBody Map<String, String> params) {
+    @GetMapping("/vnpay-notify")
+    public ResponseEntity<Map<String, String>> vnpayNotify(@RequestParam Map<String, String> params) {
         try {
             paymentService.handleVNPayCallback(params);
             return ResponseEntity.ok(Map.of("RspCode", "00", "Message", "Confirm Success"));
         } catch (Exception e) {
-            return ResponseEntity.ok(Map.of("RspCode", "01", "Message", "Confirm failed"));
+            return ResponseEntity.ok(Map.of("RspCode", "99", "Message", "Unknown Error: " + e.getMessage()));
         }
     }
     

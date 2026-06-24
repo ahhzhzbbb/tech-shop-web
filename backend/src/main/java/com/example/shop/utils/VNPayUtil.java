@@ -3,6 +3,7 @@ package com.example.shop.utils;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -155,13 +156,16 @@ public class VNPayUtil {
     private static final DateTimeFormatter VNPAY_FORMATTER =
             DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
+    // VNPay yêu cầu thời gian theo múi giờ GMT+7, không phụ thuộc timezone của server.
+    private static final ZoneId VNPAY_ZONE = ZoneId.of("Asia/Ho_Chi_Minh");
+
     public static String getVNPayDateTime() {
-        return LocalDateTime.now()
+        return LocalDateTime.now(VNPAY_ZONE)
                 .format(VNPAY_FORMATTER);
     }
 
     public static String getVNPayExpireDate(int minutes) {
-        return LocalDateTime.now()
+        return LocalDateTime.now(VNPAY_ZONE)
                 .plusMinutes(minutes)
                 .format(VNPAY_FORMATTER);
     }

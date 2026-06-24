@@ -1,5 +1,6 @@
 package com.example.shop.controllers;
 
+import com.example.shop.exceptions.VNPayException;
 import com.example.shop.payloads.dto.PaymentDTO;
 import com.example.shop.payloads.request.PaymentRequest;
 import com.example.shop.payloads.response.PaymentResponse;
@@ -82,6 +83,19 @@ public class PaymentController {
                     "message", "Payment processed successfully",
                     "payment", payment
             ));
+        } catch (VNPayException e) {
+            // 02 = đơn đã được xác nhận trước đó (thường do IPN xử lý xong trước
+            // khi người dùng quay lại) -> vẫn coi là thành công cho người dùng.
+            if ("02".equals(e.getRspCode())) {
+                return ResponseEntity.ok(Map.of(
+                        "status", "success",
+                        "message", "Đơn hàng đã được thanh toán"
+                ));
+            }
+            return ResponseEntity.ok(Map.of(
+                    "status", "error",
+                    "message", e.getMessage()
+            ));
         } catch (Exception e) {
             return ResponseEntity.ok(Map.of(
                     "status", "error",
@@ -89,7 +103,7 @@ public class PaymentController {
             ));
         }
     }
-    
+
     /**
      * VNPay notify endpoint (Nhánh ngầm IPN)
      * VNPAY gửi dữ liệu dạng Query Params thông qua phương thức GET
@@ -99,8 +113,10 @@ public class PaymentController {
         try {
             paymentService.handleVNPayCallback(params);
             return ResponseEntity.ok(Map.of("RspCode", "00", "Message", "Confirm Success"));
+        } catch (VNPayException e) {
+            return ResponseEntity.ok(Map.of("RspCode", e.getRspCode(), "Message", e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.ok(Map.of("RspCode", "99", "Message", "Unknown Error: " + e.getMessage()));
+            return ResponseEntity.ok(Map.of("RspCode", "99", "Message", "Unknown error: " + e.getMessage()));
         }
     }
     
